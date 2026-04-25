@@ -44,7 +44,7 @@ interface LandingPage {
 
 const INITIAL_JSON = JSON.stringify({elements: []}, null, 2);
 
-const JsonEditor = ({ onRender }: { onRender: (val: string) => void }) => {
+const JsonEditor = ({ onRender, errorMessage }: { onRender: (val: string) => void, errorMessage: string | null }) => {
   const [editorValue, setEditorValue] = useState<string>(INITIAL_JSON);
 
   return (
@@ -55,6 +55,9 @@ const JsonEditor = ({ onRender }: { onRender: (val: string) => void }) => {
         onChange={(e) => setEditorValue(e.target.value)}
         spellCheck={false}
       />
+
+      {errorMessage !== null ? <div className="error-message">{errorMessage}</div> : undefined}
+
       <div className="toolbar">
         <button className="btn-render" onClick={() => onRender(editorValue)}>
           Render
@@ -135,14 +138,21 @@ const PreviewCanvas = ({ data }: { data: LandingPage | null }) => {
 
 function App() {
   const [renderedData, setRenderedData] = useState<LandingPage | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const handleRender = (data: string) => {
-    setRenderedData(JSON.parse(data));
+    try {
+      setRenderedData(JSON.parse(data));
+      setErrorMessage(null);
+    } catch (err: any) {
+      setErrorMessage("Invalid JSON data: " + err.toString());
+    }
   };
 
   return (
     <div className="app-container">
       <div className="editor-container">
-          <JsonEditor onRender={handleRender} />
+          <JsonEditor onRender={handleRender} errorMessage={errorMessage} />
           <PreviewCanvas data={renderedData} />
       </div>
     </div>
