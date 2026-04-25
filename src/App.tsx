@@ -19,7 +19,13 @@ interface LinkElement extends BaseElement {
   src: string;
 }
 
-type LandingElement = TextElement | LinkElement
+interface ImageElement extends BaseElement {
+  element: "image";
+  value: string;
+  alt?: string;
+}
+
+type LandingElement = TextElement | LinkElement | ImageElement
 
 interface LandingPage {
   elements: LandingElement[];
@@ -63,10 +69,17 @@ const LinkElementComponent = ({ element }: { element: LinkElement }) => {
   </LandingElementEditContainer>
 }
 
+const ImageElementComponent = ({ element }: { element: ImageElement }) => {
+  return <LandingElementEditContainer key={element.id}>
+    <img src={element.value} alt={element.alt} />
+  </LandingElementEditContainer>
+}
+
 function *renderElements(elements: LandingElement[]) {
   for (const element of elements) {
     if (element.element === "text") yield <TextElementComponent element={element} />
     else if (element.element === "link") yield <LinkElementComponent element={element} />
+    else if (element.element === "image") yield <ImageElementComponent element={element} />
   }
 }
 
