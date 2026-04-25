@@ -1,122 +1,96 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React, { useState } from 'react';
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
+type ElementId = string;
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+interface BaseElement {
+  id: ElementId;
+  element: string;
 }
 
-export default App
+interface TextElement extends BaseElement {
+  element: "text";
+  value: string;
+}
+
+type LandingElement = TextElement
+
+interface LandingPage {
+  elements: LandingElement[];
+}
+
+const INITIAL_JSON = JSON.stringify({elements: []}, null, 2);
+
+const JsonEditor = ({ onRender }: { onRender: (val: string) => void }) => {
+  const [editorValue, setEditorValue] = useState<string>(INITIAL_JSON);
+
+  return (
+    <div className="editor-pane">
+      <textarea
+        className="json-input"
+        value={editorValue}
+        onChange={(e) => setEditorValue(e.target.value)}
+        spellCheck={false}
+      />
+      <div className="toolbar">
+        <button className="btn-render" onClick={() => onRender(editorValue)}>
+          Render
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const LandingElementEditContainer = ({ children }: { children: React.ReactNode }) => {
+  return <div className="element-edit-container">{children}</div>
+}
+
+const TextElementComponent = ({ element }: { element: TextElement }) => {
+  return <LandingElementEditContainer key={element.id}>
+    <p>{element.value}</p>
+  </LandingElementEditContainer>
+}
+
+function *renderElements(elements: LandingElement[]) {
+  for (const element of elements) {
+    yield <TextElementComponent element={element} />
+  }
+}
+
+const PreviewCanvas = ({ data }: { data: LandingPage | null }) => {
+  if (!data) {
+    return (
+      <div className="preview-pane">
+        <div className="empty-state">
+          <p>Нажмите кнопку Render, чтобы увидеть предпросмотр</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="preview-pane">
+      <div className="preview-content">
+        {renderElements(data.elements)}
+      </div>
+    </div>
+  );
+};
+
+function App() {
+  const [renderedData, setRenderedData] = useState<LandingPage | null>(null);
+  const handleRender = (data: string) => {
+    setRenderedData(JSON.parse(data));
+  };
+
+  return (
+    <div className="app-container">
+      <div className="editor-container">
+          <JsonEditor onRender={handleRender} />
+          <PreviewCanvas data={renderedData} />
+      </div>
+    </div>
+  );
+}
+
+export default App;
