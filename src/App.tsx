@@ -74,25 +74,25 @@ const LandingElementEditContainer = ({ children }: { children: React.ReactNode }
 
 const TextElementComponent = ({ element }: { element: TextElement }) => {
   return <LandingElementEditContainer key={element.id}>
-    <p>{element.value}</p>
+    <p className="text-element">{element.value}</p>
   </LandingElementEditContainer>
 }
 
 const LinkElementComponent = ({ element }: { element: LinkElement }) => {
   return <LandingElementEditContainer key={element.id}>
-    <a href={element.src}>{element.value}</a>
+    <a className="link-element" href={element.src}>{element.value}</a>
   </LandingElementEditContainer>
 }
 
 const ImageElementComponent = ({ element }: { element: ImageElement }) => {
   return <LandingElementEditContainer key={element.id}>
-    <img src={element.value} alt={element.alt} />
+    <img className="image-element" src={element.value} alt={element.alt} />
   </LandingElementEditContainer>
 }
 
 const LinkButton = ({ text, href }: { text: string, href: string }) => {
   const handleClick = () => window.open(href, '_blank');
-  return <button onClick={handleClick}>{text}</button>;
+  return <button className="link-button" onClick={handleClick}>{text}</button>;
 }
 
 const ButtonElementComponent = ({ element }: { element: ButtonElement }) => {
