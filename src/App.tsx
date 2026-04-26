@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as types from './components/types';
 import { validateLandingPage } from './components/parser';
-import { TextElementComponent, LinkElementComponent, ImageElementComponent, ButtonElementComponent, ContainerElementComponent } from './components/editor_components';
+import { renderElements } from './components/editor_components_renderer';
 import './App.css';
 
 const INITIAL_JSON = JSON.stringify({elements: []}, null, 2);
@@ -28,31 +28,6 @@ const JsonEditor = ({ onRender, errorMessage }: { onRender: (val: string) => voi
     </div>
   );
 };
-
-class ElementNotSupportsChildren extends Error {
-  constructor(elementType: string) {
-    super(`Element of type "${elementType}" not supports children`);
-  }
-}
-
-function renderElement(element: types.LandingElement, children: React.ReactNode[]): React.ReactNode {
-  if (element.element !== "container" && children.length > 0) {
-    throw new ElementNotSupportsChildren(element.element);
-  }
-
-  if (element.element === "text") return <TextElementComponent element={element} />
-  else if (element.element === "link") return <LinkElementComponent element={element} />
-  else if (element.element === "image") return <ImageElementComponent element={element} />
-  else if (element.element === "button") return <ButtonElementComponent element={element} />
-  else if (element.element === "container") return <ContainerElementComponent element={element}>{children}</ContainerElementComponent>
-}
-
-function renderElements(elements: types.LandingElement[], parentId: string | null = null): React.ReactNode[] {
-  return elements
-    .filter(el => (parentId === null && !el.parentId) || (el.parentId === parentId))
-    .sort((a, b) => a.index - b.index)
-    .map(el => renderElement(el, renderElements(elements, el.id)));
-}
 
 const PreviewCanvas = ({ data }: { data: types.LandingPage | null }) => {
   if (!data) {
