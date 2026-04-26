@@ -6,6 +6,8 @@ type ElementId = string;
 interface BaseElement {
   id: ElementId;
   element: string;
+  parentId?: string;
+  index?: number;
 }
 
 interface TextElement extends BaseElement {
@@ -33,7 +35,6 @@ interface ButtonElement extends BaseElement {
 
 interface ContainerElement extends BaseElement {
   element: "container";
-  children: LandingElement[];
 }
 
 type LandingElement = TextElement | LinkElement | ImageElement | ButtonElement | ContainerElement
@@ -100,20 +101,34 @@ const ButtonElementComponent = ({ element }: { element: ButtonElement }) => {
   </LandingElementEditContainer>
 }
 
-const ContainerElementComponent = ({ element }: { element: ContainerElement }) => {
+const ContainerElementComponent = ({ element, children }: { element: ContainerElement, children: React.ReactNode[] }) => {
   return <LandingElementEditContainer key={element.id}>
-    {renderElements(element.children)}
+    {children}
   </LandingElementEditContainer>
 }
 
-function *renderElements(elements: LandingElement[]) {
-  for (const element of elements) {
-    if (element.element === "text") yield <TextElementComponent element={element} />
-    else if (element.element === "link") yield <LinkElementComponent element={element} />
-    else if (element.element === "image") yield <ImageElementComponent element={element} />
-    else if (element.element === "button") yield <ButtonElementComponent element={element} />
-    else if (element.element === "container") yield <ContainerElementComponent element={element} />
+class ElementNotSupportsChildren extends Error {
+  constructor(elementType: string) {
+    super(`Element of type "${elementType}" not supports children`);
   }
+}
+
+function renderElement(element: LandingElement, children: React.ReactNode[]): React.ReactNode {
+  if (element.element !== "container" && children.length > 0) {
+    throw new ElementNotSupportsChildren(element.element);
+  }
+
+  if (element.element === "text") return <TextElementComponent element={element} />
+  else if (element.element === "link") return <LinkElementComponent element={element} />
+  else if (element.element === "image") return <ImageElementComponent element={element} />
+  else if (element.element === "button") return <ButtonElementComponent element={element} />
+  else if (element.element === "container") return <ContainerElementComponent element={element}>{children}</ContainerElementComponent>
+}
+
+function renderElements(elements: LandingElement[], parentId: string | null = null): React.ReactNode[] {
+  return elements
+    .filter(el => (parentId === null && !el.parentId) || (el.parentId === parentId))
+    .map(el => renderElement(el, renderElements(elements, el.id)));
 }
 
 const PreviewCanvas = ({ data }: { data: LandingPage | null }) => {
