@@ -2,32 +2,9 @@ import React, { useState } from 'react';
 import * as types from './components/types';
 import { validateLandingPage } from './components/parser';
 import { renderElements } from './components/editor_components_renderer';
+import { JsonEditor } from './components/json_editor';
 import './App.css';
 
-const INITIAL_JSON = JSON.stringify({elements: []}, null, 2);
-
-const JsonEditor = ({ onRender, errorMessage }: { onRender: (val: string) => void, errorMessage: string | null }) => {
-  const [editorValue, setEditorValue] = useState<string>(INITIAL_JSON);
-
-  return (
-    <div className="editor-pane">
-      <textarea
-        className="json-input"
-        value={editorValue}
-        onChange={(e) => setEditorValue(e.target.value)}
-        spellCheck={false}
-      />
-
-      {errorMessage !== null ? <div className="error-message">{errorMessage}</div> : undefined}
-
-      <div className="toolbar">
-        <button className="btn-render" onClick={() => onRender(editorValue)}>
-          Render
-        </button>
-      </div>
-    </div>
-  );
-};
 
 const PreviewCanvas = ({ data }: { data: types.LandingPage | null }) => {
   if (!data) {
