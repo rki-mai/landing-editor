@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import * as types from './components/types';
 import { validateLandingPage } from './components/parser';
+import { TextElementComponent, LinkElementComponent, ImageElementComponent, ButtonElementComponent, ContainerElementComponent } from './components/editor_components';
 import './App.css';
 
 const INITIAL_JSON = JSON.stringify({elements: []}, null, 2);
@@ -27,45 +28,6 @@ const JsonEditor = ({ onRender, errorMessage }: { onRender: (val: string) => voi
     </div>
   );
 };
-
-const LandingElementEditContainer = ({ children }: { children: React.ReactNode }) => {
-  return <div className="element-edit-container">{children}</div>
-}
-
-const TextElementComponent = ({ element }: { element: types.TextElement }) => {
-  return <LandingElementEditContainer key={element.id}>
-    <p className="text-element">{element.value}</p>
-  </LandingElementEditContainer>
-}
-
-const LinkElementComponent = ({ element }: { element: types.LinkElement }) => {
-  return <LandingElementEditContainer key={element.id}>
-    <a className="link-element" href={element.src}>{element.value}</a>
-  </LandingElementEditContainer>
-}
-
-const ImageElementComponent = ({ element }: { element: types.ImageElement }) => {
-  return <LandingElementEditContainer key={element.id}>
-    <img className="image-element" src={element.value} alt={element.alt} />
-  </LandingElementEditContainer>
-}
-
-const LinkButton = ({ text, href }: { text: string, href: string }) => {
-  const handleClick = () => window.open(href, '_blank');
-  return <button className="link-button" onClick={handleClick}>{text}</button>;
-}
-
-const ButtonElementComponent = ({ element }: { element: types.ButtonElement }) => {
-  return <LandingElementEditContainer key={element.id}>
-    <LinkButton text={element.value} href={element.src} />
-  </LandingElementEditContainer>
-}
-
-const ContainerElementComponent = ({ element, children }: { element: types.ContainerElement, children: React.ReactNode[] }) => {
-  return <LandingElementEditContainer key={element.id}>
-    {children}
-  </LandingElementEditContainer>
-}
 
 class ElementNotSupportsChildren extends Error {
   constructor(elementType: string) {
