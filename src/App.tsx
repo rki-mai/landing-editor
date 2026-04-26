@@ -7,7 +7,7 @@ interface BaseElement {
   id: ElementId;
   element: string;
   parentId?: string;
-  index?: number;
+  index: number;
 }
 
 interface TextElement extends BaseElement {
@@ -128,6 +128,7 @@ function renderElement(element: LandingElement, children: React.ReactNode[]): Re
 function renderElements(elements: LandingElement[], parentId: string | null = null): React.ReactNode[] {
   return elements
     .filter(el => (parentId === null && !el.parentId) || (el.parentId === parentId))
+    .sort((a, b) => a.index - b.index)
     .map(el => renderElement(el, renderElements(elements, el.id)));
 }
 
