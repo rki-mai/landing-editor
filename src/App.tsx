@@ -1,47 +1,7 @@
 import React, { useState } from 'react';
+import * as types from './components/types';
+import { validateLandingPage } from './components/parser';
 import './App.css';
-
-type ElementId = string;
-
-interface BaseElement {
-  id: ElementId;
-  element: string;
-  parentId?: string;
-  index: number;
-}
-
-interface TextElement extends BaseElement {
-  element: "text";
-  value: string;
-}
-
-interface LinkElement extends BaseElement {
-  element: "link";
-  value: string;
-  src: string;
-}
-
-interface ImageElement extends BaseElement {
-  element: "image";
-  value: string;
-  alt?: string;
-}
-
-interface ButtonElement extends BaseElement {
-  element: "button";
-  value: string;
-  src: string;
-}
-
-interface ContainerElement extends BaseElement {
-  element: "container";
-}
-
-type LandingElement = TextElement | LinkElement | ImageElement | ButtonElement | ContainerElement
-
-interface LandingPage {
-  elements: LandingElement[];
-}
 
 const INITIAL_JSON = JSON.stringify({elements: []}, null, 2);
 
@@ -72,19 +32,19 @@ const LandingElementEditContainer = ({ children }: { children: React.ReactNode }
   return <div className="element-edit-container">{children}</div>
 }
 
-const TextElementComponent = ({ element }: { element: TextElement }) => {
+const TextElementComponent = ({ element }: { element: types.TextElement }) => {
   return <LandingElementEditContainer key={element.id}>
     <p className="text-element">{element.value}</p>
   </LandingElementEditContainer>
 }
 
-const LinkElementComponent = ({ element }: { element: LinkElement }) => {
+const LinkElementComponent = ({ element }: { element: types.LinkElement }) => {
   return <LandingElementEditContainer key={element.id}>
     <a className="link-element" href={element.src}>{element.value}</a>
   </LandingElementEditContainer>
 }
 
-const ImageElementComponent = ({ element }: { element: ImageElement }) => {
+const ImageElementComponent = ({ element }: { element: types.ImageElement }) => {
   return <LandingElementEditContainer key={element.id}>
     <img className="image-element" src={element.value} alt={element.alt} />
   </LandingElementEditContainer>
@@ -95,13 +55,13 @@ const LinkButton = ({ text, href }: { text: string, href: string }) => {
   return <button className="link-button" onClick={handleClick}>{text}</button>;
 }
 
-const ButtonElementComponent = ({ element }: { element: ButtonElement }) => {
+const ButtonElementComponent = ({ element }: { element: types.ButtonElement }) => {
   return <LandingElementEditContainer key={element.id}>
     <LinkButton text={element.value} href={element.src} />
   </LandingElementEditContainer>
 }
 
-const ContainerElementComponent = ({ element, children }: { element: ContainerElement, children: React.ReactNode[] }) => {
+const ContainerElementComponent = ({ element, children }: { element: types.ContainerElement, children: React.ReactNode[] }) => {
   return <LandingElementEditContainer key={element.id}>
     {children}
   </LandingElementEditContainer>
@@ -113,7 +73,7 @@ class ElementNotSupportsChildren extends Error {
   }
 }
 
-function renderElement(element: LandingElement, children: React.ReactNode[]): React.ReactNode {
+function renderElement(element: types.LandingElement, children: React.ReactNode[]): React.ReactNode {
   if (element.element !== "container" && children.length > 0) {
     throw new ElementNotSupportsChildren(element.element);
   }
@@ -125,14 +85,14 @@ function renderElement(element: LandingElement, children: React.ReactNode[]): Re
   else if (element.element === "container") return <ContainerElementComponent element={element}>{children}</ContainerElementComponent>
 }
 
-function renderElements(elements: LandingElement[], parentId: string | null = null): React.ReactNode[] {
+function renderElements(elements: types.LandingElement[], parentId: string | null = null): React.ReactNode[] {
   return elements
     .filter(el => (parentId === null && !el.parentId) || (el.parentId === parentId))
     .sort((a, b) => a.index - b.index)
     .map(el => renderElement(el, renderElements(elements, el.id)));
 }
 
-const PreviewCanvas = ({ data }: { data: LandingPage | null }) => {
+const PreviewCanvas = ({ data }: { data: types.LandingPage | null }) => {
   if (!data) {
     return (
       <div className="preview-pane">
@@ -153,12 +113,12 @@ const PreviewCanvas = ({ data }: { data: LandingPage | null }) => {
 };
 
 function App() {
-  const [renderedData, setRenderedData] = useState<LandingPage | null>(null);
+  const [renderedData, setRenderedData] = useState<types.LandingPage | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleRender = (data: string) => {
     try {
-      setRenderedData(JSON.parse(data));
+      setRenderedData(validateLandingPage(JSON.parse(data)));
       setErrorMessage(null);
     } catch (err: any) {
       setErrorMessage("Invalid JSON data: " + err.toString());
