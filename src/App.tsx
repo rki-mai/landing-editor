@@ -23,8 +23,8 @@ function App() {
   return (
     <div className="app-container">
       <div className="editor-container">
-          <JsonEditor onRender={handleRender} errorMessage={errorMessage} />
-          <PreviewCanvas>{renderedData}</PreviewCanvas>
+        <JsonEditor onRender={handleRender} errorMessage={errorMessage} />
+        <PreviewCanvas>{renderedData}</PreviewCanvas>
       </div>
     </div>
   );
