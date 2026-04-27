@@ -9,7 +9,7 @@ const BaseElementSchema = z.object({
 
 const TextElementStylesSchema = z.object({
   color: z.string().optional(),
-  fontSize: z.number().optional(),
+  fontSize: z.coerce.number().optional(),
 });
 
 const TextElementSchema = BaseElementSchema.extend({
@@ -30,7 +30,7 @@ const LinkElementSchema = BaseElementSchema.extend({
 });
 
 const ImageElementStylesSchema = z.object({
-  width: z.number().optional(),
+  width: z.coerce.number().optional(),
   position: z.union([z.literal("left"), z.literal("center"), z.literal("right")]).optional(),
 });
 
