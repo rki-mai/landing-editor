@@ -6,31 +6,47 @@ export const LandingElementEditContainer = ({ children }: { children: React.Reac
 }
 
 export const TextElementComponent = ({ element }: { element: TextElement }) => {
+    const style: React.CSSProperties = {};
+    if (element.styles) {
+        if (element.styles.color) style.color = element.styles.color;
+        if (element.styles.fontSize) style.fontSize = `${element.styles.fontSize}px`
+    }
+
     return <LandingElementEditContainer key={element.id}>
-        <p className="text-element">{element.value}</p>
+        <p className="text-element" style={style}>{element.value}</p>
     </LandingElementEditContainer>
 }
 
 export const LinkElementComponent = ({ element }: { element: LinkElement }) => {
     return <LandingElementEditContainer key={element.id}>
-        <a className="link-element" href={element.src}>{element.value}</a>
+        <a className="link-element" style={element.styles} href={element.src}>{element.value}</a>
     </LandingElementEditContainer>
 }
 
 export const ImageElementComponent = ({ element }: { element: ImageElement }) => {
+    const elementStyle: React.CSSProperties = {};
+    const imageStyle: React.CSSProperties = {};
+
+    if (element.styles) {
+        if (element.styles.width) imageStyle.width = `${element.styles.width}%`;
+        if (element.styles.position) elementStyle.textAlign = element.styles.position;
+    }
+
     return <LandingElementEditContainer key={element.id}>
-        <img className="image-element" src={element.value} alt={element.alt} />
+        <div className="image-element" style={elementStyle}>
+            <img className="image" src={element.value} style={imageStyle} alt={element.alt} />
+        </div>
     </LandingElementEditContainer>
 }
 
-export const LinkButton = ({ text, href }: { text: string, href: string }) => {
+export const LinkButton = ({ text, href, style }: { text: string, href: string, style?: React.CSSProperties }) => {
     const handleClick = () => window.open(href, '_blank');
-    return <button className="link-button" onClick={handleClick}>{text}</button>;
+    return <button className="link-button" style={style} onClick={handleClick}>{text}</button>;
 }
 
 export const ButtonElementComponent = ({ element }: { element: ButtonElement }) => {
     return <LandingElementEditContainer key={element.id}>
-        <LinkButton text={element.value} href={element.src} />
+        <LinkButton text={element.value} style={element.styles} href={element.src} />
     </LandingElementEditContainer>
 }
 
