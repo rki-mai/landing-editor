@@ -3,7 +3,7 @@ export type ElementId = string;
 export interface BaseElement {
   id: ElementId;
   element: string;
-  parentId?: string;
+  parentId: string;
   index: number;
 }
 

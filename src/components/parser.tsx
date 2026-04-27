@@ -3,7 +3,7 @@ import { type LandingPage } from "./types";
 
 const BaseElementSchema = z.object({
   id: z.string(),
-  parentId: z.string().optional(),
+  parentId: z.string(),
   index: z.number(),
 });
 
