@@ -19,9 +19,9 @@ function renderElement(element: LandingElement, children: React.ReactNode[]): Re
     else if (element.element === "container") return <ContainerElementComponent element={element}>{children}</ContainerElementComponent>
 }
 
-export function renderElements(elements: LandingElement[], parentId: string | null = null): React.ReactNode[] {
+export function renderElements(elements: LandingElement[], parentId: string = "root"): React.ReactNode[] {
     return elements
-        .filter(el => (parentId === null && !el.parentId) || (el.parentId === parentId))
+        .filter(el => el.parentId === parentId)
         .sort((a, b) => a.index - b.index)
         .map(el => renderElement(el, renderElements(elements, el.id)));
 }
