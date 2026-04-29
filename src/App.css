@@ -1,0 +1,46 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.editor-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+}
+
+.editor-pane .json-input {
+  flex-grow: 1;
+}
+
+.editor-pane .error-message {
+  padding: 20px;
+  background: lightpink;
+  border: 2px solid crimson;
+  border-radius: 6px;
+}
+
+.toolbar .btn-render {
+  width: 100%;
+}
+
+.preview-pane {
+  flex: 1;
+}
+
+.editor-container {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.element-edit-container {
+  border: 2px solid lightgray;
+  margin: 10px 0;
+  padding: 4px;
+  border-radius: 6px;
+}
