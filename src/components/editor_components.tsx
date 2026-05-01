@@ -5,15 +5,22 @@ export const LandingElementEditContainer = ({ children }: { children: React.Reac
     return <div className="element-edit-container">{children}</div>
 }
 
-export const TextElementComponent = ({ element }: { element: TextElement }) => {
+export const TextElementComponent = ({ element, onUpdate }: { element: TextElement, onUpdate: (updated: TextElement) => void }) => {
     const style: React.CSSProperties = {};
     if (element.styles) {
         if (element.styles.color) style.color = element.styles.color;
         if (element.styles.fontSize) style.fontSize = `${element.styles.fontSize}px`
     }
 
+    const handleBlur = (e: React.FocusEvent<HTMLParagraphElement>) => {
+        const currentValue = e.currentTarget.textContent;
+        if (currentValue !== element.value) {
+            onUpdate({ ...element, value: currentValue });
+        }
+    };
+
     return <LandingElementEditContainer key={element.id}>
-        <p className="text-element" style={style}>{element.value}</p>
+        <p contentEditable onBlur={handleBlur} className="text-element" style={style}>{element.value}</p>
     </LandingElementEditContainer>
 }
 
