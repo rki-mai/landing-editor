@@ -7,6 +7,9 @@ import './App.css';
 import { type LandingElement, type LandingPage } from './components/types';
 
 
+const DEFAULT_DATA = JSON.stringify({ elements: [] }, null, 2);
+
+
 const landingPageUpdater = (page: LandingPage | null, onUpdate: (updated: LandingPage) => void) => {
   return (updated: LandingElement) => {
     if (page === null) {
@@ -35,16 +38,15 @@ const landingPageUpdater = (page: LandingPage | null, onUpdate: (updated: Landin
 
 
 function App() {
-  const [_, setLandingPage] = useState<LandingPage | null>(null);
+  const [landingData, setLandingData] = useState<string>(DEFAULT_DATA);
   const [renderedData, setRenderedData] = useState<React.ReactNode[] | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleRender = (data: string) => {
     try {
       const landingPage = validateLandingPage(JSON.parse(data));
-      setLandingPage(landingPage);
-
-      const updater = landingPageUpdater(landingPage, setLandingPage);
+      const updateData = (updated: LandingPage) => setLandingData(JSON.stringify(updated, null, 2));
+      const updater = landingPageUpdater(landingPage, updateData);
       const elements = renderElements(landingPage.elements, updater);
       setRenderedData(elements);
       setErrorMessage(null);
@@ -56,7 +58,12 @@ function App() {
   return (
     <div className="app-container">
       <div className="editor-container">
-        <JsonEditor onRender={handleRender} errorMessage={errorMessage} />
+        <JsonEditor
+          onRender={handleRender}
+          errorMessage={errorMessage}
+          value={landingData}
+          onChange={setLandingData}
+        />
         <PreviewCanvas>{renderedData}</PreviewCanvas>
       </div>
     </div>
