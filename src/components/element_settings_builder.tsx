@@ -1,4 +1,4 @@
-import { ElementSettings, IntegerSetting } from "./element_settings";
+import { ColorSettings, ElementSettings, IntegerSetting } from "./element_settings";
 import { type LandingElement, type TextElement } from "./types"
 
 
@@ -6,6 +6,8 @@ type UpdateCallback = (updated: LandingElement) => void;
 
 
 const buildSettingsForTextElement = (component: TextElement, onUpdate: UpdateCallback) => {
+    const color = component.styles?.color ?? "#000000";
+
     return <ElementSettings>
         <IntegerSetting
             name="Font size"
@@ -14,6 +16,10 @@ const buildSettingsForTextElement = (component: TextElement, onUpdate: UpdateCal
             max={60}
             onChange={value => onUpdate({ ...component, styles: { ...component.styles, fontSize: value }})}
         />
+        <ColorSettings
+            name="Font color"
+            color={color}
+            onChange={value => onUpdate({ ...component, styles: { ...component.styles, color: value } })}/>
     </ElementSettings>
 };
 

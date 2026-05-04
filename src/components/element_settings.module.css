@@ -38,7 +38,9 @@
 }
 
 .settingContainerValue {
+    position: relative;
     flex-grow: 0;
+    width: 100px;
 }
 
 .integerInput {
@@ -48,4 +50,16 @@
 
 .integerInputField {
     width: 100%;
+}
+
+.colorInputPreview {
+    height: 20px;
+    width: 20px;
+    border-radius: 4px;
+}
+
+.colorInputPicker {
+    position: absolute;
+    top: 100%;
+    right: 0px;
 }

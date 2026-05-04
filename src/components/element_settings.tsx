@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './element_settings.module.css'
 import closeButton from '../assets/close-btn.png'
+import { HexColorPicker } from 'react-colorful';
 
 const Header = () => {
     return <div className={styles.settingsHeader}>
@@ -33,6 +34,23 @@ const SettingValue = ({ children }: { children: React.ReactNode | React.ReactNod
     </div>;
 };
 
+const ColorPicker = ({ color, onChange }: {color: string, onChange: (value: string) => void}) => {
+    const [isFocused, setIsFocused] = useState<boolean>(false);
+
+    return <SettingValue>
+        <div
+            className={styles.colorInputPreview}
+            style={{ backgroundColor: color }}
+            onClick={() => setIsFocused(true)}
+        />
+        {isFocused &&
+            <div className={styles.colorInputPicker} onBlur={() => setIsFocused(false)}>
+                <HexColorPicker color={color} onChange={onChange} />
+            </div>
+        }
+    </SettingValue>;
+};
+
 export const IntegerSetting = ({
     name,
     value,
@@ -54,6 +72,13 @@ export const IntegerSetting = ({
             </div>
         </SettingValue>
     </SettingContainer>;
+};
+
+export const ColorSettings = ({ name, color, onChange }: { name: string, color: string, onChange: (value: string) => void }) => {
+    return <SettingContainer>
+        <SettingName name={name} />
+        <ColorPicker color={color} onChange={onChange} />
+    </SettingContainer>
 };
 
 export const ElementSettings = ({ children }: { children: React.ReactNode | React.ReactNode[] }) => {
