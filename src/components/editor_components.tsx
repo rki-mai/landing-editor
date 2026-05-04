@@ -1,11 +1,46 @@
-import { type TextElement, type LinkElement, type ImageElement, type ButtonElement, type ContainerElement } from "./types"
+import { type TextElement, type LinkElement, type ImageElement, type ButtonElement, type ContainerElement, type LandingElement } from "./types"
+import settingsIcon from "../assets/settings-btn.png"
 
 
-export const LandingElementEditContainer = ({ children }: { children: React.ReactNode }) => {
-    return <div className="element-edit-container">{children}</div>
+const MenuItem = ({ onClick, src }: { src: string, onClick?: () => void }) => {
+    return <div className="element-menu-item" onClick={onClick}>
+        <img src={src} />
+    </div>;
+};
+
+
+const ElementMenu = ({ onSettingsClick } : { onSettingsClick?: () => void }) => {
+    return <div className="element-menu">
+        <MenuItem src={settingsIcon} onClick={onSettingsClick} />
+    </div>;
+};
+
+
+export const LandingElementEditContainer = (
+    {
+        supportsSettings,
+        children,
+        onSettingsOpened,
+    }: {
+        children: React.ReactNode,
+        supportsSettings?: boolean,
+        onSettingsOpened?: () => void,
+}) => {
+    return <div className="element-edit-container">
+        {supportsSettings && <ElementMenu onSettingsClick={onSettingsOpened} />}
+        {children}
+    </div>
 }
 
-export const TextElementComponent = ({ element, onUpdate }: { element: TextElement, onUpdate: (updated: TextElement) => void }) => {
+export const TextElementComponent = ({
+    element,
+    onUpdate,
+    onSettingsOpened,
+}: {
+    element: TextElement,
+    onUpdate: (updated: TextElement) => void,
+    onSettingsOpened: (element: TextElement) => void,
+}) => {
     const style: React.CSSProperties = {};
     if (element.styles) {
         if (element.styles.color) style.color = element.styles.color;
@@ -19,7 +54,11 @@ export const TextElementComponent = ({ element, onUpdate }: { element: TextEleme
         }
     };
 
-    return <LandingElementEditContainer key={element.id}>
+    return <LandingElementEditContainer
+        key={element.id}
+        supportsSettings={true}
+        onSettingsOpened={() => onSettingsOpened(element)}
+    >
         <p contentEditable onBlur={handleBlur} className="text-element" style={style}>{element.value}</p>
     </LandingElementEditContainer>
 }

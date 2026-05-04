@@ -41,13 +41,16 @@ function App() {
   const [landingData, setLandingData] = useState<string>(DEFAULT_DATA);
   const [renderedData, setRenderedData] = useState<React.ReactNode[] | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const onSettingsOpened = (element: LandingElement) => {
+    console.log(`Settings opened for element`, element);
+  }
 
   const handleRender = (data: string) => {
     try {
       const landingPage = validateLandingPage(JSON.parse(data));
       const updateData = (updated: LandingPage) => setLandingData(JSON.stringify(updated, null, 2));
       const updater = landingPageUpdater(landingPage, updateData);
-      const elements = renderElements(landingPage.elements, updater);
+      const elements = renderElements(landingPage.elements, updater, onSettingsOpened);
       setRenderedData(elements);
       setErrorMessage(null);
     } catch (err: any) {

@@ -44,3 +44,22 @@
   padding: 4px;
   border-radius: 6px;
 }
+
+.element-menu {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid lightgray;
+  height: 30px;
+  margin-bottom: 4px;
+  padding-bottom: 4px;
+}
+
+.element-menu-item {
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.element-menu-item img {
+  display: block;
+  height: 100%;
+}
