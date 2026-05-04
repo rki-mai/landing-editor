@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './component_settings.module.css'
+import styles from './element_settings.module.css'
 import closeButton from '../assets/close-btn.png'
 
 const Header = () => {
@@ -44,7 +44,7 @@ export const IntegerSetting = ({ name, value, min, onChange }: { name: string, v
     </SettingContainer>;
 };
 
-export const ComponentSettings = ({ children }: { children: React.ReactNode | React.ReactNode[] }) => {
+export const ElementSettings = ({ children }: { children: React.ReactNode | React.ReactNode[] }) => {
     return <div className={styles.settings}>
         <Header />
         <Body>{children}</Body>

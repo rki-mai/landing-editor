@@ -5,7 +5,7 @@ import { PreviewCanvas } from './components/preview_canvas';
 import { JsonEditor } from './components/json_editor';
 import './App.css';
 import { type LandingElement, type LandingPage } from './components/types';
-import { buildSettingsForLandingElement } from './components/settings_builder';
+import { buildSettingsForLandingElement } from './components/element_settings_builder';
 
 
 const DEFAULT_DATA = JSON.stringify({ elements: [] }, null, 2);
