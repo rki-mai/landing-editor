@@ -5,6 +5,7 @@ import { PreviewCanvas } from './components/preview_canvas';
 import { JsonEditor } from './components/json_editor';
 import './App.css';
 import { type LandingElement, type LandingPage } from './components/types';
+import { buildSettingsForLandingElement } from './components/settings_builder';
 
 
 const DEFAULT_DATA = JSON.stringify({ elements: [] }, null, 2);
@@ -37,21 +38,35 @@ const landingPageUpdater = (page: LandingPage | null, onUpdate: (updated: Landin
 };
 
 
+function findElementById(page: LandingPage, elementId: string): LandingElement {
+  for (const element of page.elements) {
+    if (element.id === elementId) {
+      return element;
+    }
+  }
+
+  throw new Error(`Element with ID '${elementId}' not found`);
+}
+
+
 function App() {
   const [landingData, setLandingData] = useState<string>(DEFAULT_DATA);
-  const [renderedData, setRenderedData] = useState<React.ReactNode[] | null>(null);
+  const [landingPage, setLandingPage] = useState<LandingPage | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [settingsElementId, setSettingsElementId] = useState<string | null>(null);
+
+  const updateData = (updated: LandingPage) => {
+    setLandingPage(updated);
+    setLandingData(JSON.stringify(updated, null, 2))
+  }
+  const updater = landingPageUpdater(landingPage, updateData);
   const onSettingsOpened = (element: LandingElement) => {
-    console.log(`Settings opened for element`, element);
+    setSettingsElementId(element.id);
   }
 
   const handleRender = (data: string) => {
     try {
-      const landingPage = validateLandingPage(JSON.parse(data));
-      const updateData = (updated: LandingPage) => setLandingData(JSON.stringify(updated, null, 2));
-      const updater = landingPageUpdater(landingPage, updateData);
-      const elements = renderElements(landingPage.elements, updater, onSettingsOpened);
-      setRenderedData(elements);
+      setLandingPage(validateLandingPage(JSON.parse(data)));
       setErrorMessage(null);
     } catch (err: any) {
       setErrorMessage("Invalid JSON data: " + err.toString());
@@ -67,7 +82,8 @@ function App() {
           value={landingData}
           onChange={setLandingData}
         />
-        <PreviewCanvas>{renderedData}</PreviewCanvas>
+        <PreviewCanvas>{landingPage && renderElements(landingPage.elements, updater, onSettingsOpened)}</PreviewCanvas>
+        { landingPage && settingsElementId && buildSettingsForLandingElement(findElementById(landingPage, settingsElementId), updater) }
       </div>
     </div>
   );

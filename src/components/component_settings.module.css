@@ -1,0 +1,51 @@
+.settings {
+    min-width: 300px;
+}
+
+.settingsHeader {
+    display: flex;
+    padding-bottom: 20px;
+    height: 40px;
+}
+
+.settingsHeaderTitle {
+    flex-grow: 1;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 40px;
+}
+
+.settingsCloseIcon {
+    flex-grow: 0;
+    width: 14px;
+    padding: 13px;
+}
+
+.settingsBody {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: scroll;
+}
+
+.settingContainer {
+    display: flex;
+    gap: 10px;
+}
+
+.settingContainerName {
+    flex-grow: 1;
+}
+
+.settingContainerValue {
+    flex-grow: 0;
+}
+
+.integerInput {
+    width: 100px;
+    display: flex;
+}
+
+.integerInputField {
+    width: 100%;
+}
