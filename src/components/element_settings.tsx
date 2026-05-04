@@ -33,12 +33,24 @@ const SettingValue = ({ children }: { children: React.ReactNode | React.ReactNod
     </div>;
 };
 
-export const IntegerSetting = ({ name, value, min, onChange }: { name: string, value: number, min?: number, onChange: (value: number) => void }) => {
+export const IntegerSetting = ({
+    name,
+    value,
+    min,
+    max,
+    onChange,
+}: {
+    name: string,
+    value: number,
+    min?: number,
+    max?: number,
+    onChange: (value: number) => void,
+}) => {
     return <SettingContainer>
         <SettingName name={name} />
         <SettingValue>
             <div className={styles.integerInput}>
-                <input className={styles.integerInputField} type="number" min={min} onChange={e => onChange(parseFloat(e.target.value))} value={value} />
+                <input className={styles.integerInputField} type="number" min={min} max={max} onChange={e => onChange(parseFloat(e.target.value))} value={value} />
             </div>
         </SettingValue>
     </SettingContainer>;

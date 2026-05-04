@@ -11,6 +11,7 @@ const buildSettingsForTextElement = (component: TextElement, onUpdate: UpdateCal
             name="Font size"
             value={component.styles?.fontSize || 10}
             min={10}
+            max={60}
             onChange={value => onUpdate({ ...component, styles: { ...component.styles, fontSize: value }})}
         />
     </ElementSettings>
