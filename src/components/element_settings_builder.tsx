@@ -1,5 +1,5 @@
 import { ChoiceBoxSetting, ColorSettings, ElementSettings, IntegerSetting, TextAreaSetting, TextFieldSetting } from "./element_settings";
-import { type ImageElement, type LandingElement, type LinkElement, type TextElement } from "./types"
+import { type ButtonElement, type ImageElement, type LandingElement, type LinkElement, type TextElement } from "./types"
 
 
 type UpdateCallback = (updated: LandingElement) => void;
@@ -55,6 +55,32 @@ const buildSettingsForLinkElement = (element: LinkElement, onUpdate: UpdateCallb
 };
 
 
+const buildSettingsForButtonElement = (element: ButtonElement, onUpdate: UpdateCallback) => {
+    return <ElementSettings>
+        <TextFieldSetting
+            name="Text"
+            value={element.value}
+            onChange={value => onUpdate({ ...element, value: value })}
+        />
+        <TextFieldSetting
+            name="URL"
+            value={element.src}
+            onChange={value => onUpdate({ ...element, src: value })}
+        />
+        <ColorSettings
+            name="Background color"
+            color={element.styles?.backgroundColor || "#007bff"}
+            onChange={value => onUpdate({ ...element, styles: { ...element.styles, backgroundColor: value } })}
+        />
+        <ColorSettings
+            name="Color"
+            color={element.styles?.color || "#ffffff"}
+            onChange={value => onUpdate({ ...element, styles: { ...element.styles, color: value } })}
+        />
+    </ElementSettings>;
+};
+
+
 const buildSettingsForImageElement = (element: ImageElement, onUpdate: UpdateCallback) => {
     return <ElementSettings>
         <TextFieldSetting
@@ -96,6 +122,8 @@ export const buildSettingsForLandingElement = (component: LandingElement, onUpda
             return buildSettingsForLinkElement(component, onUpdate);
         case "image":
             return buildSettingsForImageElement(component, onUpdate);
+        case "button":
+            return buildSettingsForButtonElement(component, onUpdate);
         default:
             throw new Error("Unsupported element");
     }

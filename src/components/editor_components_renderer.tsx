@@ -15,7 +15,7 @@ function renderElement(element: LandingElement, children: React.ReactNode[], onS
     if (element.element === "text") return <TextElementComponent element={element} onSettingsOpened={onSettingsOpened} />
     else if (element.element === "link") return <LinkElementComponent element={element} onSettingsOpened={onSettingsOpened} />
     else if (element.element === "image") return <ImageElementComponent element={element} onSettingsOpened={onSettingsOpened} />
-    else if (element.element === "button") return <ButtonElementComponent element={element} />
+    else if (element.element === "button") return <ButtonElementComponent element={element} onSettingsOpened={onSettingsOpened} />
     else if (element.element === "container") return <ContainerElementComponent element={element}>{children}</ContainerElementComponent>
 }
 

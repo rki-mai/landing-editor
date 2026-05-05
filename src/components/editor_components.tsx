@@ -103,8 +103,18 @@ const LinkButton = ({ text, href, style }: { text: string, href: string, style?:
     return <button className="link-button" style={style} onClick={handleClick}>{text}</button>;
 }
 
-export const ButtonElementComponent = ({ element }: { element: ButtonElement }) => {
-    return <LandingElementEditContainer key={element.id}>
+export const ButtonElementComponent = ({
+    element,
+    onSettingsOpened,
+}: {
+    element: ButtonElement,
+    onSettingsOpened: OpenSettingsCallback,
+}) => {
+    return <LandingElementEditContainer
+        key={element.id}
+        supportsSettings={true}
+        onSettingsOpened={() => onSettingsOpened(element)}
+    >
         <LinkButton text={element.value} style={element.styles} href={element.src} />
     </LandingElementEditContainer>
 }
