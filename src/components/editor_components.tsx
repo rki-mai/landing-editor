@@ -72,7 +72,13 @@ export const LinkElementComponent = ({
     </LandingElementEditContainer>
 }
 
-export const ImageElementComponent = ({ element }: { element: ImageElement }) => {
+export const ImageElementComponent = ({
+    element,
+    onSettingsOpened,
+}: {
+    element: ImageElement,
+    onSettingsOpened: OpenSettingsCallback,
+}) => {
     const elementStyle: React.CSSProperties = {};
     const imageStyle: React.CSSProperties = {};
 
@@ -81,14 +87,18 @@ export const ImageElementComponent = ({ element }: { element: ImageElement }) =>
         if (element.styles.position) elementStyle.textAlign = element.styles.position;
     }
 
-    return <LandingElementEditContainer key={element.id}>
+    return <LandingElementEditContainer
+        key={element.id}
+        supportsSettings={true}
+        onSettingsOpened={() => onSettingsOpened(element)}
+    >
         <div className="image-element" style={elementStyle}>
             <img className="image" src={element.value} style={imageStyle} alt={element.alt} />
         </div>
     </LandingElementEditContainer>
 }
 
-export const LinkButton = ({ text, href, style }: { text: string, href: string, style?: React.CSSProperties }) => {
+const LinkButton = ({ text, href, style }: { text: string, href: string, style?: React.CSSProperties }) => {
     const handleClick = () => window.open(href, '_blank');
     return <button className="link-button" style={style} onClick={handleClick}>{text}</button>;
 }

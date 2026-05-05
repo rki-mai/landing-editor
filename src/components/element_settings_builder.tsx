@@ -1,5 +1,5 @@
 import { ChoiceBoxSetting, ColorSettings, ElementSettings, IntegerSetting, TextAreaSetting, TextFieldSetting } from "./element_settings";
-import { type LandingElement, type LinkElement, type TextElement } from "./types"
+import { type ImageElement, type LandingElement, type LinkElement, type TextElement } from "./types"
 
 
 type UpdateCallback = (updated: LandingElement) => void;
@@ -55,12 +55,47 @@ const buildSettingsForLinkElement = (element: LinkElement, onUpdate: UpdateCallb
 };
 
 
+const buildSettingsForImageElement = (element: ImageElement, onUpdate: UpdateCallback) => {
+    return <ElementSettings>
+        <TextFieldSetting
+            name="URL"
+            value={element.value}
+            onChange={value => onUpdate({ ...element, value: value })}
+        />
+        <TextFieldSetting
+            name="Alt text"
+            value={element.alt || ""}
+            onChange={value => onUpdate({ ...element, alt: value })}
+        />
+        <IntegerSetting
+            name="Size"
+            value={element.styles?.width || 100}
+            min={1}
+            max={100}
+            onChange={value => onUpdate({ ...element, styles: { ...element.styles, width: value } })}
+        />
+        <ChoiceBoxSetting
+            name="Position"
+            value={element.styles?.position || "left"}
+            options={[
+                { label: "Left", value: "left" },
+                { label: "Right", value: "right" },
+                { label: "Center", value: "center" },
+            ]}
+            onChange={value => onUpdate({ ...element, styles: { ...element.styles, position: value } })}
+        />
+    </ElementSettings>
+};
+
+
 export const buildSettingsForLandingElement = (component: LandingElement, onUpdate: UpdateCallback) => {
     switch (component.element) {
         case "text":
             return buildSettingsForTextElement(component, onUpdate);
         case "link":
             return buildSettingsForLinkElement(component, onUpdate);
+        case "image":
+            return buildSettingsForImageElement(component, onUpdate);
         default:
             throw new Error("Unsupported element");
     }
