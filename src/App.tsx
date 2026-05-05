@@ -69,8 +69,10 @@ function App() {
 		try {
 			setLandingPage(validateLandingPage(JSON.parse(data)));
 			setErrorMessage(null);
-		} catch (err: any) {
-			setErrorMessage("Invalid JSON data: " + err.toString());
+		} catch (err: unknown) {
+			if (err instanceof Error) {
+				setErrorMessage("Invalid JSON data: " + err.toString());
+			}
 		}
 	};
 

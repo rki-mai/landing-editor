@@ -73,6 +73,6 @@ const LandingPageSchema = z.object({
 	elements: z.array(LandingElementSchema),
 });
 
-export function validateLandingPage(data: any): LandingPage {
+export function validateLandingPage(data: unknown): LandingPage {
 	return LandingPageSchema.parse(data);
 }
