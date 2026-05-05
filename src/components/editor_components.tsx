@@ -34,11 +34,9 @@ export const LandingElementEditContainer = (
 
 export const TextElementComponent = ({
     element,
-    onUpdate,
     onSettingsOpened,
 }: {
     element: TextElement,
-    onUpdate: (updated: TextElement) => void,
     onSettingsOpened: (element: TextElement) => void,
 }) => {
     const style: React.CSSProperties = {};
@@ -46,20 +44,12 @@ export const TextElementComponent = ({
         if (element.styles.color) style.color = element.styles.color;
         if (element.styles.fontSize) style.fontSize = `${element.styles.fontSize}px`
     }
-
-    const handleBlur = (e: React.FocusEvent<HTMLParagraphElement>) => {
-        const currentValue = e.currentTarget.textContent;
-        if (currentValue !== element.value) {
-            onUpdate({ ...element, value: currentValue });
-        }
-    };
-
     return <LandingElementEditContainer
         key={element.id}
         supportsSettings={true}
         onSettingsOpened={() => onSettingsOpened(element)}
     >
-        <p contentEditable onBlur={handleBlur} className="text-element" style={style}>{element.value}</p>
+        <p className="text-element" style={style}>{element.value}</p>
     </LandingElementEditContainer>
 }
 

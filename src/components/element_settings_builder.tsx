@@ -1,25 +1,31 @@
-import { ColorSettings, ElementSettings, IntegerSetting } from "./element_settings";
+import { ColorSettings, ElementSettings, IntegerSetting, TextAreaSetting } from "./element_settings";
 import { type LandingElement, type TextElement } from "./types"
 
 
 type UpdateCallback = (updated: LandingElement) => void;
 
 
-const buildSettingsForTextElement = (component: TextElement, onUpdate: UpdateCallback) => {
-    const color = component.styles?.color ?? "#000000";
+const buildSettingsForTextElement = (element: TextElement, onUpdate: UpdateCallback) => {
+    const color = element.styles?.color ?? "#000000";
 
     return <ElementSettings>
         <IntegerSetting
             name="Font size"
-            value={component.styles?.fontSize || 10}
+            value={element.styles?.fontSize || 10}
             min={10}
             max={60}
-            onChange={value => onUpdate({ ...component, styles: { ...component.styles, fontSize: value }})}
+            onChange={value => onUpdate({ ...element, styles: { ...element.styles, fontSize: value }})}
         />
         <ColorSettings
             name="Font color"
             color={color}
-            onChange={value => onUpdate({ ...component, styles: { ...component.styles, color: value } })}/>
+            onChange={value => onUpdate({ ...element, styles: { ...element.styles, color: value } })}
+        />
+        <TextAreaSetting
+            name="Conent"
+            value={element.value}
+            onChange={value => onUpdate({ ...element, value: value })}
+        />
     </ElementSettings>
 };
 

@@ -16,8 +16,10 @@ const Body = ({ children }: {children: React.ReactNode | React.ReactNode[]}) => 
     return <div>{children}</div>
 };
 
-const SettingContainer = ({ children }: { children: React.ReactNode[] }) => {
-    return <div className={styles.settingContainer}>
+const SettingContainer = ({ children, multiline }: { children: React.ReactNode[], multiline?: boolean }) => {
+    const inlineClass = multiline ? styles.multilineField : styles.inlineField;
+
+    return <div className={`${styles.settingContainer} ${inlineClass}`}>
         {children}
     </div>
 };
@@ -78,6 +80,15 @@ export const ColorSettings = ({ name, color, onChange }: { name: string, color: 
     return <SettingContainer>
         <SettingName name={name} />
         <ColorPicker color={color} onChange={onChange} />
+    </SettingContainer>
+};
+
+export const TextAreaSetting = ({ name, value, onChange }: { name: string, value: string, onChange: (value: string) => void }) => {
+    return <SettingContainer multiline={true}>
+        <SettingName name={name} />
+        <SettingValue>
+            <textarea className={styles.textArea} value={value} onChange={e => onChange(e.target.value)} />
+        </SettingValue>
     </SettingContainer>
 };
 

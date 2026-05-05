@@ -30,17 +30,32 @@
 
 .settingContainer {
     display: flex;
+}
+
+.inlineField {
     gap: 10px;
 }
 
-.settingContainerName {
+.inlineField .settingContainerName {
     flex-grow: 1;
 }
 
-.settingContainerValue {
+.inlineField .settingContainerValue {
     position: relative;
     flex-grow: 0;
     width: 100px;
+}
+
+.multilineField {
+    flex-direction: column;
+}
+
+.multilineField .settingContainerName {
+    flex-grow: 0;
+}
+
+.multilineField .settingContainerValue {
+    flex-grow: 1;
 }
 
 .integerInput {
@@ -62,4 +77,11 @@
     position: absolute;
     top: 100%;
     right: 0px;
+}
+
+.textArea {
+    display: block;
+    width: 100%;
+    height: 200px;
+    resize: none;
 }
