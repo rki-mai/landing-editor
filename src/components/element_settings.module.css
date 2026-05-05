@@ -1,0 +1,95 @@
+.settings {
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.settingsHeader {
+    display: flex;
+    padding-bottom: 20px;
+    height: 40px;
+}
+
+.settingsHeaderTitle {
+    flex-grow: 1;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 40px;
+}
+
+.settingsCloseIcon {
+    flex-grow: 0;
+    width: 14px;
+    padding: 13px;
+    cursor: pointer;
+}
+
+.settingsBody {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex-grow: 1;
+}
+
+.settingContainer {
+    display: flex;
+}
+
+.inlineField {
+    gap: 10px;
+}
+
+.inlineField .settingContainerName {
+    flex-grow: 1;
+}
+
+.inlineField .settingContainerValue {
+    position: relative;
+    flex-grow: 0;
+    width: 100px;
+}
+
+.multilineField {
+    flex-direction: column;
+}
+
+.multilineField .settingContainerName {
+    flex-grow: 0;
+}
+
+.multilineField .settingContainerValue {
+    display: flex;
+    flex-grow: 1;
+}
+
+.inputField {
+    width: 100px;
+    display: flex;
+}
+
+.inputField input {
+    width: 100%;
+}
+
+.colorInputPreview {
+    height: 20px;
+    width: 20px;
+    border-radius: 4px;
+    border: 2px solid lightgray;
+}
+
+.colorInputPicker {
+    position: absolute;
+    top: 100%;
+    right: 0px;
+    z-index: 100;
+}
+
+.textArea {
+    flex-grow: 1;
+    display: block;
+    height: 200px;
+    resize: none;
+}

@@ -1,25 +1,27 @@
-import { useState } from "react";
-
-
-const INITIAL_JSON = JSON.stringify({ elements: [] }, null, 2);
-
-
-export const JsonEditor = ({ onRender, errorMessage }: { onRender: (val: string) => void, errorMessage: string | null }) => {
-    const [editorValue, setEditorValue] = useState<string>(INITIAL_JSON);
-
+export const JsonEditor = ({
+    value,
+    onRender,
+    onChange,
+    errorMessage,
+}: { 
+    value: string,
+    onRender: (val: string) => void,
+    onChange: (value: string) => void,
+    errorMessage: string | null,
+}) => {
     return (
         <div className="editor-pane">
             <textarea
                 className="json-input"
-                value={editorValue}
-                onChange={(e) => setEditorValue(e.target.value)}
+                value={value}
+                onChange={e => onChange(e.target.value)}
                 spellCheck={false}
             />
 
             {errorMessage !== null ? <div className="error-message">{errorMessage}</div> : undefined}
 
             <div className="toolbar">
-                <button className="btn-render" onClick={() => onRender(editorValue)}>
+                <button className="btn-render" onClick={() => onRender(value)}>
                     Render
                 </button>
             </div>
