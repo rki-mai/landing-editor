@@ -1,0 +1,40 @@
+{
+	"elements": [
+		{
+			"element": "text",
+			"id": "el-1",
+			"parentId": "root",
+			"index": 0,
+			"value": "Example text"
+		},
+		{
+			"element": "link",
+			"id": "el-2",
+			"parentId": "root",
+			"index": 1,
+			"value": "Example link",
+			"src": "https://example.com/"
+		},
+		{
+			"element": "container",
+			"id": "el-5",
+			"parentId": "root",
+			"index": 2
+		},
+		{
+			"element": "button",
+			"id": "el-3",
+			"index": 0,
+			"parentId": "el-5",
+			"value": "Example button",
+			"src": "https://example.com/"
+		},
+		{
+			"element": "image",
+			"id": "el-4",
+			"index": 1,
+			"parentId": "el-5",
+			"value": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnGkKDt0EgWr26mFV_FjfAzSJZYzG31KG6VQ&s"
+		}
+	]
+}
