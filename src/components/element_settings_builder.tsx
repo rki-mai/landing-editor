@@ -3,12 +3,13 @@ import { type ButtonElement, type ImageElement, type LandingElement, type LinkEl
 
 
 type UpdateCallback = (updated: LandingElement) => void;
+type CloseCallback = () => void;
 
 
-const buildSettingsForTextElement = (element: TextElement, onUpdate: UpdateCallback) => {
+const buildSettingsForTextElement = (element: TextElement, onUpdate: UpdateCallback, onClose: CloseCallback) => {
     const color = element.styles?.color ?? "#000000";
 
-    return <ElementSettings>
+    return <ElementSettings onClose={onClose}>
         <IntegerSetting
             name="Font size"
             value={element.styles?.fontSize || 10}
@@ -30,8 +31,8 @@ const buildSettingsForTextElement = (element: TextElement, onUpdate: UpdateCallb
 };
 
 
-const buildSettingsForLinkElement = (element: LinkElement, onUpdate: UpdateCallback) => {
-    return <ElementSettings>
+const buildSettingsForLinkElement = (element: LinkElement, onUpdate: UpdateCallback, onClose: () => void) => {
+    return <ElementSettings onClose={onClose}>
         <TextFieldSetting
             name="Content"
             value={element.value}
@@ -55,8 +56,8 @@ const buildSettingsForLinkElement = (element: LinkElement, onUpdate: UpdateCallb
 };
 
 
-const buildSettingsForButtonElement = (element: ButtonElement, onUpdate: UpdateCallback) => {
-    return <ElementSettings>
+const buildSettingsForButtonElement = (element: ButtonElement, onUpdate: UpdateCallback, onClose: CloseCallback) => {
+    return <ElementSettings onClose={onClose}>
         <TextFieldSetting
             name="Text"
             value={element.value}
@@ -81,8 +82,8 @@ const buildSettingsForButtonElement = (element: ButtonElement, onUpdate: UpdateC
 };
 
 
-const buildSettingsForImageElement = (element: ImageElement, onUpdate: UpdateCallback) => {
-    return <ElementSettings>
+const buildSettingsForImageElement = (element: ImageElement, onUpdate: UpdateCallback, onClose: CloseCallback) => {
+    return <ElementSettings onClose={onClose}>
         <TextFieldSetting
             name="URL"
             value={element.value}
@@ -114,16 +115,16 @@ const buildSettingsForImageElement = (element: ImageElement, onUpdate: UpdateCal
 };
 
 
-export const buildSettingsForLandingElement = (component: LandingElement, onUpdate: UpdateCallback) => {
+export const buildSettingsForLandingElement = (component: LandingElement, onUpdate: UpdateCallback, onClose: CloseCallback) => {
     switch (component.element) {
         case "text":
-            return buildSettingsForTextElement(component, onUpdate);
+            return buildSettingsForTextElement(component, onUpdate, onClose);
         case "link":
-            return buildSettingsForLinkElement(component, onUpdate);
+            return buildSettingsForLinkElement(component, onUpdate, onClose);
         case "image":
-            return buildSettingsForImageElement(component, onUpdate);
+            return buildSettingsForImageElement(component, onUpdate, onClose);
         case "button":
-            return buildSettingsForButtonElement(component, onUpdate);
+            return buildSettingsForButtonElement(component, onUpdate, onClose);
         default:
             throw new Error("Unsupported element");
     }

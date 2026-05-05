@@ -83,7 +83,7 @@ function App() {
           onChange={setLandingData}
         />
         <PreviewCanvas>{landingPage && renderElements(landingPage.elements, onSettingsOpened)}</PreviewCanvas>
-        { landingPage && settingsElementId && buildSettingsForLandingElement(findElementById(landingPage, settingsElementId), updater) }
+        { landingPage && settingsElementId && buildSettingsForLandingElement(findElementById(landingPage, settingsElementId), updater, () => setSettingsElementId(null)) }
       </div>
     </div>
   );

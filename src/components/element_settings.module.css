@@ -21,6 +21,7 @@
     flex-grow: 0;
     width: 14px;
     padding: 13px;
+    cursor: pointer;
 }
 
 .settingsBody {

@@ -3,12 +3,16 @@ import styles from './element_settings.module.css'
 import closeButton from '../assets/close-btn.png'
 import { HexColorPicker } from 'react-colorful';
 
-const Header = () => {
+const CloseButton = ({ onClick }: { onClick: () => void }) => {
+    return <div className={styles.settingsCloseIcon} onClick={onClick}>
+        <img style={{ width: "100%", display: "block" }} src={closeButton} />
+    </div>;
+};
+
+const Header = ({ onClose }: { onClose: () => void }) => {
     return <div className={styles.settingsHeader}>
         <div className={styles.settingsHeaderTitle}>Component settings</div>
-        <div className={styles.settingsCloseIcon}>
-            <img style={{ width: "100%", display: "block" }} src={closeButton} />
-        </div>
+        <CloseButton onClick={onClose} />
     </div>
 };
 
@@ -130,9 +134,15 @@ export const ChoiceBoxSetting = <T extends string>({
     </SettingContainer>
 };
 
-export const ElementSettings = ({ children }: { children: React.ReactNode | React.ReactNode[] }) => {
+export const ElementSettings = ({
+    children,
+    onClose,
+}: {
+    children: React.ReactNode | React.ReactNode[],
+    onClose: () => void,
+}) => {
     return <div className={styles.settings}>
-        <Header />
+        <Header onClose={onClose} />
         <Body>{children}</Body>
     </div>;
 };
