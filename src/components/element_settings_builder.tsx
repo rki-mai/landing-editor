@@ -1,5 +1,5 @@
-import { ColorSettings, ElementSettings, IntegerSetting, TextAreaSetting } from "./element_settings";
-import { type LandingElement, type TextElement } from "./types"
+import { ChoiceBoxSetting, ColorSettings, ElementSettings, IntegerSetting, TextAreaSetting, TextFieldSetting } from "./element_settings";
+import { type LandingElement, type LinkElement, type TextElement } from "./types"
 
 
 type UpdateCallback = (updated: LandingElement) => void;
@@ -30,10 +30,38 @@ const buildSettingsForTextElement = (element: TextElement, onUpdate: UpdateCallb
 };
 
 
-export const buildSettingsForLandingElement = (component: LandingElement, onUpdate: UpdateCallback) => {
-    if (component.element === "text") {
-        return buildSettingsForTextElement(component, onUpdate);
-    }
+const buildSettingsForLinkElement = (element: LinkElement, onUpdate: UpdateCallback) => {
+    return <ElementSettings>
+        <TextFieldSetting
+            name="Content"
+            value={element.value}
+            onChange={value => onUpdate({ ...element, value: value })}
+        />
+        <TextFieldSetting
+            name="URL"
+            value={element.src}
+            onChange={value => onUpdate({ ...element, src: value })}
+        />
+        <ChoiceBoxSetting
+            name="Text decoration"
+            value={element.styles?.textDecoration || "underline"}
+            options={[
+                { label: "Underline", value: "underline" },
+                { label: "None", value: "none" }
+            ]}
+            onChange={value => onUpdate({ ...element, styles: { ...element.styles, textDecoration: value } })}
+        />
+    </ElementSettings>;
+};
 
-    throw new Error("Unsupported element");
+
+export const buildSettingsForLandingElement = (component: LandingElement, onUpdate: UpdateCallback) => {
+    switch (component.element) {
+        case "text":
+            return buildSettingsForTextElement(component, onUpdate);
+        case "link":
+            return buildSettingsForLinkElement(component, onUpdate);
+        default:
+            throw new Error("Unsupported element");
+    }
 };

@@ -1,7 +1,5 @@
 import { type LandingElement } from "./types";
-import { TextElementComponent, LinkElementComponent, ImageElementComponent, ButtonElementComponent, ContainerElementComponent } from './editor_components';
-
-type OpenSettingsCallback = (element: LandingElement) => void;
+import { TextElementComponent, LinkElementComponent, ImageElementComponent, ButtonElementComponent, ContainerElementComponent, type OpenSettingsCallback } from './editor_components';
 
 class ElementNotSupportsChildren extends Error {
     constructor(elementType: string) {
@@ -15,7 +13,7 @@ function renderElement(element: LandingElement, children: React.ReactNode[], onS
     }
 
     if (element.element === "text") return <TextElementComponent element={element} onSettingsOpened={onSettingsOpened} />
-    else if (element.element === "link") return <LinkElementComponent element={element} />
+    else if (element.element === "link") return <LinkElementComponent element={element} onSettingsOpened={onSettingsOpened} />
     else if (element.element === "image") return <ImageElementComponent element={element} />
     else if (element.element === "button") return <ButtonElementComponent element={element} />
     else if (element.element === "container") return <ContainerElementComponent element={element}>{children}</ContainerElementComponent>

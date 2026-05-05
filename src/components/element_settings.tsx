@@ -13,7 +13,7 @@ const Header = () => {
 };
 
 const Body = ({ children }: {children: React.ReactNode | React.ReactNode[]}) => {
-    return <div>{children}</div>
+    return <div className={styles.settingsBody}>{children}</div>
 };
 
 const SettingContainer = ({ children, multiline }: { children: React.ReactNode[], multiline?: boolean }) => {
@@ -69,8 +69,8 @@ export const IntegerSetting = ({
     return <SettingContainer>
         <SettingName name={name} />
         <SettingValue>
-            <div className={styles.integerInput}>
-                <input className={styles.integerInputField} type="number" min={min} max={max} onChange={e => onChange(parseFloat(e.target.value))} value={value} />
+            <div className={styles.inputField}>
+                <input type="number" min={min} max={max} onChange={e => onChange(parseFloat(e.target.value))} value={value} />
             </div>
         </SettingValue>
     </SettingContainer>;
@@ -88,6 +88,44 @@ export const TextAreaSetting = ({ name, value, onChange }: { name: string, value
         <SettingName name={name} />
         <SettingValue>
             <textarea className={styles.textArea} value={value} onChange={e => onChange(e.target.value)} />
+        </SettingValue>
+    </SettingContainer>
+};
+
+export const TextFieldSetting = ({ name, value, onChange }: { name: string, value: string, onChange: (value: string) => void }) => {
+    return <SettingContainer>
+        <SettingName name={name} />
+        <SettingValue>
+            <div className={styles.inputField}>
+                <input type="text" value={value} onChange={e => onChange(e.target.value)} />
+            </div>
+        </SettingValue>
+    </SettingContainer>
+};
+
+export const ChoiceBoxSetting = <T extends string>({ 
+    name, 
+    value, 
+    options, 
+    onChange 
+}: { 
+    name: string, 
+    value: T, 
+    options: { label: string, value: T }[], 
+    onChange: (value: T) => void 
+}) => {
+    return <SettingContainer>
+        <SettingName name={name} />
+        <SettingValue>
+            <div className={styles.inputField}>
+                <select value={value} onChange={e => onChange(e.target.value as T)}>
+                    {options.map((option) => (
+                        <option key={option.value} value={option.value}>
+                            {option.label}
+                        </option>
+                    ))}
+                </select>
+            </div>
         </SettingValue>
     </SettingContainer>
 };

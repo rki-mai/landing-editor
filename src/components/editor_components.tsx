@@ -2,6 +2,9 @@ import { type TextElement, type LinkElement, type ImageElement, type ButtonEleme
 import settingsIcon from "../assets/settings-btn.png"
 
 
+export type OpenSettingsCallback = (element: LandingElement) => void;
+
+
 const MenuItem = ({ onClick, src }: { src: string, onClick?: () => void }) => {
     return <div className="element-menu-item" onClick={onClick}>
         <img src={src} />
@@ -37,7 +40,7 @@ export const TextElementComponent = ({
     onSettingsOpened,
 }: {
     element: TextElement,
-    onSettingsOpened: (element: TextElement) => void,
+    onSettingsOpened: OpenSettingsCallback,
 }) => {
     const style: React.CSSProperties = {};
     if (element.styles) {
@@ -53,8 +56,18 @@ export const TextElementComponent = ({
     </LandingElementEditContainer>
 }
 
-export const LinkElementComponent = ({ element }: { element: LinkElement }) => {
-    return <LandingElementEditContainer key={element.id}>
+export const LinkElementComponent = ({
+    element,
+    onSettingsOpened,
+}: {
+    element: LinkElement,
+    onSettingsOpened: OpenSettingsCallback,
+ }) => {
+    return <LandingElementEditContainer
+        key={element.id}
+        supportsSettings={true}
+        onSettingsOpened={() => onSettingsOpened(element)}
+    >
         <a className="link-element" style={element.styles} href={element.src}>{element.value}</a>
     </LandingElementEditContainer>
 }
