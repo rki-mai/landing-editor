@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { renderElements } from "./components/editor_components_renderer";
 import { JsonEditor } from "./components/json_editor";
 import { validateLandingPage } from "./components/parser";
