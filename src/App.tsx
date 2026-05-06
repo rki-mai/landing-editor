@@ -6,6 +6,7 @@ import { PreviewCanvas } from "./components/preview_canvas";
 import "./App.css";
 import { buildSettingsForLandingElement } from "./components/element_settings_builder";
 import { type LandingElement, type LandingPage } from "./components/types";
+import { landingElementUpdater } from "./components/handlers/update_element";
 
 const DEFAULT_DATA = JSON.stringify({ elements: [] }, null, 2);
 type UpdatePageCallback = (updated: LandingPage) => void;
@@ -15,35 +16,6 @@ interface ElementPosition {
 	parentId: string;
 	index: number;
 }
-
-const landingPageUpdater = (
-	page: LandingPage | null,
-	onUpdate: UpdatePageCallback,
-) => {
-	return (updated: LandingElement) => {
-		if (page === null) {
-			console.warn("Unable to update not created page");
-			return;
-		}
-
-		let found = false;
-		const newElements = page.elements.map((el) => {
-			if (el.id === updated.id) {
-				found = true;
-				return updated;
-			}
-			return el;
-		});
-
-		if (found) {
-			onUpdate({ elements: newElements });
-		} else {
-			console.warn(`TextElement with id "${updated.id}" not found.`);
-		}
-
-		return { ...page, elements: newElements };
-	};
-};
 
 function findElementById(page: LandingPage, elementId: string): LandingElement {
 	for (const element of page.elements) {
@@ -169,7 +141,7 @@ function App() {
 		setLandingPage(updated);
 		setLandingData(JSON.stringify(updated, null, 2));
 	};
-	const updater = landingPageUpdater(landingPage, updateData);
+	const updater = landingElementUpdater(landingPage, updateData);
 	const onSettingsOpened = (element: LandingElement) => {
 		setSettingsElementId(element.id);
 	};
