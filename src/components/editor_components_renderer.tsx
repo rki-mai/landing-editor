@@ -8,6 +8,11 @@ import {
 } from "./editor_components";
 import { type LandingElement } from "./types";
 
+type MoveElementCallback = (
+	element: LandingElement,
+	direction: "up" | "down",
+) => void;
+
 class ElementNotSupportsChildren extends Error {
 	constructor(elementType: string) {
 		super(`Element of type "${elementType}" not supports children`);
@@ -18,6 +23,8 @@ function renderElement(
 	element: LandingElement,
 	children: React.ReactNode[],
 	onSettingsOpened: OpenSettingsCallback,
+	onMoveUp?: () => void,
+	onMoveDown?: () => void,
 ): React.ReactNode {
 	if (element.element !== "container" && children.length > 0) {
 		throw new ElementNotSupportsChildren(element.element);
@@ -28,6 +35,8 @@ function renderElement(
 			<TextElementComponent
 				element={element}
 				onSettingsOpened={onSettingsOpened}
+				onMoveUp={onMoveUp}
+				onMoveDown={onMoveDown}
 			/>
 		);
 	else if (element.element === "link")
@@ -35,6 +44,8 @@ function renderElement(
 			<LinkElementComponent
 				element={element}
 				onSettingsOpened={onSettingsOpened}
+				onMoveUp={onMoveUp}
+				onMoveDown={onMoveDown}
 			/>
 		);
 	else if (element.element === "image")
@@ -42,6 +53,8 @@ function renderElement(
 			<ImageElementComponent
 				element={element}
 				onSettingsOpened={onSettingsOpened}
+				onMoveUp={onMoveUp}
+				onMoveDown={onMoveDown}
 			/>
 		);
 	else if (element.element === "button")
@@ -49,11 +62,17 @@ function renderElement(
 			<ButtonElementComponent
 				element={element}
 				onSettingsOpened={onSettingsOpened}
+				onMoveUp={onMoveUp}
+				onMoveDown={onMoveDown}
 			/>
 		);
 	else if (element.element === "container")
 		return (
-			<ContainerElementComponent element={element}>
+			<ContainerElementComponent
+				element={element}
+				onMoveUp={onMoveUp}
+				onMoveDown={onMoveDown}
+			>
 				{children}
 			</ContainerElementComponent>
 		);
@@ -62,16 +81,24 @@ function renderElement(
 export function renderElements(
 	elements: LandingElement[],
 	onSettingsOpened: OpenSettingsCallback,
+	onMove: MoveElementCallback,
 	parentId: string = "root",
 ): React.ReactNode[] {
-	return elements
+	const processedElements = elements
 		.filter((el) => el.parentId === parentId)
-		.sort((a, b) => a.index - b.index)
-		.map((el) =>
-			renderElement(
-				el,
-				renderElements(elements, onSettingsOpened, el.id),
-				onSettingsOpened,
-			),
+		.sort((a, b) => a.index - b.index);
+
+	return processedElements.map((el, index) => {
+		const canMoveUp = index !== 0 || parentId !== "root";
+		const canMoveDown =
+			index !== processedElements.length - 1 || parentId !== "root";
+
+		return renderElement(
+			el,
+			renderElements(elements, onSettingsOpened, onMove, el.id),
+			onSettingsOpened,
+			canMoveUp ? () => onMove(el, "up") : undefined,
+			canMoveDown ? () => onMove(el, "down") : undefined,
 		);
+	});
 }

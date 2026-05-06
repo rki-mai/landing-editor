@@ -5,38 +5,11 @@ import { validateLandingPage } from "./components/parser";
 import { PreviewCanvas } from "./components/preview_canvas";
 import "./App.css";
 import { buildSettingsForLandingElement } from "./components/element_settings_builder";
+import { moveElementHandler } from "./components/handlers/move_element";
+import { landingElementUpdater } from "./components/handlers/update_element";
 import { type LandingElement, type LandingPage } from "./components/types";
 
 const DEFAULT_DATA = JSON.stringify({ elements: [] }, null, 2);
-
-const landingPageUpdater = (
-	page: LandingPage | null,
-	onUpdate: (updated: LandingPage) => void,
-) => {
-	return (updated: LandingElement) => {
-		if (page === null) {
-			console.warn("Unable to update not created page");
-			return;
-		}
-
-		let found = false;
-		const newElements = page.elements.map((el) => {
-			if (el.id === updated.id) {
-				found = true;
-				return updated;
-			}
-			return el;
-		});
-
-		if (found) {
-			onUpdate({ elements: newElements });
-		} else {
-			console.warn(`TextElement with id "${updated.id}" not found.`);
-		}
-
-		return { ...page, elements: newElements };
-	};
-};
 
 function findElementById(page: LandingPage, elementId: string): LandingElement {
 	for (const element of page.elements) {
@@ -60,10 +33,12 @@ function App() {
 		setLandingPage(updated);
 		setLandingData(JSON.stringify(updated, null, 2));
 	};
-	const updater = landingPageUpdater(landingPage, updateData);
 	const onSettingsOpened = (element: LandingElement) => {
 		setSettingsElementId(element.id);
 	};
+
+	const updater = landingElementUpdater(landingPage, updateData);
+	const moveHandler = moveElementHandler(landingPage, updateData);
 
 	const handleRender = (data: string) => {
 		try {
@@ -87,7 +62,7 @@ function App() {
 				/>
 				<PreviewCanvas>
 					{landingPage &&
-						renderElements(landingPage.elements, onSettingsOpened)}
+						renderElements(landingPage.elements, onSettingsOpened, moveHandler)}
 				</PreviewCanvas>
 				{landingPage &&
 					settingsElementId &&
