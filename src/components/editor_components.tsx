@@ -1,5 +1,5 @@
-import settingsIcon from "../assets/settings-btn.png";
-import arrowUpIcon from "../assets/up-arrow.png";
+import settingsIcon from "../assets/settings.png";
+import arrowUpIcon from "../assets/arrow-up.png";
 import arrowDownIcon from "../assets/arrow-down.png";
 import {
 	type ButtonElement,
@@ -31,7 +31,6 @@ const ElementMenu = ({ onSettingsClick }: { onSettingsClick?: () => void }) => {
 };
 
 export const LandingElementEditContainer = ({
-	supportsSettings,
 	children,
 	onSettingsOpened,
 }: {
@@ -41,7 +40,7 @@ export const LandingElementEditContainer = ({
 }) => {
 	return (
 		<div className="element-edit-container">
-			{supportsSettings && <ElementMenu onSettingsClick={onSettingsOpened} />}
+			{onSettingsOpened && <ElementMenu onSettingsClick={onSettingsOpened} />}
 			{children}
 		</div>
 	);
@@ -63,7 +62,6 @@ export const TextElementComponent = ({
 	return (
 		<LandingElementEditContainer
 			key={element.id}
-			supportsSettings={true}
 			onSettingsOpened={() => onSettingsOpened(element)}
 		>
 			<p className="text-element" style={style}>
@@ -83,7 +81,6 @@ export const LinkElementComponent = ({
 	return (
 		<LandingElementEditContainer
 			key={element.id}
-			supportsSettings={true}
 			onSettingsOpened={() => onSettingsOpened(element)}
 		>
 			<a className="link-element" style={element.styles} href={element.src}>
@@ -112,7 +109,6 @@ export const ImageElementComponent = ({
 	return (
 		<LandingElementEditContainer
 			key={element.id}
-			supportsSettings={true}
 			onSettingsOpened={() => onSettingsOpened(element)}
 		>
 			<div className="image-element" style={elementStyle}>
@@ -154,7 +150,6 @@ export const ButtonElementComponent = ({
 	return (
 		<LandingElementEditContainer
 			key={element.id}
-			supportsSettings={true}
 			onSettingsOpened={() => onSettingsOpened(element)}
 		>
 			<LinkButton
