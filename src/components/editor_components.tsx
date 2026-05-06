@@ -20,27 +20,33 @@ const MenuItem = ({ onClick, src }: { src: string; onClick?: () => void }) => {
 	);
 };
 
-const ElementMenu = ({ onSettingsClick }: { onSettingsClick?: () => void }) => {
-	return (
-		<div className="element-menu">
-			<MenuItem src={settingsIcon} onClick={onSettingsClick} />
-			<MenuItem src={arrowUpIcon} />
-			<MenuItem src={arrowDownIcon} />
-		</div>
-	);
+const ElementMenu = ({ children }: { children: React.ReactNode[] }) => {
+	return <div className="element-menu">{children}</div>;
 };
 
 export const LandingElementEditContainer = ({
 	children,
 	onSettingsOpened,
+	onMoveUp,
+	onMoveDown,
 }: {
 	children: React.ReactNode;
 	supportsSettings?: boolean;
 	onSettingsOpened?: () => void;
+	onMoveUp?: () => void;
+	onMoveDown?: () => void;
 }) => {
 	return (
 		<div className="element-edit-container">
-			{onSettingsOpened && <ElementMenu onSettingsClick={onSettingsOpened} />}
+			{(onSettingsOpened || onMoveDown || onMoveUp) && (
+				<ElementMenu>
+					{onSettingsOpened && (
+						<MenuItem src={settingsIcon} onClick={onSettingsOpened} />
+					)}
+					{onMoveUp && <MenuItem src={arrowUpIcon} onClick={onMoveUp} />}
+					{onMoveDown && <MenuItem src={arrowDownIcon} onClick={onMoveDown} />}
+				</ElementMenu>
+			)}
 			{children}
 		</div>
 	);
@@ -49,9 +55,13 @@ export const LandingElementEditContainer = ({
 export const TextElementComponent = ({
 	element,
 	onSettingsOpened,
+	onMoveUp,
+	onMoveDown,
 }: {
 	element: TextElement;
 	onSettingsOpened: OpenSettingsCallback;
+	onMoveUp?: () => void;
+	onMoveDown?: () => void;
 }) => {
 	const style: React.CSSProperties = {};
 	if (element.styles) {
@@ -63,6 +73,8 @@ export const TextElementComponent = ({
 		<LandingElementEditContainer
 			key={element.id}
 			onSettingsOpened={() => onSettingsOpened(element)}
+			onMoveDown={onMoveDown}
+			onMoveUp={onMoveUp}
 		>
 			<p className="text-element" style={style}>
 				{element.value}
@@ -74,14 +86,20 @@ export const TextElementComponent = ({
 export const LinkElementComponent = ({
 	element,
 	onSettingsOpened,
+	onMoveUp,
+	onMoveDown,
 }: {
 	element: LinkElement;
 	onSettingsOpened: OpenSettingsCallback;
+	onMoveUp?: () => void;
+	onMoveDown?: () => void;
 }) => {
 	return (
 		<LandingElementEditContainer
 			key={element.id}
 			onSettingsOpened={() => onSettingsOpened(element)}
+			onMoveUp={onMoveUp}
+			onMoveDown={onMoveDown}
 		>
 			<a className="link-element" style={element.styles} href={element.src}>
 				{element.value}
@@ -93,9 +111,13 @@ export const LinkElementComponent = ({
 export const ImageElementComponent = ({
 	element,
 	onSettingsOpened,
+	onMoveUp,
+	onMoveDown,
 }: {
 	element: ImageElement;
 	onSettingsOpened: OpenSettingsCallback;
+	onMoveUp?: () => void;
+	onMoveDown?: () => void;
 }) => {
 	const elementStyle: React.CSSProperties = {};
 	const imageStyle: React.CSSProperties = {};
@@ -110,6 +132,8 @@ export const ImageElementComponent = ({
 		<LandingElementEditContainer
 			key={element.id}
 			onSettingsOpened={() => onSettingsOpened(element)}
+			onMoveUp={onMoveUp}
+			onMoveDown={onMoveDown}
 		>
 			<div className="image-element" style={elementStyle}>
 				<img
@@ -143,14 +167,20 @@ const LinkButton = ({
 export const ButtonElementComponent = ({
 	element,
 	onSettingsOpened,
+	onMoveUp,
+	onMoveDown,
 }: {
 	element: ButtonElement;
 	onSettingsOpened: OpenSettingsCallback;
+	onMoveUp?: () => void;
+	onMoveDown?: () => void;
 }) => {
 	return (
 		<LandingElementEditContainer
 			key={element.id}
 			onSettingsOpened={() => onSettingsOpened(element)}
+			onMoveUp={onMoveUp}
+			onMoveDown={onMoveDown}
 		>
 			<LinkButton
 				text={element.value}
@@ -164,12 +194,20 @@ export const ButtonElementComponent = ({
 export const ContainerElementComponent = ({
 	element,
 	children,
+	onMoveUp,
+	onMoveDown,
 }: {
 	element: ContainerElement;
 	children: React.ReactNode[];
+	onMoveUp?: () => void;
+	onMoveDown?: () => void;
 }) => {
 	return (
-		<LandingElementEditContainer key={element.id}>
+		<LandingElementEditContainer
+			key={element.id}
+			onMoveUp={onMoveUp}
+			onMoveDown={onMoveDown}
+		>
 			{children}
 		</LandingElementEditContainer>
 	);
