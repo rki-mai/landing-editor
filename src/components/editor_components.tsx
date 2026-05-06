@@ -1,4 +1,6 @@
 import settingsIcon from "../assets/settings-btn.png";
+import arrowUpIcon from "../assets/up-arrow.png";
+import arrowDownIcon from "../assets/arrow-down.png";
 import {
 	type ButtonElement,
 	type ContainerElement,
@@ -22,6 +24,8 @@ const ElementMenu = ({ onSettingsClick }: { onSettingsClick?: () => void }) => {
 	return (
 		<div className="element-menu">
 			<MenuItem src={settingsIcon} onClick={onSettingsClick} />
+			<MenuItem src={arrowUpIcon} />
+			<MenuItem src={arrowDownIcon} />
 		</div>
 	);
 };
