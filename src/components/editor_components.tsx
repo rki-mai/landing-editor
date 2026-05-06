@@ -1,6 +1,6 @@
-import settingsIcon from "../assets/settings.png";
-import arrowUpIcon from "../assets/arrow-up.png";
 import arrowDownIcon from "../assets/arrow-down.png";
+import arrowUpIcon from "../assets/arrow-up.png";
+import settingsIcon from "../assets/settings.png";
 import {
 	type ButtonElement,
 	type ContainerElement,

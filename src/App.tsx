@@ -5,9 +5,9 @@ import { validateLandingPage } from "./components/parser";
 import { PreviewCanvas } from "./components/preview_canvas";
 import "./App.css";
 import { buildSettingsForLandingElement } from "./components/element_settings_builder";
-import { type LandingElement, type LandingPage } from "./components/types";
-import { landingElementUpdater } from "./components/handlers/update_element";
 import { moveElementHandler } from "./components/handlers/move_element";
+import { landingElementUpdater } from "./components/handlers/update_element";
+import { type LandingElement, type LandingPage } from "./components/types";
 
 const DEFAULT_DATA = JSON.stringify({ elements: [] }, null, 2);
 
