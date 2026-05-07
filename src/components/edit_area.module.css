@@ -10,14 +10,34 @@
 }
 
 .actionMenuItem {
-    padding: 4px;
+    position: relative;
+    padding: 4px 8px;
     background: lightgray;
     border-radius: 4px;
-    border: 2px solid gray;
     cursor: pointer;
 }
 
 .actionMenu {
     display: flex;
     padding-bottom: 10px;
+}
+
+.actionList {
+    position: absolute;
+    width: 100%;
+    z-index: 10;
+    background: lightgray;
+    top: 100%;
+    left: 0;
+    margin-top: 10px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.actionListItem {
+    padding: 4px 8px;
+}
+
+.actionListItem:hover {
+    background-color: gray;
 }

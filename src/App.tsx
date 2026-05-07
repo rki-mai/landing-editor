@@ -9,8 +9,9 @@ import { moveElementHandler } from "./components/handlers/move_element";
 import { landingElementUpdater } from "./components/handlers/update_element";
 import { type LandingElement, type LandingPage } from "./components/types";
 import {
+	ActionListItem,
 	ActionMenu,
-	ActionMenuItem,
+	ActionListMenuItem,
 	EditArea,
 	PreviewContainer,
 } from "./components/edit_area";
@@ -68,10 +69,16 @@ function App() {
 				/>
 				<EditArea>
 					<ActionMenu>
-						<ActionMenuItem
-							name="Create component"
-							onClick={() => console.log("foo")}
-						/>
+						<ActionListMenuItem name="Create component">
+							<ActionListItem
+								name="Text"
+								onClick={() => console.log("Create text")}
+							/>
+							<ActionListItem
+								name="Image"
+								onClick={() => console.log("Create image")}
+							/>
+						</ActionListMenuItem>
 					</ActionMenu>
 					<PreviewContainer>
 						<PreviewCanvas>
