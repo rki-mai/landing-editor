@@ -12,7 +12,8 @@ import {
 	ActionMenu,
 	ActionMenuItem,
 	EditArea,
-} from "./components/visual_edit_container";
+	PreviewContainer,
+} from "./components/edit_area";
 
 const DEFAULT_DATA = JSON.stringify({ elements: [] }, null, 2);
 
@@ -72,14 +73,16 @@ function App() {
 							onClick={() => console.log("foo")}
 						/>
 					</ActionMenu>
-					<PreviewCanvas>
-						{landingPage &&
-							renderElements(
-								landingPage.elements,
-								onSettingsOpened,
-								moveHandler,
-							)}
-					</PreviewCanvas>
+					<PreviewContainer>
+						<PreviewCanvas>
+							{landingPage &&
+								renderElements(
+									landingPage.elements,
+									onSettingsOpened,
+									moveHandler,
+								)}
+						</PreviewCanvas>
+					</PreviewContainer>
 				</EditArea>
 				{landingPage &&
 					settingsElementId &&

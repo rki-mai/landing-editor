@@ -1,0 +1,10 @@
+.editArea {
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
+}
+
+.previewContainer {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
