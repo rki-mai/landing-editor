@@ -15,6 +15,8 @@ import {
 	EditArea,
 	PreviewContainer,
 } from "./components/edit_area";
+import { createElementHandler } from "./components/handlers/create_element";
+import { createTextElement } from "./components/element_factory";
 
 const DEFAULT_DATA = JSON.stringify({ elements: [] }, null, 2);
 
@@ -46,6 +48,7 @@ function App() {
 
 	const updater = landingElementUpdater(landingPage, updateData);
 	const moveHandler = moveElementHandler(landingPage, updateData);
+	const createElement = createElementHandler(landingPage, updateData);
 
 	const handleRender = (data: string) => {
 		try {
@@ -72,7 +75,7 @@ function App() {
 						<ActionListMenuItem name="Create component">
 							<ActionListItem
 								name="Text"
-								onClick={() => console.log("Create text")}
+								onClick={() => createElement(createTextElement)}
 							/>
 							<ActionListItem
 								name="Image"
