@@ -8,6 +8,11 @@ import { buildSettingsForLandingElement } from "./components/element_settings_bu
 import { moveElementHandler } from "./components/handlers/move_element";
 import { landingElementUpdater } from "./components/handlers/update_element";
 import { type LandingElement, type LandingPage } from "./components/types";
+import {
+	ActionMenu,
+	ActionMenuItem,
+	EditArea,
+} from "./components/visual_edit_container";
 
 const DEFAULT_DATA = JSON.stringify({ elements: [] }, null, 2);
 
@@ -60,10 +65,22 @@ function App() {
 					value={landingData}
 					onChange={setLandingData}
 				/>
-				<PreviewCanvas>
-					{landingPage &&
-						renderElements(landingPage.elements, onSettingsOpened, moveHandler)}
-				</PreviewCanvas>
+				<EditArea>
+					<ActionMenu>
+						<ActionMenuItem
+							name="Create component"
+							onClick={() => console.log("foo")}
+						/>
+					</ActionMenu>
+					<PreviewCanvas>
+						{landingPage &&
+							renderElements(
+								landingPage.elements,
+								onSettingsOpened,
+								moveHandler,
+							)}
+					</PreviewCanvas>
+				</EditArea>
 				{landingPage &&
 					settingsElementId &&
 					buildSettingsForLandingElement(
