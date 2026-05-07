@@ -8,3 +8,16 @@
     overflow-y: auto;
     overflow-x: hidden;
 }
+
+.actionMenuItem {
+    padding: 4px;
+    background: lightgray;
+    border-radius: 4px;
+    border: 2px solid gray;
+    cursor: pointer;
+}
+
+.actionMenu {
+    display: flex;
+    padding-bottom: 10px;
+}

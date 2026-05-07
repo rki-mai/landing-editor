@@ -8,7 +8,11 @@ export const ActionMenuItem = ({
 	name: string;
 	onClick: () => void;
 }) => {
-	return <div onClick={onClick}>{name}</div>;
+	return (
+		<div className={styles.actionMenuItem} onClick={onClick}>
+			{name}
+		</div>
+	);
 };
 
 export const ActionMenu = ({
@@ -16,7 +20,7 @@ export const ActionMenu = ({
 }: {
 	children: React.ReactNode | React.ReactNode[];
 }) => {
-	return <div>{children}</div>;
+	return <div className={styles.actionMenu}>{children}</div>;
 };
 
 export const PreviewContainer = ({
