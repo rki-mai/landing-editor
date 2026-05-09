@@ -46,9 +46,9 @@ export const LandingElementEditContainer = ({
 					{onSettingsOpened && (
 						<MenuItem src={settingsIcon} onClick={onSettingsOpened} />
 					)}
+					{onDelete && <MenuItem src={trashIcon} onClick={onDelete} />}
 					{onMoveUp && <MenuItem src={arrowUpIcon} onClick={onMoveUp} />}
 					{onMoveDown && <MenuItem src={arrowDownIcon} onClick={onMoveDown} />}
-					{onDelete && <MenuItem src={trashIcon} onClick={onDelete} />}
 				</ElementMenu>
 			)}
 			{children}

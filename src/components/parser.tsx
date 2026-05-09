@@ -73,6 +73,7 @@ const LandingPageSchema = z.object({
 	elements: z.array(LandingElementSchema),
 });
 
+// TODO: if it won't be needed in #25 remove it
 export function validateLandingPage(data: unknown): LandingPage {
 	return LandingPageSchema.parse(data);
 }
