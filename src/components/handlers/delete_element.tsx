@@ -1,14 +1,17 @@
 import type { LandingElement } from "../types";
 import { landingPageUpdater, normalizeIndexes } from "./common";
 
-function getAllChildrenIds(elements: LandingElement[], parentId: string): Set<string> {
+function getAllChildrenIds(
+	elements: LandingElement[],
+	parentId: string,
+): Set<string> {
 	const ids = new Set<string>();
 	ids.add(parentId);
 
 	for (const el of elements) {
 		if (el.parentId === parentId) {
 			const childIds = getAllChildrenIds(elements, el.id);
-			childIds.forEach(id => ids.add(id));
+			childIds.forEach((id) => ids.add(id));
 		}
 	}
 

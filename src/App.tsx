@@ -20,9 +20,9 @@ import {
 } from "./components/element_factory";
 import { buildSettingsForLandingElement } from "./components/element_settings_builder";
 import { createElementHandler } from "./components/handlers/create_element";
+import { deleteElementHandler } from "./components/handlers/delete_element";
 import { moveElementHandler } from "./components/handlers/move_element";
 import { landingElementUpdater } from "./components/handlers/update_element";
-import { deleteElementHandler } from "./components/handlers/delete_element";
 import { type LandingElement, type LandingPage } from "./components/types";
 
 const DEFAULT_DATA = JSON.stringify({ elements: [] }, null, 2);

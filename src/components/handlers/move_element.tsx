@@ -1,5 +1,5 @@
 import type { LandingElement, LandingPage } from "../types";
-import { landingPageUpdater, updateElement, normalizeIndexes } from "./common";
+import { landingPageUpdater, normalizeIndexes, updateElement } from "./common";
 
 type Direction = "up" | "down";
 
@@ -78,8 +78,6 @@ const getUpdatedPosition = (
 		return { parentId: element.parentId, index: element.index + delta };
 	}
 };
-
-
 
 export const moveElementHandler = landingPageUpdater(
 	(page, element: LandingElement, direction: Direction) => {
