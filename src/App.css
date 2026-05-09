@@ -5,28 +5,6 @@
 	overflow-y: hidden;
 }
 
-.editor-pane {
-	display: flex;
-	flex-direction: column;
-	gap: 20px;
-	flex: 1;
-}
-
-.editor-pane .json-input {
-	flex-grow: 1;
-}
-
-.editor-pane .error-message {
-	padding: 20px;
-	background: lightpink;
-	border: 2px solid crimson;
-	border-radius: 6px;
-}
-
-.toolbar .btn-render {
-	width: 100%;
-}
-
 .preview-pane {
 	flex: 1;
 }
@@ -35,7 +13,7 @@
 	flex: 1;
 	padding: 20px;
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
 	gap: 20px;
 	overflow-y: hidden;
 }
