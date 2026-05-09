@@ -16,7 +16,13 @@ import {
 	PreviewContainer,
 } from "./components/edit_area";
 import { createElementHandler } from "./components/handlers/create_element";
-import { createTextElement } from "./components/element_factory";
+import {
+	createButtonElement,
+	createContainerElement,
+	createImageElement,
+	createLinkElement,
+	createTextElement,
+} from "./components/element_factory";
 
 const DEFAULT_DATA = JSON.stringify({ elements: [] }, null, 2);
 
@@ -79,7 +85,19 @@ function App() {
 							/>
 							<ActionListItem
 								name="Image"
-								onClick={() => console.log("Create image")}
+								onClick={() => createElement(createImageElement)}
+							/>
+							<ActionListItem
+								name="Link"
+								onClick={() => createElement(createLinkElement)}
+							/>
+							<ActionListItem
+								name="Button"
+								onClick={() => createElement(createButtonElement)}
+							/>
+							<ActionListItem
+								name="Container"
+								onClick={() => createElement(createContainerElement)}
 							/>
 						</ActionListMenuItem>
 					</ActionMenu>
