@@ -4,7 +4,22 @@ import { JsonEditor } from "./components/json_editor";
 import { validateLandingPage } from "./components/parser";
 import { PreviewCanvas } from "./components/preview_canvas";
 import "./App.css";
+import {
+	ActionListItem,
+	ActionListMenuItem,
+	ActionMenu,
+	EditArea,
+	PreviewContainer,
+} from "./components/edit_area";
+import {
+	createButtonElement,
+	createContainerElement,
+	createImageElement,
+	createLinkElement,
+	createTextElement,
+} from "./components/element_factory";
 import { buildSettingsForLandingElement } from "./components/element_settings_builder";
+import { createElementHandler } from "./components/handlers/create_element";
 import { moveElementHandler } from "./components/handlers/move_element";
 import { landingElementUpdater } from "./components/handlers/update_element";
 import { type LandingElement, type LandingPage } from "./components/types";
@@ -39,6 +54,7 @@ function App() {
 
 	const updater = landingElementUpdater(landingPage, updateData);
 	const moveHandler = moveElementHandler(landingPage, updateData);
+	const createElement = createElementHandler(landingPage, updateData);
 
 	const handleRender = (data: string) => {
 		try {
@@ -60,10 +76,42 @@ function App() {
 					value={landingData}
 					onChange={setLandingData}
 				/>
-				<PreviewCanvas>
-					{landingPage &&
-						renderElements(landingPage.elements, onSettingsOpened, moveHandler)}
-				</PreviewCanvas>
+				<EditArea>
+					<ActionMenu>
+						<ActionListMenuItem name="Create component">
+							<ActionListItem
+								name="Text"
+								onClick={() => createElement(createTextElement)}
+							/>
+							<ActionListItem
+								name="Image"
+								onClick={() => createElement(createImageElement)}
+							/>
+							<ActionListItem
+								name="Link"
+								onClick={() => createElement(createLinkElement)}
+							/>
+							<ActionListItem
+								name="Button"
+								onClick={() => createElement(createButtonElement)}
+							/>
+							<ActionListItem
+								name="Container"
+								onClick={() => createElement(createContainerElement)}
+							/>
+						</ActionListMenuItem>
+					</ActionMenu>
+					<PreviewContainer>
+						<PreviewCanvas>
+							{landingPage &&
+								renderElements(
+									landingPage.elements,
+									onSettingsOpened,
+									moveHandler,
+								)}
+						</PreviewCanvas>
+					</PreviewContainer>
+				</EditArea>
 				{landingPage &&
 					settingsElementId &&
 					buildSettingsForLandingElement(

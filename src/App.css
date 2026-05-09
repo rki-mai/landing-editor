@@ -2,6 +2,7 @@
 	display: flex;
 	flex-direction: column;
 	height: 100vh;
+	overflow-y: hidden;
 }
 
 .editor-pane {
@@ -36,6 +37,7 @@
 	display: flex;
 	flex-direction: row;
 	gap: 20px;
+	overflow-y: hidden;
 }
 
 .element-edit-container {
