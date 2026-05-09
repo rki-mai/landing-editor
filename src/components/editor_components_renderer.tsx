@@ -25,6 +25,7 @@ function renderElement(
 	onSettingsOpened: OpenSettingsCallback,
 	onMoveUp?: () => void,
 	onMoveDown?: () => void,
+	onDelete?: () => void,
 ): React.ReactNode {
 	if (element.element !== "container" && children.length > 0) {
 		throw new ElementNotSupportsChildren(element.element);
@@ -37,6 +38,7 @@ function renderElement(
 				onSettingsOpened={onSettingsOpened}
 				onMoveUp={onMoveUp}
 				onMoveDown={onMoveDown}
+				onDelete={onDelete}
 			/>
 		);
 	else if (element.element === "link")
@@ -46,6 +48,7 @@ function renderElement(
 				onSettingsOpened={onSettingsOpened}
 				onMoveUp={onMoveUp}
 				onMoveDown={onMoveDown}
+				onDelete={onDelete}
 			/>
 		);
 	else if (element.element === "image")
@@ -55,6 +58,7 @@ function renderElement(
 				onSettingsOpened={onSettingsOpened}
 				onMoveUp={onMoveUp}
 				onMoveDown={onMoveDown}
+				onDelete={onDelete}
 			/>
 		);
 	else if (element.element === "button")
@@ -64,6 +68,7 @@ function renderElement(
 				onSettingsOpened={onSettingsOpened}
 				onMoveUp={onMoveUp}
 				onMoveDown={onMoveDown}
+				onDelete={onDelete}
 			/>
 		);
 	else if (element.element === "container")
@@ -72,6 +77,7 @@ function renderElement(
 				element={element}
 				onMoveUp={onMoveUp}
 				onMoveDown={onMoveDown}
+				onDelete={onDelete}
 			>
 				{children}
 			</ContainerElementComponent>
@@ -82,6 +88,7 @@ export function renderElements(
 	elements: LandingElement[],
 	onSettingsOpened: OpenSettingsCallback,
 	onMove: MoveElementCallback,
+	onDelete: (element: LandingElement) => void,
 	parentId: string = "root",
 ): React.ReactNode[] {
 	const processedElements = elements
@@ -95,10 +102,11 @@ export function renderElements(
 
 		return renderElement(
 			el,
-			renderElements(elements, onSettingsOpened, onMove, el.id),
+			renderElements(elements, onSettingsOpened, onMove, onDelete, el.id),
 			onSettingsOpened,
 			canMoveUp ? () => onMove(el, "up") : undefined,
 			canMoveDown ? () => onMove(el, "down") : undefined,
+			() => onDelete(el),
 		);
 	});
 }

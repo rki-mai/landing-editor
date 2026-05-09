@@ -1,6 +1,7 @@
 import arrowDownIcon from "../assets/arrow-down.png";
 import arrowUpIcon from "../assets/arrow-up.png";
 import settingsIcon from "../assets/settings.png";
+import trashIcon from "../assets/trash.svg";
 import {
 	type ButtonElement,
 	type ContainerElement,
@@ -29,12 +30,14 @@ export const LandingElementEditContainer = ({
 	onSettingsOpened,
 	onMoveUp,
 	onMoveDown,
+	onDelete,
 }: {
 	children: React.ReactNode;
 	supportsSettings?: boolean;
 	onSettingsOpened?: () => void;
 	onMoveUp?: () => void;
 	onMoveDown?: () => void;
+	onDelete?: () => void;
 }) => {
 	return (
 		<div className="element-edit-container">
@@ -45,6 +48,7 @@ export const LandingElementEditContainer = ({
 					)}
 					{onMoveUp && <MenuItem src={arrowUpIcon} onClick={onMoveUp} />}
 					{onMoveDown && <MenuItem src={arrowDownIcon} onClick={onMoveDown} />}
+					{onDelete && <MenuItem src={trashIcon} onClick={onDelete} />}
 				</ElementMenu>
 			)}
 			{children}
@@ -57,11 +61,13 @@ export const TextElementComponent = ({
 	onSettingsOpened,
 	onMoveUp,
 	onMoveDown,
+	onDelete,
 }: {
 	element: TextElement;
 	onSettingsOpened: OpenSettingsCallback;
 	onMoveUp?: () => void;
 	onMoveDown?: () => void;
+	onDelete?: () => void;
 }) => {
 	const style: React.CSSProperties = {};
 	if (element.styles) {
@@ -75,6 +81,7 @@ export const TextElementComponent = ({
 			onSettingsOpened={() => onSettingsOpened(element)}
 			onMoveDown={onMoveDown}
 			onMoveUp={onMoveUp}
+			onDelete={onDelete}
 		>
 			<p className="text-element" style={style}>
 				{element.value}
@@ -88,11 +95,13 @@ export const LinkElementComponent = ({
 	onSettingsOpened,
 	onMoveUp,
 	onMoveDown,
+	onDelete,
 }: {
 	element: LinkElement;
 	onSettingsOpened: OpenSettingsCallback;
 	onMoveUp?: () => void;
 	onMoveDown?: () => void;
+	onDelete?: () => void;
 }) => {
 	return (
 		<LandingElementEditContainer
@@ -100,6 +109,7 @@ export const LinkElementComponent = ({
 			onSettingsOpened={() => onSettingsOpened(element)}
 			onMoveUp={onMoveUp}
 			onMoveDown={onMoveDown}
+			onDelete={onDelete}
 		>
 			<a className="link-element" style={element.styles} href={element.src}>
 				{element.value}
@@ -113,11 +123,13 @@ export const ImageElementComponent = ({
 	onSettingsOpened,
 	onMoveUp,
 	onMoveDown,
+	onDelete,
 }: {
 	element: ImageElement;
 	onSettingsOpened: OpenSettingsCallback;
 	onMoveUp?: () => void;
 	onMoveDown?: () => void;
+	onDelete?: () => void;
 }) => {
 	const elementStyle: React.CSSProperties = {};
 	const imageStyle: React.CSSProperties = {};
@@ -134,6 +146,7 @@ export const ImageElementComponent = ({
 			onSettingsOpened={() => onSettingsOpened(element)}
 			onMoveUp={onMoveUp}
 			onMoveDown={onMoveDown}
+			onDelete={onDelete}
 		>
 			<div className="image-element" style={elementStyle}>
 				<img
@@ -169,11 +182,13 @@ export const ButtonElementComponent = ({
 	onSettingsOpened,
 	onMoveUp,
 	onMoveDown,
+	onDelete,
 }: {
 	element: ButtonElement;
 	onSettingsOpened: OpenSettingsCallback;
 	onMoveUp?: () => void;
 	onMoveDown?: () => void;
+	onDelete?: () => void;
 }) => {
 	return (
 		<LandingElementEditContainer
@@ -181,6 +196,7 @@ export const ButtonElementComponent = ({
 			onSettingsOpened={() => onSettingsOpened(element)}
 			onMoveUp={onMoveUp}
 			onMoveDown={onMoveDown}
+			onDelete={onDelete}
 		>
 			<LinkButton
 				text={element.value}
@@ -196,17 +212,20 @@ export const ContainerElementComponent = ({
 	children,
 	onMoveUp,
 	onMoveDown,
+	onDelete,
 }: {
 	element: ContainerElement;
 	children: React.ReactNode[];
 	onMoveUp?: () => void;
 	onMoveDown?: () => void;
+	onDelete?: () => void;
 }) => {
 	return (
 		<LandingElementEditContainer
 			key={element.id}
 			onMoveUp={onMoveUp}
 			onMoveDown={onMoveDown}
+			onDelete={onDelete}
 		>
 			{children}
 		</LandingElementEditContainer>

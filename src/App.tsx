@@ -20,6 +20,7 @@ import {
 } from "./components/element_factory";
 import { buildSettingsForLandingElement } from "./components/element_settings_builder";
 import { createElementHandler } from "./components/handlers/create_element";
+import { deleteElementHandler } from "./components/handlers/delete_element";
 import { moveElementHandler } from "./components/handlers/move_element";
 import { landingElementUpdater } from "./components/handlers/update_element";
 import { type LandingElement, type LandingPage } from "./components/types";
@@ -55,6 +56,7 @@ function App() {
 	const updater = landingElementUpdater(landingPage, updateData);
 	const moveHandler = moveElementHandler(landingPage, updateData);
 	const createElement = createElementHandler(landingPage, updateData);
+	const deleteHandler = deleteElementHandler(landingPage, updateData);
 
 	const handleRender = (data: string) => {
 		try {
@@ -108,6 +110,7 @@ function App() {
 									landingPage.elements,
 									onSettingsOpened,
 									moveHandler,
+									deleteHandler,
 								)}
 						</PreviewCanvas>
 					</PreviewContainer>
