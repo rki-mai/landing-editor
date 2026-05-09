@@ -1,6 +1,6 @@
 .app-container {
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	height: 100vh;
 	overflow-y: hidden;
 }
@@ -13,7 +13,7 @@
 	flex: 1;
 	padding: 20px;
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	gap: 20px;
 	overflow-y: hidden;
 }
