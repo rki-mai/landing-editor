@@ -12,6 +12,31 @@ export const updateElement = (
 	};
 };
 
+export const normalizeIndexes = (page: LandingPage): LandingPage => {
+	const newElements = page.elements.map((el) => ({ ...el }));
+	const groupsByParent: Record<string, LandingElement[]> = {};
+
+	for (const element of newElements) {
+		if (!groupsByParent[element.parentId]) {
+			groupsByParent[element.parentId] = [];
+		}
+		groupsByParent[element.parentId].push(element);
+	}
+
+	for (const parentId in groupsByParent) {
+		const siblings = groupsByParent[parentId];
+		siblings.sort((a, b) => a.index - b.index);
+		siblings.forEach((element, newIndex) => {
+			element.index = newIndex;
+		});
+	}
+
+	return {
+		...page,
+		elements: newElements,
+	};
+};
+
 // biome-ignore lint/suspicious/noExplicitAny: We need any here
 export const landingPageUpdater = <Args extends any[]>(
 	updater: (page: LandingPage, ...args: Args) => LandingPage,

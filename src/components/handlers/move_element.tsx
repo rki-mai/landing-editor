@@ -1,5 +1,5 @@
 import type { LandingElement, LandingPage } from "../types";
-import { landingPageUpdater, updateElement } from "./common";
+import { landingPageUpdater, updateElement, normalizeIndexes } from "./common";
 
 type Direction = "up" | "down";
 
@@ -79,30 +79,7 @@ const getUpdatedPosition = (
 	}
 };
 
-const normalizeIndexes = (page: LandingPage): LandingPage => {
-	const newElements = page.elements.map((el) => ({ ...el }));
-	const groupsByParent: Record<string, LandingElement[]> = {};
 
-	for (const element of newElements) {
-		if (!groupsByParent[element.parentId]) {
-			groupsByParent[element.parentId] = [];
-		}
-		groupsByParent[element.parentId].push(element);
-	}
-
-	for (const parentId in groupsByParent) {
-		const siblings = groupsByParent[parentId];
-		siblings.sort((a, b) => a.index - b.index);
-		siblings.forEach((element, newIndex) => {
-			element.index = newIndex;
-		});
-	}
-
-	return {
-		...page,
-		elements: newElements,
-	};
-};
 
 export const moveElementHandler = landingPageUpdater(
 	(page, element: LandingElement, direction: Direction) => {

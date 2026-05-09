@@ -1,5 +1,5 @@
 import type { LandingElement } from "../types";
-import { landingPageUpdater } from "./common";
+import { landingPageUpdater, normalizeIndexes } from "./common";
 
 function getAllChildrenIds(elements: LandingElement[], parentId: string): Set<string> {
 	const ids = new Set<string>();
@@ -18,9 +18,10 @@ function getAllChildrenIds(elements: LandingElement[], parentId: string): Set<st
 export const deleteElementHandler = landingPageUpdater(
 	(page, element: LandingElement) => {
 		const idsToDelete = getAllChildrenIds(page.elements, element.id);
-		return {
+		const pageAfterDelete = {
 			...page,
 			elements: page.elements.filter((el) => !idsToDelete.has(el.id)),
 		};
+		return normalizeIndexes(pageAfterDelete);
 	},
 );
