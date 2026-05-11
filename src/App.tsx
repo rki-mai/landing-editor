@@ -21,8 +21,8 @@ import { createElementHandler } from "./components/handlers/create_element";
 import { deleteElementHandler } from "./components/handlers/delete_element";
 import { moveElementHandler } from "./components/handlers/move_element";
 import { landingElementUpdater } from "./components/handlers/update_element";
-import { type LandingElement, type LandingPage } from "./components/types";
 import * as landingPageStorage from "./components/landing_page_storage";
+import { type LandingElement, type LandingPage } from "./components/types";
 
 function findElementById(page: LandingPage, elementId: string): LandingElement {
 	for (const element of page.elements) {
