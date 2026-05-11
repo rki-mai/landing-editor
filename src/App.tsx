@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { renderElements } from "./components/editor_components_renderer";
 import { PreviewCanvas } from "./components/preview_canvas";
 import "./App.css";
@@ -22,10 +22,7 @@ import { deleteElementHandler } from "./components/handlers/delete_element";
 import { moveElementHandler } from "./components/handlers/move_element";
 import { landingElementUpdater } from "./components/handlers/update_element";
 import { type LandingElement, type LandingPage } from "./components/types";
-import {
-	getInitialLandingPage,
-	saveLandingPage,
-} from "./components/landing_page_storage";
+import * as landingPageStorage from "./components/landing_page_storage";
 
 function findElementById(page: LandingPage, elementId: string): LandingElement {
 	for (const element of page.elements) {
@@ -39,12 +36,14 @@ function findElementById(page: LandingPage, elementId: string): LandingElement {
 
 function App() {
 	const [landingPage, setLandingPage] = useState<LandingPage>(
-		getInitialLandingPage(),
+		landingPageStorage.getInitialLandingPage(),
 	);
 
-	useEffect(() => {
-		saveLandingPage(landingPage);
-	}, [landingPage]);
+	const updateLandingPage = (updated: LandingPage) => {
+		setLandingPage(updated);
+		landingPageStorage.saveLandingPage(updated);
+	};
+
 	const [settingsElementId, setSettingsElementId] = useState<string | null>(
 		null,
 	);
@@ -53,10 +52,10 @@ function App() {
 		setSettingsElementId(element.id);
 	};
 
-	const updater = landingElementUpdater(landingPage, setLandingPage);
-	const moveHandler = moveElementHandler(landingPage, setLandingPage);
-	const createElement = createElementHandler(landingPage, setLandingPage);
-	const deleteHandler = deleteElementHandler(landingPage, setLandingPage);
+	const updater = landingElementUpdater(landingPage, updateLandingPage);
+	const moveHandler = moveElementHandler(landingPage, updateLandingPage);
+	const createElement = createElementHandler(landingPage, updateLandingPage);
+	const deleteHandler = deleteElementHandler(landingPage, updateLandingPage);
 
 	return (
 		<div className="app-container">
