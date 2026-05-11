@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { renderElements } from "./components/editor_components_renderer";
 import { PreviewCanvas } from "./components/preview_canvas";
 import "./App.css";
@@ -22,8 +22,10 @@ import { deleteElementHandler } from "./components/handlers/delete_element";
 import { moveElementHandler } from "./components/handlers/move_element";
 import { landingElementUpdater } from "./components/handlers/update_element";
 import { type LandingElement, type LandingPage } from "./components/types";
-
-const DEFAULT_PAGE: LandingPage = { elements: [] };
+import {
+	getInitialLandingPage,
+	saveLandingPage,
+} from "./components/landing_page_storage";
 
 function findElementById(page: LandingPage, elementId: string): LandingElement {
 	for (const element of page.elements) {
@@ -36,7 +38,13 @@ function findElementById(page: LandingPage, elementId: string): LandingElement {
 }
 
 function App() {
-	const [landingPage, setLandingPage] = useState<LandingPage>(DEFAULT_PAGE);
+	const [landingPage, setLandingPage] = useState<LandingPage>(
+		getInitialLandingPage(),
+	);
+
+	useEffect(() => {
+		saveLandingPage(landingPage);
+	}, [landingPage]);
 	const [settingsElementId, setSettingsElementId] = useState<string | null>(
 		null,
 	);
