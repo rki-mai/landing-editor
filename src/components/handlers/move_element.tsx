@@ -1,4 +1,5 @@
 import type { LandingElement, LandingPage } from "../types";
+import { findElementById } from "../utils";
 import { landingPageUpdater, normalizeIndexes, updateElement } from "./common";
 
 type Direction = "up" | "down";
@@ -7,19 +8,6 @@ interface ElementPosition {
 	parentId: string;
 	index: number;
 }
-
-const findElementById = (
-	page: LandingPage,
-	elementId: string,
-): LandingElement => {
-	for (const element of page.elements) {
-		if (element.id === elementId) {
-			return element;
-		}
-	}
-
-	throw new Error(`Element with ID '${elementId}' not found`);
-};
 
 const getNeighborElements = (
 	element: LandingElement,

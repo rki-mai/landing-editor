@@ -21,18 +21,10 @@ import { createElementHandler } from "./components/handlers/create_element";
 import { deleteElementHandler } from "./components/handlers/delete_element";
 import { moveElementHandler } from "./components/handlers/move_element";
 import { landingElementUpdater } from "./components/handlers/update_element";
+import { calculateDiff } from "./components/landing_diff";
 import * as landingPageStorage from "./components/landing_page_storage";
 import { type LandingElement, type LandingPage } from "./components/types";
-
-function findElementById(page: LandingPage, elementId: string): LandingElement {
-	for (const element of page.elements) {
-		if (element.id === elementId) {
-			return element;
-		}
-	}
-
-	throw new Error(`Element with ID '${elementId}' not found`);
-}
+import { findElementById } from "./components/utils";
 
 function App() {
 	const [landingPage, setLandingPage] = useState<LandingPage>(
@@ -40,6 +32,9 @@ function App() {
 	);
 
 	const updateLandingPage = (updated: LandingPage) => {
+		const diff = calculateDiff(landingPage, updated);
+		console.log("Calculated diff:", diff);
+
 		setLandingPage(updated);
 		landingPageStorage.saveLandingPage(updated);
 	};

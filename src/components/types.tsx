@@ -1,62 +1,62 @@
 export type ElementId = string;
 export type Color = string;
 
-export interface BaseElement {
+export type BaseElement = {
 	id: ElementId;
 	element: string;
 	parentId: string;
 	index: number;
-}
+};
 
-export interface TextElementStyles {
+export type TextElementStyles = {
 	color?: Color;
 	fontSize?: number;
-}
+};
 
-export interface TextElement extends BaseElement {
+export type TextElement = BaseElement & {
 	element: "text";
 	value: string;
 	styles?: TextElementStyles;
-}
+};
 
-export interface LinkElementStyles {
+export type LinkElementStyles = {
 	textDecoration?: "underline" | "none";
-}
+};
 
-export interface LinkElement extends BaseElement {
+export type LinkElement = BaseElement & {
 	element: "link";
 	value: string;
 	src: string;
 	styles?: LinkElementStyles;
-}
+};
 
-export interface ImageElementStyles {
+export type ImageElementStyles = {
 	width?: number;
 	position?: "left" | "center" | "right";
-}
+};
 
-export interface ImageElement extends BaseElement {
+export type ImageElement = BaseElement & {
 	element: "image";
 	value: string;
 	alt?: string;
 	styles?: ImageElementStyles;
-}
+};
 
-export interface ButtonElementStyles {
+export type ButtonElementStyles = {
 	backgroundColor?: Color;
 	color?: Color;
-}
+};
 
-export interface ButtonElement extends BaseElement {
+export type ButtonElement = BaseElement & {
 	element: "button";
 	value: string;
 	src: string;
 	styles?: ButtonElementStyles;
-}
+};
 
-export interface ContainerElement extends BaseElement {
+export type ContainerElement = BaseElement & {
 	element: "container";
-}
+};
 
 export type LandingElement =
 	| TextElement
@@ -65,6 +65,6 @@ export type LandingElement =
 	| ButtonElement
 	| ContainerElement;
 
-export interface LandingPage {
+export type LandingPage = {
 	elements: LandingElement[];
-}
+};
