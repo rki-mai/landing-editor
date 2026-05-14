@@ -23,6 +23,7 @@ import { moveElementHandler } from "./components/handlers/move_element";
 import { landingElementUpdater } from "./components/handlers/update_element";
 import * as landingPageStorage from "./components/landing_page_storage";
 import { type LandingElement, type LandingPage } from "./components/types";
+import { calculateDiff } from "./components/landing_diff";
 
 function findElementById(page: LandingPage, elementId: string): LandingElement {
 	for (const element of page.elements) {
@@ -40,6 +41,9 @@ function App() {
 	);
 
 	const updateLandingPage = (updated: LandingPage) => {
+		const diff = calculateDiff(landingPage, updated);
+		console.log("Calculated diff:", diff);
+
 		setLandingPage(updated);
 		landingPageStorage.saveLandingPage(updated);
 	};
