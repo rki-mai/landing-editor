@@ -1,4 +1,5 @@
 import type { LandingElement, LandingPage } from "./types";
+import { getElementById } from "./utils";
 
 interface UpdateObject extends Record<string, UpdateValue> {}
 type UpdateValue = string | number | UpdateObject;
@@ -21,15 +22,6 @@ type DeleteElementAction = {
 
 type Action = CreateElementAction | UpdateElementAction | DeleteElementAction;
 
-const findElementById = (page: LandingPage, id: string) => {
-	for (const element of page.elements) {
-		if (element.id === id) {
-			return element;
-		}
-	}
-	return null;
-};
-
 const getElementIds = (page: LandingPage) => {
 	return page.elements.map((element) => element.id);
 };
@@ -42,8 +34,8 @@ export const calculateDiff = (source: LandingPage, updated: LandingPage) => {
 	const actions: Action[] = [];
 
 	allKeys.forEach((key) => {
-		const sourceElement = findElementById(source, key);
-		const updatedElement = findElementById(updated, key);
+		const sourceElement = getElementById(source, key);
+		const updatedElement = getElementById(updated, key);
 
 		if (!sourceElement && updatedElement) {
 			actions.push({ type: "create", element: updatedElement });

@@ -24,16 +24,7 @@ import { landingElementUpdater } from "./components/handlers/update_element";
 import * as landingPageStorage from "./components/landing_page_storage";
 import { type LandingElement, type LandingPage } from "./components/types";
 import { calculateDiff } from "./components/landing_diff";
-
-function findElementById(page: LandingPage, elementId: string): LandingElement {
-	for (const element of page.elements) {
-		if (element.id === elementId) {
-			return element;
-		}
-	}
-
-	throw new Error(`Element with ID '${elementId}' not found`);
-}
+import { findElementById } from "./components/utils";
 
 function App() {
 	const [landingPage, setLandingPage] = useState<LandingPage>(
