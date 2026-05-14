@@ -21,9 +21,9 @@ import { createElementHandler } from "./components/handlers/create_element";
 import { deleteElementHandler } from "./components/handlers/delete_element";
 import { moveElementHandler } from "./components/handlers/move_element";
 import { landingElementUpdater } from "./components/handlers/update_element";
+import { calculateDiff } from "./components/landing_diff";
 import * as landingPageStorage from "./components/landing_page_storage";
 import { type LandingElement, type LandingPage } from "./components/types";
-import { calculateDiff } from "./components/landing_diff";
 import { findElementById } from "./components/utils";
 
 function App() {
