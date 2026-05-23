@@ -5,20 +5,12 @@ export interface ApiClientConfig {
 	token?: string;
 }
 
-export interface TextElement {
-	element: "text";
-	value: string;
-	id: string;
-	parentId: string;
-	styles?: Record<string, string>;
-}
-
 interface UpdateObject extends Record<string, UpdateValue> {}
 type UpdateValue = string | number | UpdateObject;
 
 export interface CreateOperation {
 	operation: "create";
-	data: TextElement;
+	data: DraftElement;
 }
 
 export interface UpdateData {
@@ -42,23 +34,53 @@ export interface DeleteOperation {
 
 export type Operation = CreateOperation | UpdateOperation | DeleteOperation;
 
+const ElementStylesSchema = z.record(z.string(), z.string());
+
 const BaseElementSchema = z
 	.object({
 		id: z.string(),
 		parentId: z.string(),
 		index: z.number(),
-		version: z.number(),
 	})
 	.strip();
 
 const TextElementSchema = BaseElementSchema.extend({
 	element: z.literal("text"),
 	value: z.string(),
-	styles: z.optional(z.record(z.string(), z.string())),
+	styles: z.optional(ElementStylesSchema),
+}).strip();
+
+const ContainerElementSchema = BaseElementSchema.extend({
+	element: z.literal("container"),
+}).strip();
+
+const LinkElementSchema = BaseElementSchema.extend({
+	element: z.literal("link"),
+	value: z.string(),
+	src: z.string(),
+	styles: z.optional(ElementStylesSchema),
+}).strip();
+
+const ImageElementSchema = BaseElementSchema.extend({
+	element: z.literal("image"),
+	value: z.string(),
+	alt: z.optional(z.string()),
+	styles: z.optional(ElementStylesSchema),
+}).strip();
+
+const ButtonElementSchema = BaseElementSchema.extend({
+	element: z.literal("button"),
+	value: z.string(),
+	src: z.string(),
+	styles: z.optional(ElementStylesSchema),
 }).strip();
 
 const LandingElementSchema = z.discriminatedUnion("element", [
 	TextElementSchema,
+	ContainerElementSchema,
+	LinkElementSchema,
+	ImageElementSchema,
+	ButtonElementSchema,
 ]);
 
 const DraftSchema = z.array(LandingElementSchema);

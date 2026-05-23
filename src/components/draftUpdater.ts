@@ -1,4 +1,5 @@
 import type { ApiClient, Operation } from "./apiClient";
+import { convertToDraftOperation } from "./apiTypesConvertion";
 import type { Action } from "./landing_diff";
 
 const actionQueue: Action[] = [];
@@ -43,39 +44,4 @@ const getOperation = async () => {
 	}
 
 	return actionQueue.shift()!;
-};
-
-const convertToDraftOperation = (action: Action): Operation => {
-	if (action.type === "create") {
-		const newElement = action.element;
-		if (newElement.element == "text") {
-			const styles: Record<string, string> = {};
-
-			if (newElement.styles) {
-				if (newElement.styles.fontSize)
-					styles["fontSize"] = newElement.styles.fontSize.toString();
-				if (newElement.styles.color) styles["color"] = newElement.styles.color;
-			}
-
-			return {
-				operation: "create",
-				data: {
-					...newElement,
-					styles: styles,
-				},
-			};
-		}
-	} else if (action.type === "update") {
-		return {
-			operation: "update",
-			data: { id: action.id, fields: action.fields },
-		};
-	} else if (action.type === "delete") {
-		return {
-			operation: "delete",
-			data: { id: action.id },
-		};
-	}
-
-	throw new Error("Unsupported action " + JSON.stringify(action));
 };
