@@ -22,21 +22,12 @@ import { deleteElementHandler } from "./components/handlers/delete_element";
 import { moveElementHandler } from "./components/handlers/move_element";
 import { landingElementUpdater } from "./components/handlers/update_element";
 import { calculateDiff } from "./components/landing_diff";
-import * as landingPageStorage from "./components/landing_page_storage";
 import { type LandingElement, type LandingPage } from "./components/types";
 import { findElementById } from "./components/utils";
-import { ApiClient, type Operation } from "./components/apiClient";
+import { ApiClient } from "./components/apiClient";
 import { runBackgroundTask } from "./components/backgroundTask";
 import { loadPageFromApi } from "./components/landingPageApiLoader";
-
-async function updateDraft(
-	client: ApiClient,
-	projectId: string,
-	operation: Operation,
-) {
-	console.log(`Apply changes for '${projectId}'`);
-	await client.updateDraft(projectId, operation);
-}
+import * as draftUpdater from "./components/draftUpdater";
 
 function App() {
 	const projectId = import.meta.env.VITE_PROJECT_ID;
@@ -52,51 +43,21 @@ function App() {
 		setLandingPage(landingPage);
 	});
 
+	runBackgroundTask("draftUpdater", async () => {
+		await draftUpdater.run(apiClient, projectId);
+	});
+
 	const updateLandingPage = (updated: LandingPage) => {
 		if (landingPage === null) {
 			console.warn("Cannot update landing page: current state is null");
 			return;
 		}
 
-		const diff = calculateDiff(landingPage, updated);
-		console.log("Calculated diff:", diff);
+		for (const action of calculateDiff(landingPage, updated)) {
+			draftUpdater.enqueueAction(action);
+		}
 
 		setLandingPage(updated);
-		landingPageStorage.saveLandingPage(updated);
-
-		for (const action of diff) {
-			if (action.type === "create") {
-				const newElement = action.element;
-				if (newElement.element == "text") {
-					const styles: Record<string, string> = {};
-
-					if (newElement.styles) {
-						if (newElement.styles.fontSize)
-							styles["fontSize"] = newElement.styles.fontSize.toString();
-						if (newElement.styles.color)
-							styles["color"] = newElement.styles.color;
-					}
-
-					updateDraft(apiClient, projectId, {
-						operation: "create",
-						data: {
-							...newElement,
-							styles: styles,
-						},
-					});
-				}
-			} else if (action.type === "update") {
-				updateDraft(apiClient, projectId, {
-					operation: "update",
-					data: { id: action.id, fields: action.fields },
-				});
-			} else if (action.type === "delete") {
-				updateDraft(apiClient, projectId, {
-					operation: "delete",
-					data: { id: action.id },
-				});
-			}
-		}
 	};
 
 	const [settingsElementId, setSettingsElementId] = useState<string | null>(

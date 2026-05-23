@@ -20,7 +20,10 @@ type DeleteElementAction = {
 	id: string;
 };
 
-type Action = CreateElementAction | UpdateElementAction | DeleteElementAction;
+export type Action =
+	| CreateElementAction
+	| UpdateElementAction
+	| DeleteElementAction;
 
 const getElementIds = (page: LandingPage) => {
 	return page.elements.map((element) => element.id);
