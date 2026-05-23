@@ -26,12 +26,8 @@ import * as landingPageStorage from "./components/landing_page_storage";
 import { type LandingElement, type LandingPage } from "./components/types";
 import { findElementById } from "./components/utils";
 import { ApiClient, type Operation } from "./components/apiClient";
-
-async function checkGettingDraft(client: ApiClient, projectId: string) {
-	console.log(`Get project '${projectId}' ...`);
-	const project = await client.getDraft(projectId);
-	console.log("Landing page:", project);
-}
+import { runBackgroundTask } from "./components/backgroundTask";
+import { loadPageFromApi } from "./components/landingPageApiLoader";
 
 async function updateDraft(
 	client: ApiClient,
@@ -49,13 +45,19 @@ function App() {
 		token: import.meta.env.VITE_ACCESS_KEY,
 	});
 
-	checkGettingDraft(apiClient, projectId);
+	const [landingPage, setLandingPage] = useState<LandingPage | null>(null);
 
-	const [landingPage, setLandingPage] = useState<LandingPage>(
-		landingPageStorage.getInitialLandingPage(),
-	);
+	runBackgroundTask("fetchInitialDraft", async () => {
+		const landingPage = await loadPageFromApi(apiClient, projectId);
+		setLandingPage(landingPage);
+	});
 
 	const updateLandingPage = (updated: LandingPage) => {
+		if (landingPage === null) {
+			console.warn("Cannot update landing page: current state is null");
+			return;
+		}
+
 		const diff = calculateDiff(landingPage, updated);
 		console.log("Calculated diff:", diff);
 

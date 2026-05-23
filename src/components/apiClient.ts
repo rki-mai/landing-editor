@@ -62,6 +62,7 @@ const LandingElementSchema = z.discriminatedUnion("element", [
 ]);
 
 const DraftSchema = z.array(LandingElementSchema);
+export type DraftElement = z.infer<typeof LandingElementSchema>;
 export type Draft = z.output<typeof DraftSchema>;
 
 export class HttpError extends Error {

@@ -11,7 +11,7 @@ export const PreviewCanvas = ({
 				<div className="preview-content">{children}</div>
 			) : (
 				<div className="empty-state">
-					<p>Нажмите кнопку Render, чтобы увидеть предпросмотр</p>
+					<p>Loading...</p>
 				</div>
 			)}
 		</div>
