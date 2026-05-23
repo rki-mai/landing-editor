@@ -25,8 +25,32 @@ import { calculateDiff } from "./components/landing_diff";
 import * as landingPageStorage from "./components/landing_page_storage";
 import { type LandingElement, type LandingPage } from "./components/types";
 import { findElementById } from "./components/utils";
+import { ApiClient, type Operation } from "./components/apiClient";
+
+async function checkGettingDraft(client: ApiClient, projectId: string) {
+	console.log(`Get project '${projectId}' ...`);
+	const project = await client.getDraft(projectId);
+	console.log("Landing page:", project);
+}
+
+async function updateDraft(
+	client: ApiClient,
+	projectId: string,
+	operation: Operation,
+) {
+	console.log(`Apply changes for '${projectId}'`);
+	await client.updateDraft(projectId, operation);
+}
 
 function App() {
+	const projectId = import.meta.env.VITE_PROJECT_ID;
+	const apiClient = new ApiClient({
+		baseUrl: "",
+		token: import.meta.env.VITE_ACCESS_KEY,
+	});
+
+	checkGettingDraft(apiClient, projectId);
+
 	const [landingPage, setLandingPage] = useState<LandingPage>(
 		landingPageStorage.getInitialLandingPage(),
 	);
@@ -37,6 +61,40 @@ function App() {
 
 		setLandingPage(updated);
 		landingPageStorage.saveLandingPage(updated);
+
+		for (const action of diff) {
+			if (action.type === "create") {
+				const newElement = action.element;
+				if (newElement.element == "text") {
+					const styles: Record<string, string> = {};
+
+					if (newElement.styles) {
+						if (newElement.styles.fontSize)
+							styles["fontSize"] = newElement.styles.fontSize.toString();
+						if (newElement.styles.color)
+							styles["color"] = newElement.styles.color;
+					}
+
+					updateDraft(apiClient, projectId, {
+						operation: "create",
+						data: {
+							...newElement,
+							styles: styles,
+						},
+					});
+				}
+			} else if (action.type === "update") {
+				updateDraft(apiClient, projectId, {
+					operation: "update",
+					data: { id: action.id, fields: action.fields },
+				});
+			} else if (action.type === "delete") {
+				updateDraft(apiClient, projectId, {
+					operation: "delete",
+					data: { id: action.id },
+				});
+			}
+		}
 	};
 
 	const [settingsElementId, setSettingsElementId] = useState<string | null>(
