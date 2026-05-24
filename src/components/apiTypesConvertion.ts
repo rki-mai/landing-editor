@@ -1,5 +1,6 @@
-import type { DraftElement, Operation } from "./apiClient";
 import { z } from "zod";
+import type { DraftElement, Operation } from "./apiClient";
+import type { Action } from "./landing_diff";
 import type {
 	ButtonElementStyles,
 	ImageElementStyles,
@@ -7,7 +8,6 @@ import type {
 	LinkElementStyles,
 	TextElementStyles,
 } from "./types";
-import type { Action } from "./landing_diff";
 
 type DraftStyles = Record<string, string>;
 

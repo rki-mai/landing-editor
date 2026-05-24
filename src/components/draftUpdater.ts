@@ -1,7 +1,7 @@
 import type { ApiClient, Operation } from "./apiClient";
 import { convertToDraftOperation } from "./apiTypesConvertion";
 import { debounceCall } from "./debounceCall";
-import { calculateDiff, type Action } from "./landing_diff";
+import { type Action, calculateDiff } from "./landing_diff";
 import type { LandingPage } from "./types";
 
 const CHECK_INTERVAL = 100;

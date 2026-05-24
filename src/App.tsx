@@ -2,6 +2,9 @@ import { useState } from "react";
 import { renderElements } from "./components/editor_components_renderer";
 import { PreviewCanvas } from "./components/preview_canvas";
 import "./App.css";
+import { ApiClient } from "./components/apiClient";
+import { runBackgroundTask } from "./components/backgroundTask";
+import * as draftUpdater from "./components/draftUpdater";
 import {
 	ActionListItem,
 	ActionListMenuItem,
@@ -21,12 +24,9 @@ import { createElementHandler } from "./components/handlers/create_element";
 import { deleteElementHandler } from "./components/handlers/delete_element";
 import { moveElementHandler } from "./components/handlers/move_element";
 import { landingElementUpdater } from "./components/handlers/update_element";
+import { loadPageFromApi } from "./components/landingPageApiLoader";
 import { type LandingElement, type LandingPage } from "./components/types";
 import { findElementById } from "./components/utils";
-import { ApiClient } from "./components/apiClient";
-import { runBackgroundTask } from "./components/backgroundTask";
-import { loadPageFromApi } from "./components/landingPageApiLoader";
-import * as draftUpdater from "./components/draftUpdater";
 
 function App() {
 	const projectId = import.meta.env.VITE_PROJECT_ID;
