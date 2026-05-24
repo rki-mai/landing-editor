@@ -2,6 +2,9 @@ import { useState } from "react";
 import { renderElements } from "./components/editor_components_renderer";
 import { PreviewCanvas } from "./components/preview_canvas";
 import "./App.css";
+import { ApiClient } from "./components/apiClient";
+import { runBackgroundTask } from "./components/backgroundTask";
+import * as draftUpdater from "./components/draftUpdater";
 import {
 	ActionListItem,
 	ActionListMenuItem,
@@ -21,22 +24,31 @@ import { createElementHandler } from "./components/handlers/create_element";
 import { deleteElementHandler } from "./components/handlers/delete_element";
 import { moveElementHandler } from "./components/handlers/move_element";
 import { landingElementUpdater } from "./components/handlers/update_element";
-import { calculateDiff } from "./components/landing_diff";
-import * as landingPageStorage from "./components/landing_page_storage";
+import { loadPageFromApi } from "./components/landingPageApiLoader";
 import { type LandingElement, type LandingPage } from "./components/types";
 import { findElementById } from "./components/utils";
 
 function App() {
-	const [landingPage, setLandingPage] = useState<LandingPage>(
-		landingPageStorage.getInitialLandingPage(),
-	);
+	const projectId = import.meta.env.VITE_PROJECT_ID;
+	const apiClient = new ApiClient({
+		baseUrl: "",
+		token: import.meta.env.VITE_ACCESS_KEY,
+	});
+
+	const [landingPage, setLandingPage] = useState<LandingPage | null>(null);
+
+	runBackgroundTask("fetchInitialDraft", async () => {
+		const landingPage = await loadPageFromApi(apiClient, projectId);
+		setLandingPage(landingPage);
+
+		runBackgroundTask("draftUpdater", async () => {
+			await draftUpdater.run(apiClient, projectId, landingPage);
+		});
+	});
 
 	const updateLandingPage = (updated: LandingPage) => {
-		const diff = calculateDiff(landingPage, updated);
-		console.log("Calculated diff:", diff);
-
+		draftUpdater.updateLandingPage(updated);
 		setLandingPage(updated);
-		landingPageStorage.saveLandingPage(updated);
 	};
 
 	const [settingsElementId, setSettingsElementId] = useState<string | null>(

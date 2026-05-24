@@ -16,7 +16,7 @@ export const createElementHandler = landingPageUpdater(
 			...page,
 			elements: [
 				...page.elements,
-				elementFactory("root", rootElementAmount, crypto.randomUUID()),
+				elementFactory("root", rootElementAmount, `lb-${crypto.randomUUID()}`),
 			],
 		};
 	},
