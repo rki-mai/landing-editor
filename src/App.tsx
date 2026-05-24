@@ -21,7 +21,6 @@ import { createElementHandler } from "./components/handlers/create_element";
 import { deleteElementHandler } from "./components/handlers/delete_element";
 import { moveElementHandler } from "./components/handlers/move_element";
 import { landingElementUpdater } from "./components/handlers/update_element";
-import { calculateDiff } from "./components/landing_diff";
 import { type LandingElement, type LandingPage } from "./components/types";
 import { findElementById } from "./components/utils";
 import { ApiClient } from "./components/apiClient";
@@ -41,22 +40,14 @@ function App() {
 	runBackgroundTask("fetchInitialDraft", async () => {
 		const landingPage = await loadPageFromApi(apiClient, projectId);
 		setLandingPage(landingPage);
-	});
 
-	runBackgroundTask("draftUpdater", async () => {
-		await draftUpdater.run(apiClient, projectId);
+		runBackgroundTask("draftUpdater", async () => {
+			await draftUpdater.run(apiClient, projectId, landingPage);
+		});
 	});
 
 	const updateLandingPage = (updated: LandingPage) => {
-		if (landingPage === null) {
-			console.warn("Cannot update landing page: current state is null");
-			return;
-		}
-
-		for (const action of calculateDiff(landingPage, updated)) {
-			draftUpdater.enqueueAction(action);
-		}
-
+		draftUpdater.updateLandingPage(updated);
 		setLandingPage(updated);
 	};
 

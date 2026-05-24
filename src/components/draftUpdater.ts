@@ -1,17 +1,42 @@
 import type { ApiClient, Operation } from "./apiClient";
 import { convertToDraftOperation } from "./apiTypesConvertion";
-import type { Action } from "./landing_diff";
+import { debounceCall } from "./debounceCall";
+import { calculateDiff, type Action } from "./landing_diff";
+import type { LandingPage } from "./types";
 
-const actionQueue: Action[] = [];
 const CHECK_INTERVAL = 100;
 const RETRY_INTERVAL = 5000;
+const DEBOUNCE_DELAY = 400;
 
-export const enqueueAction = (action: Action) => {
-	actionQueue.push(action);
-};
+const actionQueue: Action[] = [];
+let lastLandingPageState: LandingPage | null = null;
 
-export const run = async (client: ApiClient, projectId: string) => {
+export const updateLandingPage = debounceCall((page: LandingPage) => {
+	if (lastLandingPageState === null) {
+		console.warn(
+			"Unable to update landing page: last landing page state is null",
+		);
+		return;
+	}
+
+	console.log("[DraftUpdater] Source landling page: ", lastLandingPageState);
+	console.log("[DraftUpdater] Source landling page: ", page);
+
+	for (const action of calculateDiff(lastLandingPageState, page)) {
+		console.log("[DraftUpdater] Enqueuing action: ", action);
+		actionQueue.push(action);
+	}
+
+	lastLandingPageState = page;
+}, DEBOUNCE_DELAY);
+
+export const run = async (
+	client: ApiClient,
+	projectId: string,
+	initialState: LandingPage,
+) => {
 	console.log("[DraftUpdater] Starting...");
+	lastLandingPageState = initialState;
 
 	while (true) {
 		const action = await getOperation();
