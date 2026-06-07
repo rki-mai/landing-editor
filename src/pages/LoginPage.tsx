@@ -1,26 +1,31 @@
 import { useState } from "react";
 import { ApiClient, Unauthorized } from "../components/apiClient";
 import styles from "./LoginPage.module.css";
+import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
 
 export default function LoginPage() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState<string | null>(null);
 
+	const apiClient = new ApiClient({
+		baseUrl: "",
+	});
+
+	const tokenProvider = new LocalStorageTokenProvider(apiClient);
+
 	const handleLogin = async (e: React.SubmitEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setError(null);
-
-		const apiClient = new ApiClient({
-			baseUrl: "",
-		});
 
 		try {
 			const result = await apiClient.login({
 				email,
 				password,
 			});
-			console.log(result);
+
+			tokenProvider.saveCredentials(result);
+			window.location.href = "/";
 		} catch (err) {
 			if (err instanceof Unauthorized) {
 				setError("Неверные данные для входа");

@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { renderElements } from "../components/editor_components_renderer";
 import { PreviewCanvas } from "../components/preview_canvas";
-import { ApiClient } from "../components/apiClient";
+import {
+	ApiClient,
+	TokenProviderError,
+	Unauthorized,
+} from "../components/apiClient";
 import { runBackgroundTask } from "../components/backgroundTask";
 import * as draftUpdater from "../components/draftUpdater";
 import {
@@ -26,23 +30,35 @@ import { landingElementUpdater } from "../components/handlers/update_element";
 import { loadPageFromApi } from "../components/landingPageApiLoader";
 import { type LandingElement, type LandingPage } from "../components/types";
 import { findElementById } from "../components/utils";
+import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
 
 function EditorPage() {
 	const projectId = import.meta.env.VITE_PROJECT_ID;
+
+	const tokenProvider = new LocalStorageTokenProvider(
+		new ApiClient({ baseUrl: "" }),
+	);
+
 	const apiClient = new ApiClient({
 		baseUrl: "",
-		token: import.meta.env.VITE_ACCESS_KEY,
+		tokenProvider,
 	});
 
 	const [landingPage, setLandingPage] = useState<LandingPage | null>(null);
 
 	runBackgroundTask("fetchInitialDraft", async () => {
-		const landingPage = await loadPageFromApi(apiClient, projectId);
-		setLandingPage(landingPage);
+		try {
+			const landingPage = await loadPageFromApi(apiClient, projectId);
+			setLandingPage(landingPage);
 
-		runBackgroundTask("draftUpdater", async () => {
-			await draftUpdater.run(apiClient, projectId, landingPage);
-		});
+			runBackgroundTask("draftUpdater", async () => {
+				await draftUpdater.run(apiClient, projectId, landingPage);
+			});
+		} catch (err) {
+			if (err instanceof TokenProviderError || err instanceof Unauthorized) {
+				window.location.href = "/login";
+			}
+		}
 	});
 
 	const updateLandingPage = (updated: LandingPage) => {
