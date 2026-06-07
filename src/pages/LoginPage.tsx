@@ -25,7 +25,7 @@ export default function LoginPage() {
 			});
 
 			tokenProvider.saveCredentials(result);
-			window.location.href = "/";
+			window.location.href = "/edit?projectId=exampleProject";
 		} catch (err) {
 			if (err instanceof Unauthorized) {
 				setError("Неверные данные для входа");

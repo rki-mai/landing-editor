@@ -32,9 +32,11 @@ import { PreviewCanvas } from "../components/preview_canvas";
 import { type LandingElement, type LandingPage } from "../components/types";
 import { findElementById } from "../components/utils";
 
-function EditorPage() {
-	const projectId = import.meta.env.VITE_PROJECT_ID;
+interface EditorPageProps {
+	projectId: string | null;
+}
 
+function EditorPage({ projectId }: EditorPageProps) {
 	const tokenProvider = new LocalStorageTokenProvider(
 		new ApiClient({ baseUrl: "" }),
 	);
@@ -47,6 +49,11 @@ function EditorPage() {
 	const [landingPage, setLandingPage] = useState<LandingPage | null>(null);
 
 	runBackgroundTask("fetchInitialDraft", async () => {
+		if (projectId === null) {
+			console.error("Project ID not specified in URL");
+			return;
+		}
+
 		try {
 			const landingPage = await loadPageFromApi(apiClient, projectId);
 			setLandingPage(landingPage);
