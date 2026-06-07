@@ -1,12 +1,29 @@
 import { z } from "zod";
 
+export class TokenProviderError extends Error {
+	constructor(message: string) {
+		super(message);
+		this.name = "TokenProviderError";
+	}
+}
+
+export interface ITokenProvider {
+	getToken(): string | null;
+	refreshToken(): Promise<void>;
+}
+
 export interface ApiClientConfig {
 	baseUrl: string;
-	token?: string;
+	tokenProvider?: ITokenProvider;
 }
 
 interface UpdateObject extends Record<string, UpdateValue> {}
 type UpdateValue = string | number | UpdateObject;
+
+export interface Credentials {
+	email: string;
+	password: string;
+}
 
 export interface CreateOperation {
 	operation: "create";
@@ -87,6 +104,15 @@ const DraftSchema = z.array(LandingElementSchema);
 export type DraftElement = z.infer<typeof LandingElementSchema>;
 export type Draft = z.output<typeof DraftSchema>;
 
+const LoginResponseSchema = z
+	.object({
+		access_token: z.string(),
+		refresh_token: z.string(),
+	})
+	.strip();
+
+export type LoginResponse = z.infer<typeof LoginResponseSchema>;
+
 export class HttpError extends Error {
 	public path: string;
 	public statusCode: number;
@@ -101,27 +127,56 @@ export class HttpError extends Error {
 	}
 }
 
+export class Unauthorized extends Error {
+	constructor(message: string = "Unauthorized") {
+		super(message);
+		this.name = "Unauthorized";
+	}
+}
+
 export class ApiClient {
 	private baseUrl: string;
-	private token: string | null;
+	private tokenProvider: ITokenProvider | null;
 
 	constructor(config: ApiClientConfig) {
 		this.baseUrl = config.baseUrl;
-		this.token = config.token || null;
+		this.tokenProvider = config.tokenProvider || null;
 	}
 
 	public async getDraft(projectId: string): Promise<Draft> {
-		const response = await this.sendRequest(`/api/v1/storage/${projectId}`, {
-			method: "GET",
+		const data = await this.sendAuthorizedRequest(
+			`/api/v1/storage/${projectId}`,
+			{ method: "GET" },
+		);
+
+		return await this.parseDraftResponse(data);
+	}
+
+	public async login(credentials: Credentials): Promise<LoginResponse> {
+		const response = await this.sendRequest("/api/v1/auth/login", {
+			method: "POST",
+			body: JSON.stringify(credentials),
 		});
-		return await this.parseDraftResponse(response);
+		const data = await this.parseLoginResponse(response);
+		return data;
+	}
+
+	public async refreshAccessToken(
+		refreshToken: string,
+	): Promise<LoginResponse> {
+		const response = await this.sendRequest("/api/v1/auth/refresh", {
+			method: "POST",
+			body: JSON.stringify({ refresh_token: refreshToken }),
+		});
+		const data = await this.parseLoginResponse(response);
+		return data;
 	}
 
 	public async updateDraft(
 		projectId: string,
 		operation: Operation,
 	): Promise<void> {
-		await this.sendRequest(`api/v1/storage/${projectId}/mutations`, {
+		await this.sendAuthorizedRequest(`api/v1/storage/${projectId}/mutations`, {
 			method: "POST",
 			body: JSON.stringify(operation),
 		});
@@ -140,10 +195,6 @@ export class ApiClient {
 			}
 		}
 
-		if (this.token) {
-			headers.set("Authorization", `Bearer ${this.token}`);
-		}
-
 		const response = await fetch(url, {
 			...options,
 			headers,
@@ -151,14 +202,65 @@ export class ApiClient {
 
 		if (!response.ok) {
 			const errorBody = await response.text().catch(() => "");
+			if (response.status === 401) {
+				throw new Unauthorized(errorBody);
+			}
 			throw new HttpError(url, response.status, errorBody);
 		}
 
 		return response;
 	}
 
+	private async sendAuthorizedRequest(
+		endpoint: string,
+		options: RequestInit,
+	): Promise<Response> {
+		try {
+			const extendedOptions = this.extendRequestOptionsWithAuth(options);
+			return await this.sendRequest(endpoint, extendedOptions);
+		} catch (err) {
+			if (err instanceof Unauthorized && this.tokenProvider) {
+				await this.tokenProvider.refreshToken();
+
+				const extendedOptions = this.extendRequestOptionsWithAuth(options);
+				return await this.sendRequest(endpoint, extendedOptions);
+			}
+			throw err;
+		}
+	}
+
+	private extendRequestOptionsWithAuth(options: RequestInit): RequestInit {
+		const foo = {
+			...options,
+			headers: {
+				...options.headers,
+				...this.getAuthHeaders(),
+			},
+		};
+
+		console.log("[ApiClient] Extended request options with auth", foo);
+
+		return foo;
+	}
+
+	private getAuthHeaders(): HeadersInit {
+		if (this.tokenProvider === null) {
+			throw new Error("Token provider is not configured");
+		}
+
+		const token = this.tokenProvider.getToken();
+		return {
+			Authorization: `Bearer ${token}`,
+		};
+	}
+
 	private async parseDraftResponse(response: Response): Promise<Draft> {
 		const data = await response.json();
 		return await DraftSchema.parseAsync(data);
+	}
+
+	private async parseLoginResponse(response: Response): Promise<LoginResponse> {
+		const data = await response.json();
+		return await LoginResponseSchema.parseAsync(data);
 	}
 }
