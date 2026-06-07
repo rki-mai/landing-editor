@@ -30,3 +30,9 @@
 .loginForm button:hover {
 	background-color: #0056b3;
 }
+
+.error {
+	color: #d32f2f;
+	font-size: 14px;
+	margin-top: 4px;
+}

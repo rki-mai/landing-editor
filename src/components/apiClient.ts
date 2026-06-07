@@ -8,6 +8,11 @@ export interface ApiClientConfig {
 interface UpdateObject extends Record<string, UpdateValue> {}
 type UpdateValue = string | number | UpdateObject;
 
+export interface Credentials {
+	email: string;
+	password: string;
+}
+
 export interface CreateOperation {
 	operation: "create";
 	data: DraftElement;
@@ -87,6 +92,15 @@ const DraftSchema = z.array(LandingElementSchema);
 export type DraftElement = z.infer<typeof LandingElementSchema>;
 export type Draft = z.output<typeof DraftSchema>;
 
+const LoginResponseSchema = z
+	.object({
+		access_token: z.string(),
+		refresh_token: z.string(),
+	})
+	.strip();
+
+export type LoginResponse = z.infer<typeof LoginResponseSchema>;
+
 export class HttpError extends Error {
 	public path: string;
 	public statusCode: number;
@@ -98,6 +112,13 @@ export class HttpError extends Error {
 		this.statusCode = statusCode;
 		this.details = details;
 		this.name = "HttpError";
+	}
+}
+
+export class Unauthorized extends Error {
+	constructor(message: string = "Unauthorized") {
+		super(message);
+		this.name = "Unauthorized";
 	}
 }
 
@@ -115,6 +136,14 @@ export class ApiClient {
 			method: "GET",
 		});
 		return await this.parseDraftResponse(response);
+	}
+
+	public async login(credentials: Credentials): Promise<LoginResponse> {
+		const response = await this.sendRequest("/api/v1/auth/login", {
+			method: "POST",
+			body: JSON.stringify(credentials),
+		});
+		return await this.parseLoginResponse(response);
 	}
 
 	public async updateDraft(
@@ -151,6 +180,9 @@ export class ApiClient {
 
 		if (!response.ok) {
 			const errorBody = await response.text().catch(() => "");
+			if (response.status === 401) {
+				throw new Unauthorized(errorBody);
+			}
 			throw new HttpError(url, response.status, errorBody);
 		}
 
@@ -160,5 +192,10 @@ export class ApiClient {
 	private async parseDraftResponse(response: Response): Promise<Draft> {
 		const data = await response.json();
 		return await DraftSchema.parseAsync(data);
+	}
+
+	private async parseLoginResponse(response: Response): Promise<LoginResponse> {
+		const data = await response.json();
+		return await LoginResponseSchema.parseAsync(data);
 	}
 }

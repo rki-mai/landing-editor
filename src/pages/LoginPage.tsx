@@ -1,13 +1,33 @@
 import { useState } from "react";
+import { ApiClient, Unauthorized } from "../components/apiClient";
 import styles from "./LoginPage.module.css";
 
 export default function LoginPage() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [error, setError] = useState<string | null>(null);
 
-	const handleLogin = (e: React.SubmitEvent<HTMLFormElement>) => {
+	const handleLogin = async (e: React.SubmitEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		console.log({ email, password });
+		setError(null);
+
+		const apiClient = new ApiClient({
+			baseUrl: "",
+		});
+
+		try {
+			const result = await apiClient.login({
+				email,
+				password,
+			});
+			console.log(result);
+		} catch (err) {
+			if (err instanceof Unauthorized) {
+				setError("Неверные данные для входа");
+			} else {
+				console.error(err);
+			}
+		}
 	};
 
 	return (
@@ -29,6 +49,7 @@ export default function LoginPage() {
 					required
 				/>
 				<button type="submit">Login</button>
+				{error && <div className={styles.error}>{error}</div>}
 			</form>
 		</div>
 	);
