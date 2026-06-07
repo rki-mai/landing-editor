@@ -1,8 +1,8 @@
 import {
 	ApiClient,
-	TokenProviderError,
 	type ITokenProvider,
 	type LoginResponse,
+	TokenProviderError,
 } from "./apiClient";
 
 export class LocalStorageTokenProvider implements ITokenProvider {

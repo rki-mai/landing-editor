@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { renderElements } from "../components/editor_components_renderer";
-import { PreviewCanvas } from "../components/preview_canvas";
 import {
 	ApiClient,
 	TokenProviderError,
@@ -15,6 +13,7 @@ import {
 	EditArea,
 	PreviewContainer,
 } from "../components/edit_area";
+import { renderElements } from "../components/editor_components_renderer";
 import {
 	createButtonElement,
 	createContainerElement,
@@ -28,9 +27,10 @@ import { deleteElementHandler } from "../components/handlers/delete_element";
 import { moveElementHandler } from "../components/handlers/move_element";
 import { landingElementUpdater } from "../components/handlers/update_element";
 import { loadPageFromApi } from "../components/landingPageApiLoader";
+import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
+import { PreviewCanvas } from "../components/preview_canvas";
 import { type LandingElement, type LandingPage } from "../components/types";
 import { findElementById } from "../components/utils";
-import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
 
 function EditorPage() {
 	const projectId = import.meta.env.VITE_PROJECT_ID;

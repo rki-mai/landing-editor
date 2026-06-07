@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ApiClient, Unauthorized } from "../components/apiClient";
-import styles from "./LoginPage.module.css";
 import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
+import styles from "./LoginPage.module.css";
 
 export default function LoginPage() {
 	const [email, setEmail] = useState("");
