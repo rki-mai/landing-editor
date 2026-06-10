@@ -1,7 +1,7 @@
+export { AuthLink } from "./AuthLink";
+export { EmailInput } from "./EmailInput";
+export { ErrorMessage } from "./ErrorMessage";
 export { FormContainer } from "./FormContainer";
 export { FormHeader } from "./FormHeader";
-export { EmailInput } from "./EmailInput";
 export { PasswordInput } from "./PasswordInput";
 export { SubmitButton } from "./SubmitButton";
-export { ErrorMessage } from "./ErrorMessage";
-export { AuthLink } from "./AuthLink";

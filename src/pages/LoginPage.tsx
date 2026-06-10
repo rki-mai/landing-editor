@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { ApiClient, Unauthorized } from "../components/apiClient";
-import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
 import {
+	AuthLink,
+	EmailInput,
+	ErrorMessage,
 	FormContainer,
 	FormHeader,
-	EmailInput,
 	PasswordInput,
 	SubmitButton,
-	ErrorMessage,
-	AuthLink,
 } from "../components/form";
+import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
 
 export default function LoginPage() {
 	const [email, setEmail] = useState("");
