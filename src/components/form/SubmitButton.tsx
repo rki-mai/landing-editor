@@ -4,10 +4,10 @@ interface SubmitButtonProps {
 	label: string;
 }
 
-export function SubmitButton({ label }: SubmitButtonProps) {
+export const SubmitButton = ({ label }: SubmitButtonProps) => {
 	return (
 		<button type="submit" className={styles.button}>
 			{label}
 		</button>
 	);
-}
+};
