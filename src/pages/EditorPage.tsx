@@ -63,6 +63,7 @@ function EditorPage({ projectId }: EditorPageProps) {
 			});
 		} catch (err) {
 			if (err instanceof TokenProviderError || err instanceof Unauthorized) {
+				tokenProvider.clearCredentials();
 				window.location.href = "/login";
 			}
 		}

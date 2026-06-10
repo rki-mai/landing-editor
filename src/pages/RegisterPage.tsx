@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { ApiClient, Unauthorized } from "../components/apiClient";
+import {
+	ApiClient,
+	HttpError,
+	UserAlreadyExists,
+} from "../components/apiClient";
 import {
 	AuthLink,
 	EmailInput,
@@ -11,7 +15,7 @@ import {
 } from "../components/form";
 import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
 
-export default function LoginPage() {
+export default function RegisterPage() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState<string | null>(null);
@@ -26,11 +30,16 @@ export default function LoginPage() {
 		window.location.href = "/edit?projectId=exampleProject";
 	}
 
-	const handleLogin = async (e: React.SubmitEvent<HTMLFormElement>) => {
+	const handleRegister = async (e: React.SubmitEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setError(null);
 
 		try {
+			await apiClient.register({
+				email,
+				password,
+			});
+
 			const result = await apiClient.login({
 				email,
 				password,
@@ -39,26 +48,24 @@ export default function LoginPage() {
 			tokenProvider.saveCredentials(result);
 			window.location.href = "/edit?projectId=exampleProject";
 		} catch (err) {
-			if (err instanceof Unauthorized) {
-				setError("Неверные данные для входа");
+			if (err instanceof UserAlreadyExists) {
+				setError("Пользователь с таким email уже существует");
+			} else if (err instanceof HttpError && err.statusCode === 400) {
+				setError("Ошибка: неверные данные");
 			} else {
-				console.error(err);
+				console.error("Unexpected error:", err);
 			}
 		}
 	};
 
 	return (
-		<FormContainer onSubmit={handleLogin}>
-			<FormHeader title="Login" />
+		<FormContainer onSubmit={handleRegister}>
+			<FormHeader title="Register" />
 			<EmailInput value={email} onChange={setEmail} />
 			<PasswordInput value={password} onChange={setPassword} />
-			<SubmitButton label="Login" />
+			<SubmitButton label="Register" />
 			{error && <ErrorMessage message={error} />}
-			<AuthLink
-				text="Впервые здесь?"
-				linkText="Зарегистрироваться"
-				href="/register"
-			/>
+			<AuthLink text="Уже есть аккаунт?" linkText="Войти" href="/login" />
 		</FormContainer>
 	);
 }
