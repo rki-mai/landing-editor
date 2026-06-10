@@ -55,7 +55,7 @@ export default function RegisterPage() {
 			<EmailInput value={email} onChange={setEmail} />
 			<PasswordInput value={password} onChange={setPassword} />
 			<SubmitButton label="Register" />
-			<ErrorMessage message={error} />
+			{error && <ErrorMessage message={error} />}
 		</FormContainer>
 	);
 }

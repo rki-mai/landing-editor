@@ -48,7 +48,7 @@ export default function LoginPage() {
 			<EmailInput value={email} onChange={setEmail} />
 			<PasswordInput value={password} onChange={setPassword} />
 			<SubmitButton label="Login" />
-			<ErrorMessage message={error} />
+			{error && <ErrorMessage message={error} />}
 		</FormContainer>
 	);
 }
