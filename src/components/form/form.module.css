@@ -41,3 +41,19 @@
 	font-size: 14px;
 	margin-top: 4px;
 }
+
+.authLink {
+	text-align: center;
+	font-size: 14px;
+	color: #666;
+}
+
+.link {
+	color: #007bff;
+	text-decoration: none;
+	font-weight: 500;
+}
+
+.link:hover {
+	text-decoration: underline;
+}

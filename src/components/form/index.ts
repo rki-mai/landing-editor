@@ -4,3 +4,4 @@ export { EmailInput } from "./EmailInput";
 export { PasswordInput } from "./PasswordInput";
 export { SubmitButton } from "./SubmitButton";
 export { ErrorMessage } from "./ErrorMessage";
+export { AuthLink } from "./AuthLink";

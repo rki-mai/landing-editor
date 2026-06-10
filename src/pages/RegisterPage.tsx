@@ -12,6 +12,7 @@ import {
 	PasswordInput,
 	SubmitButton,
 	ErrorMessage,
+	AuthLink,
 } from "../components/form";
 
 export default function RegisterPage() {
@@ -64,6 +65,7 @@ export default function RegisterPage() {
 			<PasswordInput value={password} onChange={setPassword} />
 			<SubmitButton label="Register" />
 			{error && <ErrorMessage message={error} />}
+			<AuthLink text="Уже есть аккаунт?" linkText="Войти" href="/login" />
 		</FormContainer>
 	);
 }

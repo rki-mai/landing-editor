@@ -8,6 +8,7 @@ import {
 	PasswordInput,
 	SubmitButton,
 	ErrorMessage,
+	AuthLink,
 } from "../components/form";
 
 export default function LoginPage() {
@@ -53,6 +54,11 @@ export default function LoginPage() {
 			<PasswordInput value={password} onChange={setPassword} />
 			<SubmitButton label="Login" />
 			{error && <ErrorMessage message={error} />}
+			<AuthLink
+				text="Впервые здесь?"
+				linkText="Зарегистрироваться"
+				href="/register"
+			/>
 		</FormContainer>
 	);
 }
