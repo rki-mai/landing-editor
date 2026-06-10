@@ -113,6 +113,15 @@ const LoginResponseSchema = z
 
 export type LoginResponse = z.infer<typeof LoginResponseSchema>;
 
+const RegisterResponseSchema = z
+	.object({
+		email: z.string(),
+		id: z.string(),
+	})
+	.strip();
+
+export type RegisterResponse = z.infer<typeof RegisterResponseSchema>;
+
 export class HttpError extends Error {
 	public path: string;
 	public statusCode: number;
@@ -131,6 +140,13 @@ export class Unauthorized extends Error {
 	constructor(message: string = "Unauthorized") {
 		super(message);
 		this.name = "Unauthorized";
+	}
+}
+
+export class UserAlreadyExists extends Error {
+	constructor(message: string = "User with this email already exists") {
+		super(message);
+		this.name = "UserAlreadyExists";
 	}
 }
 
@@ -159,6 +175,22 @@ export class ApiClient {
 		});
 		const data = await this.parseLoginResponse(response);
 		return data;
+	}
+
+	public async register(credentials: Credentials): Promise<RegisterResponse> {
+		try {
+			const response = await this.sendRequest("/api/v1/register", {
+				method: "POST",
+				body: JSON.stringify(credentials),
+			});
+			const data = await this.parseRegisterResponse(response);
+			return data;
+		} catch (err) {
+			if (err instanceof HttpError && err.statusCode === 409) {
+				throw new UserAlreadyExists();
+			}
+			throw err;
+		}
 	}
 
 	public async refreshAccessToken(
@@ -262,5 +294,12 @@ export class ApiClient {
 	private async parseLoginResponse(response: Response): Promise<LoginResponse> {
 		const data = await response.json();
 		return await LoginResponseSchema.parseAsync(data);
+	}
+
+	private async parseRegisterResponse(
+		response: Response,
+	): Promise<RegisterResponse> {
+		const data = await response.json();
+		return await RegisterResponseSchema.parseAsync(data);
 	}
 }
