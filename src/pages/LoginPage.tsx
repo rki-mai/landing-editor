@@ -1,7 +1,14 @@
 import { useState } from "react";
 import { ApiClient, Unauthorized } from "../components/apiClient";
 import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
-import styles from "./LoginPage.module.css";
+import {
+	FormContainer,
+	FormHeader,
+	EmailInput,
+	PasswordInput,
+	SubmitButton,
+	ErrorMessage,
+} from "../components/form";
 
 export default function LoginPage() {
 	const [email, setEmail] = useState("");
@@ -36,26 +43,12 @@ export default function LoginPage() {
 	};
 
 	return (
-		<div className={styles.loginContainer}>
-			<form className={styles.loginForm} onSubmit={handleLogin}>
-				<h1>Login</h1>
-				<input
-					type="email"
-					placeholder="Email"
-					value={email}
-					onChange={(e) => setEmail(e.target.value)}
-					required
-				/>
-				<input
-					type="password"
-					placeholder="Password"
-					value={password}
-					onChange={(e) => setPassword(e.target.value)}
-					required
-				/>
-				<button type="submit">Login</button>
-				{error && <div className={styles.error}>{error}</div>}
-			</form>
-		</div>
+		<FormContainer onSubmit={handleLogin}>
+			<FormHeader title="Login" />
+			<EmailInput value={email} onChange={setEmail} />
+			<PasswordInput value={password} onChange={setPassword} />
+			<SubmitButton label="Login" />
+			<ErrorMessage message={error} />
+		</FormContainer>
 	);
 }

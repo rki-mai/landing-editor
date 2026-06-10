@@ -1,33 +1,38 @@
-.loginContainer {
+.container {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	height: 100vh;
 }
 
-.loginForm {
+.form {
 	display: flex;
 	flex-direction: column;
 	gap: 16px;
 	min-width: 300px;
 }
 
-.loginForm input,
-.loginForm button {
+.header {
+	margin: 0;
+	text-align: center;
+}
+
+.input,
+.button {
 	padding: 8px 12px;
 	font-size: 16px;
 	border: 1px solid #ccc;
 	border-radius: 4px;
 }
 
-.loginForm button {
+.button {
 	background-color: #007bff;
 	color: white;
 	cursor: pointer;
 	border: none;
 }
 
-.loginForm button:hover {
+.button:hover {
 	background-color: #0056b3;
 }
 
