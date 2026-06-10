@@ -5,7 +5,7 @@ interface EmailInputProps {
 	onChange: (value: string) => void;
 }
 
-export function EmailInput({ value, onChange }: EmailInputProps) {
+export const EmailInput = ({ value, onChange }: EmailInputProps) => {
 	return (
 		<input
 			type="email"
@@ -16,4 +16,4 @@ export function EmailInput({ value, onChange }: EmailInputProps) {
 			className={styles.input}
 		/>
 	);
-}
+};

@@ -5,7 +5,7 @@ interface FormContainerProps {
 	onSubmit: (e: React.SubmitEvent<HTMLFormElement>) => void;
 }
 
-export function FormContainer({ children, onSubmit }: FormContainerProps) {
+export const FormContainer = ({ children, onSubmit }: FormContainerProps) => {
 	return (
 		<div className={styles.container}>
 			<form className={styles.form} onSubmit={onSubmit}>
@@ -13,4 +13,4 @@ export function FormContainer({ children, onSubmit }: FormContainerProps) {
 			</form>
 		</div>
 	);
-}
+};

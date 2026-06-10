@@ -6,7 +6,7 @@ interface AuthLinkProps {
 	href: string;
 }
 
-export function AuthLink({ text, linkText, href }: AuthLinkProps) {
+export const AuthLink = ({ text, linkText, href }: AuthLinkProps) => {
 	return (
 		<div className={styles.authLink}>
 			{text}{" "}
@@ -15,4 +15,4 @@ export function AuthLink({ text, linkText, href }: AuthLinkProps) {
 			</a>
 		</div>
 	);
-}
+};

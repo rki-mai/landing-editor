@@ -5,7 +5,7 @@ interface PasswordInputProps {
 	onChange: (value: string) => void;
 }
 
-export function PasswordInput({ value, onChange }: PasswordInputProps) {
+export const PasswordInput = ({ value, onChange }: PasswordInputProps) => {
 	return (
 		<input
 			type="password"
@@ -16,4 +16,4 @@ export function PasswordInput({ value, onChange }: PasswordInputProps) {
 			className={styles.input}
 		/>
 	);
-}
+};

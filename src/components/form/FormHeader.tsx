@@ -4,6 +4,6 @@ interface FormHeaderProps {
 	title: string;
 }
 
-export function FormHeader({ title }: FormHeaderProps) {
+export const FormHeader = ({ title }: FormHeaderProps) => {
 	return <h1 className={styles.header}>{title}</h1>;
-}
+};
