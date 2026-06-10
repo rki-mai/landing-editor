@@ -179,7 +179,7 @@ export class ApiClient {
 
 	public async register(credentials: Credentials): Promise<RegisterResponse> {
 		try {
-			const response = await this.sendRequest("/api/v1/register", {
+			const response = await this.sendRequest("/api/v1/auth/register", {
 				method: "POST",
 				body: JSON.stringify(credentials),
 			});
