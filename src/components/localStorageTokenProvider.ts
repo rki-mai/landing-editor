@@ -57,4 +57,19 @@ export class LocalStorageTokenProvider implements ITokenProvider {
 			"[LocalStorageTokenProvider] Credentials saved to localStorage",
 		);
 	}
+
+	public hasRefreshToken(): boolean {
+		const refreshToken = localStorage.getItem(
+			LocalStorageTokenProvider.REFRESH_TOKEN_KEY,
+		);
+		return refreshToken !== null;
+	}
+
+	public clearCredentials(): void {
+		localStorage.removeItem(LocalStorageTokenProvider.ACCESS_TOKEN_KEY);
+		localStorage.removeItem(LocalStorageTokenProvider.REFRESH_TOKEN_KEY);
+		console.log(
+			"[LocalStorageTokenProvider] Credentials cleared from localStorage",
+		);
+	}
 }

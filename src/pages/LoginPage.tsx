@@ -21,6 +21,10 @@ export default function LoginPage() {
 
 	const tokenProvider = new LocalStorageTokenProvider(apiClient);
 
+	if (tokenProvider.hasRefreshToken()) {
+		window.location.href = "/edit?projectId=exampleProject";
+	}
+
 	const handleLogin = async (e: React.SubmitEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setError(null);

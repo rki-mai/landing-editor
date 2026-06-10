@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { ApiClient, HttpError, UserAlreadyExists } from "../components/apiClient";
+import {
+	ApiClient,
+	HttpError,
+	UserAlreadyExists,
+} from "../components/apiClient";
 import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
 import {
 	FormContainer,
@@ -20,6 +24,10 @@ export default function RegisterPage() {
 	});
 
 	const tokenProvider = new LocalStorageTokenProvider(apiClient);
+
+	if (tokenProvider.hasRefreshToken()) {
+		window.location.href = "/edit?projectId=exampleProject";
+	}
 
 	const handleRegister = async (e: React.SubmitEvent<HTMLFormElement>) => {
 		e.preventDefault();
