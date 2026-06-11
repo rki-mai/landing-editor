@@ -38,7 +38,7 @@ jobs:
       - name: Archive dist
         run: |
           cd dist
-          zip -r ../${{ steps.project_name.outputs.value }}-v${{ steps.project_version.outputs.value }}.zip .
+          zip -r ../landing-editor.zip .
 
       - name: Create release
         uses: ncipollo/release-action@v1
@@ -46,4 +46,4 @@ jobs:
           draft: true
           tag: ${{ steps.project_version.outputs.value }}
           name: "v${{ steps.project_version.outputs.value }}"
-          artifacts: "${{ steps.project_name.outputs.value }}-v${{ steps.project_version.outputs.value }}.zip"
+          artifacts: landing-editor.zip
