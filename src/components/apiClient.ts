@@ -136,6 +136,21 @@ export type CreateProjectResponse = z.infer<typeof CreateProjectResponseSchema>;
 const ProjectsSchema = z.array(z.string());
 export type Projects = z.infer<typeof ProjectsSchema>;
 
+const PublicationIdsResponseSchema = z
+	.object({ ids: z.array(z.string()) })
+	.strip();
+
+const PublicationSchema = z
+	.object({
+		status: z.enum(["PENDING", "PROCESSING", "FINISHED", "FAILED"]),
+		created_at: z.string(),
+		public_url: z.string().optional(),
+	})
+	.strip();
+export type Publication = z.infer<typeof PublicationSchema>;
+
+const CreatePublicationResponseSchema = z.object({ id: z.string() }).strip();
+
 export class HttpError extends Error {
 	public path: string;
 	public statusCode: number;
@@ -188,6 +203,72 @@ export class ApiClient {
 			);
 
 			return await this.parseDraftResponse(data);
+		} catch (err) {
+			if (err instanceof HttpError && err.statusCode === 404) {
+				throw new ProjectNotFound();
+			}
+			throw err;
+		}
+	}
+
+	public async getPublicationIds(projectId: string): Promise<string[]> {
+		try {
+			const data = await this.sendAuthorizedRequest(
+				`/api/v1/projects/${projectId}/publications`,
+				{ method: "GET" },
+			);
+
+			return await this.parsePublicationIdsResponse(data);
+		} catch (err) {
+			if (err instanceof HttpError && err.statusCode === 404) {
+				throw new ProjectNotFound();
+			}
+			throw err;
+		}
+	}
+
+	public async getPublication(
+		projectId: string,
+		publicationId: string,
+	): Promise<Publication> {
+		try {
+			const response = await this.sendAuthorizedRequest(
+				`/api/v1/projects/${projectId}/publications/${publicationId}`,
+				{ method: "GET" },
+			);
+			const data = await response.json();
+			return await PublicationSchema.parseAsync(data);
+		} catch (err) {
+			if (err instanceof HttpError && err.statusCode === 404) {
+				throw new ProjectNotFound();
+			}
+			throw err;
+		}
+	}
+
+	public async createPublication(projectId: string): Promise<string> {
+		try {
+			const response = await this.sendAuthorizedRequest(
+				`/api/v1/projects/${projectId}/publications`,
+				{ method: "POST" },
+			);
+			const data = await response.json();
+			const parsed = await CreatePublicationResponseSchema.parseAsync(data);
+			return parsed.id;
+		} catch (err) {
+			if (err instanceof HttpError && err.statusCode === 404) {
+				throw new ProjectNotFound();
+			}
+			throw err;
+		}
+	}
+
+	public async deletePublication(projectId: string): Promise<void> {
+		try {
+			await this.sendAuthorizedRequest(
+				`/api/v1/projects/${projectId}/publications`,
+				{ method: "DELETE" },
+			);
 		} catch (err) {
 			if (err instanceof HttpError && err.statusCode === 404) {
 				throw new ProjectNotFound();
@@ -389,5 +470,13 @@ export class ApiClient {
 	): Promise<CreateProjectResponse> {
 		const data = await response.json();
 		return await CreateProjectResponseSchema.parseAsync(data);
+	}
+
+	private async parsePublicationIdsResponse(
+		response: Response,
+	): Promise<string[]> {
+		const data = await response.json();
+		const parsed = await PublicationIdsResponseSchema.parseAsync(data);
+		return parsed.ids;
 	}
 }
