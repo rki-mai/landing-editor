@@ -100,7 +100,10 @@ const LandingElementSchema = z.discriminatedUnion("element", [
 	ButtonElementSchema,
 ]);
 
-const DraftSchema = z.array(LandingElementSchema);
+const DraftSchema = z
+	.object({ elements: z.array(LandingElementSchema) })
+	.strip();
+
 export type DraftElement = z.infer<typeof LandingElementSchema>;
 export type Draft = z.output<typeof DraftSchema>;
 
@@ -121,6 +124,14 @@ const RegisterResponseSchema = z
 	.strip();
 
 export type RegisterResponse = z.infer<typeof RegisterResponseSchema>;
+
+const CreateProjectResponseSchema = z
+	.object({
+		project_id: z.string(),
+	})
+	.strip();
+
+export type CreateProjectResponse = z.infer<typeof CreateProjectResponseSchema>;
 
 export class HttpError extends Error {
 	public path: string;
@@ -161,7 +172,7 @@ export class ApiClient {
 
 	public async getDraft(projectId: string): Promise<Draft> {
 		const data = await this.sendAuthorizedRequest(
-			`/api/v1/storage/${projectId}`,
+			`/api/v1/projects/${projectId}/draft`,
 			{ method: "GET" },
 		);
 
@@ -204,14 +215,25 @@ export class ApiClient {
 		return data;
 	}
 
+	public async createProject(): Promise<CreateProjectResponse> {
+		const response = await this.sendAuthorizedRequest("/api/v1/projects", {
+			method: "POST",
+		});
+		const data = await this.parseCreateProjectResponse(response);
+		return data;
+	}
+
 	public async updateDraft(
 		projectId: string,
 		operation: Operation,
 	): Promise<void> {
-		await this.sendAuthorizedRequest(`api/v1/storage/${projectId}/mutations`, {
-			method: "POST",
-			body: JSON.stringify(operation),
-		});
+		await this.sendAuthorizedRequest(
+			`api/v1/projects/${projectId}/draft/mutations`,
+			{
+				method: "POST",
+				body: JSON.stringify(operation),
+			},
+		);
 	}
 
 	private async sendRequest(
@@ -301,5 +323,12 @@ export class ApiClient {
 	): Promise<RegisterResponse> {
 		const data = await response.json();
 		return await RegisterResponseSchema.parseAsync(data);
+	}
+
+	private async parseCreateProjectResponse(
+		response: Response,
+	): Promise<CreateProjectResponse> {
+		const data = await response.json();
+		return await CreateProjectResponseSchema.parseAsync(data);
 	}
 }
