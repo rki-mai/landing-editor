@@ -31,3 +31,12 @@
 	text-decoration: underline;
 	color: #2563eb;
 }
+
+.itemContent {
+	display: flex;
+	align-items: center;
+}
+
+.itemName {
+	flex: 1;
+}

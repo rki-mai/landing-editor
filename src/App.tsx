@@ -3,6 +3,7 @@ import EditorPage from "./pages/EditorPage";
 import LoginPage from "./pages/LoginPage";
 import "./App.css";
 import ProjectsPage from "./pages/ProjectsPage";
+import PublicationsPage from "./pages/PublicationsPage";
 import RegisterPage from "./pages/RegisterPage";
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
 				<Route path="/login" element={<LoginPage />} />
 				<Route path="/register" element={<RegisterPage />} />
 				<Route path="/projects" element={<ProjectsPage />} />
+				<Route path="/publications" element={<PublicationsPage />} />
 			</Routes>
 		</BrowserRouter>
 	);

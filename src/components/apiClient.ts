@@ -140,9 +140,17 @@ const PublicationIdsResponseSchema = z
 	.object({ ids: z.array(z.string()) })
 	.strip();
 
+const PublicationStatusSchema = z.enum([
+	"PENDING",
+	"PROCESSING",
+	"FINISHED",
+	"FAILED",
+]);
+export type PublicationStatus = z.infer<typeof PublicationStatusSchema>;
+
 const PublicationSchema = z
 	.object({
-		status: z.enum(["PENDING", "PROCESSING", "FINISHED", "FAILED"]),
+		status: PublicationStatusSchema,
 		created_at: z.string(),
 		public_url: z.string().optional(),
 	})
@@ -263,10 +271,13 @@ export class ApiClient {
 		}
 	}
 
-	public async deletePublication(projectId: string): Promise<void> {
+	public async deletePublication(
+		projectId: string,
+		publicationId: string,
+	): Promise<void> {
 		try {
 			await this.sendAuthorizedRequest(
-				`/api/v1/projects/${projectId}/publications`,
+				`/api/v1/projects/${projectId}/publications/${publicationId}`,
 				{ method: "DELETE" },
 			);
 		} catch (err) {

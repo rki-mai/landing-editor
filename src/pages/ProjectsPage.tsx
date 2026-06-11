@@ -72,6 +72,28 @@ export default function ProjectsPage() {
 		setFilteredProjects(filtered);
 	};
 
+	const handlePublish = (project: ProjectInfo) => {
+		runBackgroundTask(
+			`publishProject-${project.id}-${crypto.randomUUID()}`,
+			async () => {
+				try {
+					await apiClient.createPublication(project.id);
+					window.location.href = "/publications";
+				} catch (err) {
+					if (
+						err instanceof TokenProviderError ||
+						err instanceof Unauthorized
+					) {
+						tokenProvider.clearCredentials();
+						window.location.href = "/login";
+					} else {
+						console.error("Failed to publish project", err);
+					}
+				}
+			},
+		);
+	};
+
 	const handleOpen = (project: ProjectInfo) => {
 		window.location.href = `/edit?projectId=${project.id}`;
 	};
@@ -83,7 +105,11 @@ export default function ProjectsPage() {
 				<div className={styles.menu}>
 					<ProjectsMenu onCreate={handleCreate} onSearch={handleSearch} />
 				</div>
-				<ProjectsList projects={filteredProjects} onOpen={handleOpen} />
+				<ProjectsList
+					projects={filteredProjects}
+					onOpen={handleOpen}
+					onPublish={handlePublish}
+				/>
 			</div>
 		</div>
 	);
