@@ -5,4 +5,4 @@
 ## Требования
 
 Данная версия проекта совместима с версией бэкенда [`wb-landing-builder`](https://github.com/rki-mai/wb-landing-builder)
-версии [`41d587d`](https://github.com/rki-mai/wb-landing-builder/commit/41d587d90ebb8b5920ada317ebdb6ca2b4ae191b)
+версии [`d29245a`](https://github.com/rki-mai/wb-landing-builder/commit/d29245a450ef6ccfe8e42579d894229200fb5f9f)
