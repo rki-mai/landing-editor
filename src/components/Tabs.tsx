@@ -1,7 +1,7 @@
 import styles from "./Tabs.module.css";
 
 interface TabsProps {
-	active?: "projects" | string;
+	active?: "projects" | "publications" | string;
 }
 
 export const Tabs = ({ active = "projects" }: TabsProps) => {
@@ -10,8 +10,19 @@ export const Tabs = ({ active = "projects" }: TabsProps) => {
 			<nav className={styles.tabs}>
 				<div
 					className={`${styles.tab} ${active === "projects" ? styles.active : ""}`}
+					onClick={() => {
+						window.location.href = "/projects";
+					}}
 				>
 					Проекты
+				</div>
+				<div
+					className={`${styles.tab} ${active === "publications" ? styles.active : ""}`}
+					onClick={() => {
+						window.location.href = "/publications";
+					}}
+				>
+					Публикации
 				</div>
 			</nav>
 		</header>

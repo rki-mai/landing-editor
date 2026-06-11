@@ -1,0 +1,65 @@
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 6px;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: 500;
+	transition:
+		transform 120ms cubic-bezier(0.34, 1.56, 0.64, 1),
+		background 150ms ease;
+	outline: none;
+}
+
+.btn img {
+	width: 100%;
+}
+
+.btn:active {
+	transform: scale(0.88);
+}
+
+.btn:focus-visible {
+	box-shadow: 0 0 0 3px rgba(83, 74, 183, 0.4);
+}
+
+.primary {
+	background: #534ab7;
+	color: #eeedfe;
+}
+
+.primary:hover {
+	background: #3c3489;
+}
+
+.ghost {
+	background: #f8fafc;
+	color: #2c2c2a;
+	border: 0.5px solid #e2e8ef;
+}
+
+.ghost:hover {
+	background: #e9ecef;
+}
+
+.danger {
+	background: #e24b4a;
+	color: #fcebeb;
+}
+
+.danger:hover {
+	background: #a32d2d;
+}
+
+.success {
+	background: #1d9e75;
+	color: #e1f5ee;
+}
+
+.success:hover {
+	background: #0f6e56;
+}
