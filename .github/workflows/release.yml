@@ -28,7 +28,7 @@ jobs:
         id: project_version
         run: echo "value=$(npm run project:version --silent)" >> $GITHUB_OUTPUT
 
-      - name: Get project version
+      - name: Get project name
         id: project_name
         run: echo "value=$(npm run project:name --silent)" >> $GITHUB_OUTPUT
 
@@ -36,7 +36,7 @@ jobs:
         run: npm run build
 
       - name: Archive dist
-        run: zip -r ${{ steps.project_name.output.value }}-v${{ steps.project_version.outputs.value }}.zip dist/
+        run: zip -r ${{ steps.project_name.outputs.value }}-v${{ steps.project_version.outputs.value }}.zip dist/
 
       - name: Create release
         uses: ncipollo/release-action@v1
@@ -44,4 +44,4 @@ jobs:
           draft: true
           tag: ${{ steps.project_version.outputs.value }}
           name: "v${{ steps.project_version.outputs.value }}"
-          artifacts: "${{ steps.project_name.output.value }}-v${{ steps.project_version.outputs.value }}.zip"
+          artifacts: "${{ steps.project_name.outputs.value }}-v${{ steps.project_version.outputs.value }}.zip"
