@@ -1,0 +1,49 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.15.0'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Get project version
+        id: project_version
+        run: echo "value=$(npm run project:version --silent)" >> $GITHUB_OUTPUT
+
+      - name: Get project name
+        id: project_name
+        run: echo "value=$(npm run project:name --silent)" >> $GITHUB_OUTPUT
+
+      - name: Build project
+        run: npm run build
+
+      - name: Archive dist
+        run: |
+          cd dist
+          zip -r ../landing-editor.zip .
+
+      - name: Create release
+        uses: ncipollo/release-action@v1
+        with:
+          draft: true
+          tag: ${{ steps.project_version.outputs.value }}
+          name: "v${{ steps.project_version.outputs.value }}"
+          artifacts: landing-editor.zip

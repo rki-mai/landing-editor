@@ -30,3 +30,20 @@ npm install
    ```
 
    После ввода команды приложение будет доступно через `localhost`.
+
+## Создание релиза
+
+Для создания релиза необходимо:
+
+1. Убедиться, что в [`package.json`](./package.json) в поле `version`
+   стоит новая версия проекта. Если нет - обновить версию.
+
+2. Сделать PullRequest в ветку `release` из ветки `main`
+   с названием "Release v{version}"
+
+3. Залить PullRequest в ветку `release` и дождаться, пока
+   [Workflow по созданию релиза](https://github.com/rki-mai/landing-editor/actions/workflows/release.yml)
+   завершится.
+
+4. Зайти на [вкладку релизов](https://github.com/rki-mai/landing-editor/releases)
+   и опубликовать новый релиз, лежащий в Draft.
