@@ -133,6 +133,9 @@ const CreateProjectResponseSchema = z
 
 export type CreateProjectResponse = z.infer<typeof CreateProjectResponseSchema>;
 
+const ProjectsSchema = z.array(z.string());
+export type Projects = z.infer<typeof ProjectsSchema>;
+
 export class HttpError extends Error {
 	public path: string;
 	public statusCode: number;
@@ -161,6 +164,13 @@ export class UserAlreadyExists extends Error {
 	}
 }
 
+export class ProjectNotFound extends Error {
+	constructor(message: string = "Project not found") {
+		super(message);
+		this.name = "ProjectNotFound";
+	}
+}
+
 export class ApiClient {
 	private baseUrl: string;
 	private tokenProvider: ITokenProvider | null;
@@ -171,12 +181,19 @@ export class ApiClient {
 	}
 
 	public async getDraft(projectId: string): Promise<Draft> {
-		const data = await this.sendAuthorizedRequest(
-			`/api/v1/projects/${projectId}/draft`,
-			{ method: "GET" },
-		);
+		try {
+			const data = await this.sendAuthorizedRequest(
+				`/api/v1/projects/${projectId}/draft`,
+				{ method: "GET" },
+			);
 
-		return await this.parseDraftResponse(data);
+			return await this.parseDraftResponse(data);
+		} catch (err) {
+			if (err instanceof HttpError && err.statusCode === 404) {
+				throw new ProjectNotFound();
+			}
+			throw err;
+		}
 	}
 
 	public async login(credentials: Credentials): Promise<LoginResponse> {
@@ -220,6 +237,12 @@ export class ApiClient {
 			method: "POST",
 		});
 		const data = await this.parseCreateProjectResponse(response);
+		try {
+			this.saveProjectId(data.project_id);
+		} catch (e) {
+			console.error("[ApiClient] Failed to save project id to localStorage", e);
+			throw e;
+		}
 		return data;
 	}
 
@@ -234,6 +257,42 @@ export class ApiClient {
 				body: JSON.stringify(operation),
 			},
 		);
+	}
+
+	public getProjects(): string[] {
+		const ids = this.loadProjectIds();
+		try {
+			return ProjectsSchema.parse(ids);
+		} catch (e) {
+			console.error("[ApiClient] Projects schema validation failed", e);
+			throw e;
+		}
+	}
+
+	private saveProjectId(id: string): void {
+		const key = "wb_landing_editor.projects";
+		const ids = this.loadProjectIds();
+		if (!ids.includes(id)) {
+			ids.push(id);
+			try {
+				localStorage.setItem(key, JSON.stringify(ids));
+			} catch (e) {
+				console.warn(
+					"[ApiClient] Unable to persist projects to localStorage",
+					e,
+				);
+			}
+		}
+	}
+
+	private loadProjectIds(): string[] {
+		try {
+			const raw = localStorage.getItem("wb_landing_editor.projects");
+			return raw !== null ? ProjectsSchema.parse(JSON.parse(raw)) : [];
+		} catch (e) {
+			console.error("[ApiClient] Failed to read projects from localStorage", e);
+			throw e;
+		}
 	}
 
 	private async sendRequest(

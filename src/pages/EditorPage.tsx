@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
 	ApiClient,
+	ProjectNotFound,
 	TokenProviderError,
 	Unauthorized,
 } from "../components/apiClient";
@@ -32,7 +33,7 @@ import { PreviewCanvas } from "../components/preview_canvas";
 import { type LandingElement, type LandingPage } from "../components/types";
 import { findElementById } from "../components/utils";
 
-function EditorPage() {
+function EditorPage({ projectId }: { projectId: string | null }) {
 	const tokenProvider = new LocalStorageTokenProvider(
 		new ApiClient({ baseUrl: "" }),
 	);
@@ -46,12 +47,9 @@ function EditorPage() {
 
 	runBackgroundTask("fetchInitialDraft", async () => {
 		try {
-			let projectId = localStorage.getItem("wb_landing_editor.project_id");
 			if (projectId === null) {
-				console.log("Create project ...");
-				projectId = (await apiClient.createProject()).project_id;
-				localStorage.setItem("wb_landing_editor.project_id", projectId);
-				console.log("Create project ... ok");
+				window.location.href = "/projects";
+				return;
 			}
 
 			const landingPage = await loadPageFromApi(apiClient, projectId);
@@ -64,6 +62,12 @@ function EditorPage() {
 			if (err instanceof TokenProviderError || err instanceof Unauthorized) {
 				tokenProvider.clearCredentials();
 				window.location.href = "/login";
+				return;
+			}
+
+			if (err instanceof ProjectNotFound) {
+				window.location.href = "/projects";
+				return;
 			}
 		}
 	});

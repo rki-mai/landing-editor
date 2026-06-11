@@ -23,7 +23,7 @@ export default function LoginPage() {
 	const tokenProvider = new LocalStorageTokenProvider(apiClient);
 
 	if (tokenProvider.hasRefreshToken()) {
-		window.location.href = "/edit?projectId=exampleProject";
+		window.location.href = "/projects";
 	}
 
 	const handleLogin = async (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -37,7 +37,7 @@ export default function LoginPage() {
 			});
 
 			tokenProvider.saveCredentials(result);
-			window.location.href = "/edit?projectId=exampleProject";
+			window.location.href = "/projects";
 		} catch (err) {
 			if (err instanceof Unauthorized) {
 				setError("Неверные данные для входа");
