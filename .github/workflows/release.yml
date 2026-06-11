@@ -36,7 +36,7 @@ jobs:
         run: npm run build
 
       - name: Archive dist
-        run: zip -r ${{ steps.project_name.outputs.value }}-v${{ steps.project_version.outputs.value }}.zip dist/
+        run: zip -r ${{ steps.project_name.outputs.value }}-v${{ steps.project_version.outputs.value }}.zip . -C dist/
 
       - name: Create release
         uses: ncipollo/release-action@v1
