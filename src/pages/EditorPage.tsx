@@ -32,11 +32,7 @@ import { PreviewCanvas } from "../components/preview_canvas";
 import { type LandingElement, type LandingPage } from "../components/types";
 import { findElementById } from "../components/utils";
 
-interface EditorPageProps {
-	projectId: string | null;
-}
-
-function EditorPage({ projectId }: EditorPageProps) {
+function EditorPage() {
 	const tokenProvider = new LocalStorageTokenProvider(
 		new ApiClient({ baseUrl: "" }),
 	);
@@ -49,12 +45,15 @@ function EditorPage({ projectId }: EditorPageProps) {
 	const [landingPage, setLandingPage] = useState<LandingPage | null>(null);
 
 	runBackgroundTask("fetchInitialDraft", async () => {
-		if (projectId === null) {
-			console.error("Project ID not specified in URL");
-			return;
-		}
-
 		try {
+			let projectId = localStorage.getItem("wb_landing_editor.project_id");
+			if (projectId === null) {
+				console.log("Create project ...");
+				projectId = (await apiClient.createProject()).project_id;
+				localStorage.setItem("wb_landing_editor.project_id", projectId);
+				console.log("Create project ... ok");
+			}
+
 			const landingPage = await loadPageFromApi(apiClient, projectId);
 			setLandingPage(landingPage);
 
