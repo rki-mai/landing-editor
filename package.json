@@ -1,13 +1,15 @@
 {
 	"name": "landing-editor",
 	"private": true,
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc -b && vite build",
 		"lint": "biome check .",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"project:version": "node -p \"require('./package.json').version\"",
+		"project:name": "node -p \"require('./package.json').name\""
 	},
 	"dependencies": {
 		"react": "^19.2.5",
