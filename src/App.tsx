@@ -2,8 +2,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import EditorPage from "./pages/EditorPage";
 import LoginPage from "./pages/LoginPage";
 import "./App.css";
-import RegisterPage from "./pages/RegisterPage";
 import ProjectsPage from "./pages/ProjectsPage";
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
 	const params = new URLSearchParams(window.location.search);

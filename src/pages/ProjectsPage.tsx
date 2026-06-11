@@ -1,15 +1,15 @@
-import styles from "./ProjectsPage.module.css";
-import { Tabs } from "../components/Tabs";
-import { ProjectsMenu } from "../components/ProjectsMenu";
-import { ProjectsList } from "../components/ProjectsList";
+import { useState } from "react";
 import {
 	ApiClient,
 	TokenProviderError,
 	Unauthorized,
 } from "../components/apiClient";
-import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
-import { useState } from "react";
 import { runBackgroundTask } from "../components/backgroundTask";
+import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
+import { ProjectsList } from "../components/ProjectsList";
+import { ProjectsMenu } from "../components/ProjectsMenu";
+import { Tabs } from "../components/Tabs";
+import styles from "./ProjectsPage.module.css";
 
 interface ProjectInfo {
 	id: string;
