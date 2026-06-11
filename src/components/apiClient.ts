@@ -164,6 +164,13 @@ export class UserAlreadyExists extends Error {
 	}
 }
 
+export class ProjectNotFound extends Error {
+	constructor(message: string = "Project not found") {
+		super(message);
+		this.name = "ProjectNotFound";
+	}
+}
+
 export class ApiClient {
 	private baseUrl: string;
 	private tokenProvider: ITokenProvider | null;
@@ -174,12 +181,19 @@ export class ApiClient {
 	}
 
 	public async getDraft(projectId: string): Promise<Draft> {
-		const data = await this.sendAuthorizedRequest(
-			`/api/v1/projects/${projectId}/draft`,
-			{ method: "GET" },
-		);
+		try {
+			const data = await this.sendAuthorizedRequest(
+				`/api/v1/projects/${projectId}/draft`,
+				{ method: "GET" },
+			);
 
-		return await this.parseDraftResponse(data);
+			return await this.parseDraftResponse(data);
+		} catch (err) {
+			if (err instanceof HttpError && err.statusCode === 404) {
+				throw new ProjectNotFound();
+			}
+			throw err;
+		}
 	}
 
 	public async login(credentials: Credentials): Promise<LoginResponse> {

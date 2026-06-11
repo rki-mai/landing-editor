@@ -1,0 +1,23 @@
+.menu {
+	display: flex;
+  flex: 1;
+	gap: 8px;
+	align-items: center;
+	margin: 16px 0;
+}
+
+.search {
+	flex: 1;
+	padding: 8px;
+	border-radius: 6px;
+	border: 1px solid #d1d5db;
+}
+
+.create {
+	padding: 8px 12px;
+	border-radius: 6px;
+	background: #2563eb;
+	color: #fff;
+	border: none;
+	cursor: pointer;
+}
