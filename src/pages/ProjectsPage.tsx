@@ -1,10 +1,10 @@
 import { useState } from "react";
 import {
 	ApiClient,
-	TokenProviderError,
-	Unauthorized,
 	type Project,
 	type Projects,
+	TokenProviderError,
+	Unauthorized,
 } from "../components/apiClient";
 import { runBackgroundTask } from "../components/backgroundTask";
 import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
