@@ -133,7 +133,15 @@ const CreateProjectResponseSchema = z
 
 export type CreateProjectResponse = z.infer<typeof CreateProjectResponseSchema>;
 
-const ProjectsSchema = z.array(z.string());
+const ProjectSchema = z
+	.object({
+		id: z.string(),
+		name: z.string(),
+	})
+	.strip();
+export type Project = z.infer<typeof ProjectSchema>;
+
+const ProjectsSchema = z.object({ projects: z.array(ProjectSchema) }).strip();
 export type Projects = z.infer<typeof ProjectsSchema>;
 
 const PublicationIdsResponseSchema = z
@@ -324,18 +332,12 @@ export class ApiClient {
 		return data;
 	}
 
-	public async createProject(): Promise<CreateProjectResponse> {
+	public async createProject(name: string): Promise<CreateProjectResponse> {
 		const response = await this.sendAuthorizedRequest("/api/v1/projects", {
 			method: "POST",
+			body: JSON.stringify({ name: name }),
 		});
-		const data = await this.parseCreateProjectResponse(response);
-		try {
-			this.saveProjectId(data.project_id);
-		} catch (e) {
-			console.error("[ApiClient] Failed to save project id to localStorage", e);
-			throw e;
-		}
-		return data;
+		return await this.parseCreateProjectResponse(response);
 	}
 
 	public async updateDraft(
@@ -351,40 +353,11 @@ export class ApiClient {
 		);
 	}
 
-	public getProjects(): string[] {
-		const ids = this.loadProjectIds();
-		try {
-			return ProjectsSchema.parse(ids);
-		} catch (e) {
-			console.error("[ApiClient] Projects schema validation failed", e);
-			throw e;
-		}
-	}
-
-	private saveProjectId(id: string): void {
-		const key = "wb_landing_editor.projects";
-		const ids = this.loadProjectIds();
-		if (!ids.includes(id)) {
-			ids.push(id);
-			try {
-				localStorage.setItem(key, JSON.stringify(ids));
-			} catch (e) {
-				console.warn(
-					"[ApiClient] Unable to persist projects to localStorage",
-					e,
-				);
-			}
-		}
-	}
-
-	private loadProjectIds(): string[] {
-		try {
-			const raw = localStorage.getItem("wb_landing_editor.projects");
-			return raw !== null ? ProjectsSchema.parse(JSON.parse(raw)) : [];
-		} catch (e) {
-			console.error("[ApiClient] Failed to read projects from localStorage", e);
-			throw e;
-		}
+	public async getProjects(): Promise<Projects> {
+		const response = await this.sendAuthorizedRequest(`api/v1/projects`, {
+			method: "GET",
+		});
+		return await this.parseProjectsResponse(response);
 	}
 
 	private async sendRequest(
@@ -489,5 +462,10 @@ export class ApiClient {
 		const data = await response.json();
 		const parsed = await PublicationIdsResponseSchema.parseAsync(data);
 		return parsed.ids;
+	}
+
+	private async parseProjectsResponse(response: Response): Promise<Projects> {
+		const data = await response.json();
+		return await ProjectsSchema.parseAsync(data);
 	}
 }

@@ -3,6 +3,8 @@ import {
 	ApiClient,
 	TokenProviderError,
 	Unauthorized,
+	type Project,
+	type Projects,
 } from "../components/apiClient";
 import { runBackgroundTask } from "../components/backgroundTask";
 import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
@@ -11,14 +13,8 @@ import { ProjectsMenu } from "../components/ProjectsMenu";
 import { Tabs } from "../components/Tabs";
 import styles from "./ProjectsPage.module.css";
 
-interface ProjectInfo {
-	id: string;
-	name: string;
-}
-
-const getProjects = async (apiClient: ApiClient): Promise<ProjectInfo[]> => {
-	const projectIds = await apiClient.getProjects();
-	return projectIds.map((id, index) => ({ id, name: `Проект ${index + 1}` }));
+const getProjects = async (apiClient: ApiClient): Promise<Projects> => {
+	return await apiClient.getProjects();
 };
 
 export default function ProjectsPage() {
@@ -31,20 +27,22 @@ export default function ProjectsPage() {
 		tokenProvider,
 	});
 
-	const [projects, setProjects] = useState<ProjectInfo[] | null>(null);
-	const [filteredProjects, setFilteredProjects] = useState<
-		ProjectInfo[] | null
-	>(null);
+	const [projects, setProjects] = useState<Project[] | null>(null);
+	const [filteredProjects, setFilteredProjects] = useState<Project[] | null>(
+		null,
+	);
 
 	runBackgroundTask("fetchProjects", async () => {
 		try {
 			const projects = await getProjects(apiClient);
-			setProjects(projects);
-			setFilteredProjects(projects);
+			setProjects(projects.projects);
+			setFilteredProjects(projects.projects);
 		} catch (err) {
 			if (err instanceof TokenProviderError || err instanceof Unauthorized) {
 				tokenProvider.clearCredentials();
 				window.location.href = "/login";
+			} else {
+				throw err;
 			}
 		}
 	});
@@ -52,7 +50,9 @@ export default function ProjectsPage() {
 	const handleCreate = () => {
 		runBackgroundTask("createProject", async () => {
 			try {
-				const { project_id } = await apiClient.createProject();
+				const projectNumber = projects === null ? 1 : projects.length + 1;
+				const projectName = `Проект ${projectNumber}`;
+				const { project_id } = await apiClient.createProject(projectName);
 				window.location.href = `/edit?projectId=${project_id}`;
 			} catch (err) {
 				if (err instanceof TokenProviderError || err instanceof Unauthorized) {
@@ -72,7 +72,7 @@ export default function ProjectsPage() {
 		setFilteredProjects(filtered);
 	};
 
-	const handlePublish = (project: ProjectInfo) => {
+	const handlePublish = (project: Project) => {
 		runBackgroundTask(
 			`publishProject-${project.id}-${crypto.randomUUID()}`,
 			async () => {
@@ -94,7 +94,7 @@ export default function ProjectsPage() {
 		);
 	};
 
-	const handleOpen = (project: ProjectInfo) => {
+	const handleOpen = (project: Project) => {
 		window.location.href = `/edit?projectId=${project.id}`;
 	};
 

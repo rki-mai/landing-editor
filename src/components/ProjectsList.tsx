@@ -1,16 +1,12 @@
 import paperPlaneIcon from "../assets/paper-plane.svg";
+import type { Project } from "./apiClient";
 import styles from "./ProjectsList.module.css";
 import { SquareButton } from "./squareButton";
 
-interface ProjectInfo {
-	id: string;
-	name: string;
-}
-
 export interface ProjectsListProps {
-	projects: ProjectInfo[] | null;
-	onOpen: (project: ProjectInfo) => void;
-	onPublish: (project: ProjectInfo) => void;
+	projects: Project[] | null;
+	onOpen: (project: Project) => void;
+	onPublish: (project: Project) => void;
 }
 
 const PublishButton = ({ onClick }: { onClick: () => void }) => {
@@ -29,9 +25,9 @@ const ProjectListItem = ({
 	onOpen,
 	onPublish,
 }: {
-	project: ProjectInfo;
-	onOpen: (project: ProjectInfo) => void;
-	onPublish: (project: ProjectInfo) => void;
+	project: Project;
+	onOpen: (project: Project) => void;
+	onPublish: (project: Project) => void;
 }) => {
 	return (
 		<li key={project.id} className={styles.item}>
