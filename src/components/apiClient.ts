@@ -12,6 +12,10 @@ export interface ITokenProvider {
 	refreshToken(): Promise<void>;
 }
 
+export interface UpdateProjectData {
+	name: string;
+}
+
 export interface ApiClientConfig {
 	baseUrl: string;
 	tokenProvider?: ITokenProvider;
@@ -354,10 +358,23 @@ export class ApiClient {
 	}
 
 	public async getProjects(): Promise<Projects> {
-		const response = await this.sendAuthorizedRequest(`api/v1/projects`, {
-			method: "GET",
-		});
+		const response = await this.sendAuthorizedRequest(
+			`api/v1/projects`,
+			{ method: "GET" },
+			{ retryOn500: true },
+		);
 		return await this.parseProjectsResponse(response);
+	}
+
+	public async updateProject(
+		projectId: string,
+		data: UpdateProjectData,
+	): Promise<void> {
+		await this.sendAuthorizedRequest(
+			`api/v1/projects/${projectId}`,
+			{ method: "PATCH", body: JSON.stringify(data) },
+			{ retryOn500: true },
+		);
 	}
 
 	private async sendRequest(
@@ -392,17 +409,26 @@ export class ApiClient {
 	private async sendAuthorizedRequest(
 		endpoint: string,
 		options: RequestInit,
+		params: { retryOn500: boolean } | null = null,
 	): Promise<Response> {
+		const retryOn500 = params ? params.retryOn500 : false;
+
 		try {
 			const extendedOptions = this.extendRequestOptionsWithAuth(options);
 			return await this.sendRequest(endpoint, extendedOptions);
 		} catch (err) {
-			if (err instanceof Unauthorized && this.tokenProvider) {
-				await this.tokenProvider.refreshToken();
+			if (this.tokenProvider) {
+				if (
+					err instanceof Unauthorized ||
+					(retryOn500 && err instanceof HttpError && err.statusCode === 500)
+				) {
+					await this.tokenProvider.refreshToken();
 
-				const extendedOptions = this.extendRequestOptionsWithAuth(options);
-				return await this.sendRequest(endpoint, extendedOptions);
+					const extendedOptions = this.extendRequestOptionsWithAuth(options);
+					return await this.sendRequest(endpoint, extendedOptions);
+				}
 			}
+
 			throw err;
 		}
 	}
