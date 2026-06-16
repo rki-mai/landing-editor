@@ -1,32 +1,7 @@
 import React, { useState } from "react";
 import { HexColorPicker } from "react-colorful";
-import closeButton from "../assets/close-btn.png";
 import styles from "./element_settings.module.css";
-
-const CloseButton = ({ onClick }: { onClick: () => void }) => {
-	return (
-		<div className={styles.settingsCloseIcon} onClick={onClick}>
-			<img style={{ width: "100%", display: "block" }} src={closeButton} />
-		</div>
-	);
-};
-
-const Header = ({ onClose }: { onClose: () => void }) => {
-	return (
-		<div className={styles.settingsHeader}>
-			<div className={styles.settingsHeaderTitle}>Component settings</div>
-			<CloseButton onClick={onClose} />
-		</div>
-	);
-};
-
-const Body = ({
-	children,
-}: {
-	children: React.ReactNode | React.ReactNode[];
-}) => {
-	return <div className={styles.settingsBody}>{children}</div>;
-};
+import { Drawer } from "./drawer";
 
 const SettingContainer = ({
 	children,
@@ -217,9 +192,8 @@ export const ElementSettings = ({
 	onClose: () => void;
 }) => {
 	return (
-		<div className={styles.settings}>
-			<Header onClose={onClose} />
-			<Body>{children}</Body>
-		</div>
+		<Drawer title="Настройки" onClose={onClose}>
+			{children}
+		</Drawer>
 	);
 };
