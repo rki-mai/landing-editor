@@ -36,18 +36,18 @@ export const runPublicationPoller = (
 
 const getPublications = async (apiClient: ApiClient) => {
 	console.log("[PublicationPoller] Getting publications ...");
-	const projectIds = await apiClient.getProjects();
+	const projects = await apiClient.getProjects();
 	const publications: Publication[] = [];
-	for (const projectId of projectIds) {
-		const publicationIds = await apiClient.getPublicationIds(projectId);
+	for (const project of projects.projects) {
+		const publicationIds = await apiClient.getPublicationIds(project.id);
 		for (const publicationId of publicationIds) {
 			const publication = await apiClient.getPublication(
-				projectId,
+				project.id,
 				publicationId,
 			);
 
 			publications.push(
-				convertPublication(projectId, publicationId, publication),
+				convertPublication(project.id, publicationId, publication),
 			);
 		}
 	}
