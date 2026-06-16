@@ -21,6 +21,7 @@
 .actionMenu {
 	display: flex;
 	padding-bottom: 10px;
+	gap: 5px;
 }
 
 .actionList {

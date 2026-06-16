@@ -105,7 +105,7 @@ const LandingElementSchema = z.discriminatedUnion("element", [
 ]);
 
 const DraftSchema = z
-	.object({ elements: z.array(LandingElementSchema) })
+	.object({ version: z.number(), elements: z.array(LandingElementSchema) })
 	.strip();
 
 export type DraftElement = z.infer<typeof LandingElementSchema>;
@@ -215,11 +215,20 @@ export class ApiClient {
 		this.tokenProvider = config.tokenProvider || null;
 	}
 
-	public async getDraft(projectId: string): Promise<Draft> {
+	public async getDraft(
+		projectId: string,
+		version: number | null = null,
+	): Promise<Draft> {
+		const url =
+			version === null
+				? `/api/v1/projects/${projectId}/draft`
+				: `/api/v1/projects/${projectId}/draft/versions/${version}`;
+
 		try {
 			const data = await this.sendAuthorizedRequest(
-				`/api/v1/projects/${projectId}/draft`,
+				url,
 				{ method: "GET" },
+				{ retryOn500: true },
 			);
 
 			return await this.parseDraftResponse(data);
