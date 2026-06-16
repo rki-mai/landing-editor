@@ -17,6 +17,25 @@ const getProjects = async (apiClient: ApiClient): Promise<Projects> => {
 	return await apiClient.getProjects();
 };
 
+function redirectOnLogin<T>(
+	tokenProvider: LocalStorageTokenProvider,
+	func: () => Promise<T>,
+): () => Promise<T> {
+	return async () => {
+		try {
+			return await func();
+		} catch (err) {
+			if (err instanceof TokenProviderError || err instanceof Unauthorized) {
+				tokenProvider.clearCredentials();
+				window.location.href = "/login";
+				throw Error("Redirect");
+			} else {
+				throw err;
+			}
+		}
+	};
+}
+
 export default function ProjectsPage() {
 	const tokenProvider = new LocalStorageTokenProvider(
 		new ApiClient({ baseUrl: "" }),
@@ -32,35 +51,35 @@ export default function ProjectsPage() {
 		null,
 	);
 
-	runBackgroundTask("fetchProjects", async () => {
-		try {
+	runBackgroundTask(
+		"fetchProjects",
+		redirectOnLogin(tokenProvider, async () => {
 			const projects = await getProjects(apiClient);
 			setProjects(projects.projects);
 			setFilteredProjects(projects.projects);
-		} catch (err) {
-			if (err instanceof TokenProviderError || err instanceof Unauthorized) {
-				tokenProvider.clearCredentials();
-				window.location.href = "/login";
-			} else {
-				throw err;
-			}
-		}
-	});
+		}),
+	);
 
 	const handleCreate = () => {
-		runBackgroundTask("createProject", async () => {
-			try {
+		runBackgroundTask(
+			"createProject",
+			redirectOnLogin(tokenProvider, async () => {
 				const projectNumber = projects === null ? 1 : projects.length + 1;
 				const projectName = `Проект ${projectNumber}`;
 				const { project_id } = await apiClient.createProject(projectName);
 				window.location.href = `/edit?projectId=${project_id}`;
-			} catch (err) {
-				if (err instanceof TokenProviderError || err instanceof Unauthorized) {
-					tokenProvider.clearCredentials();
-					window.location.href = "/login";
-				}
-			}
-		});
+			}),
+		);
+	};
+
+	const renameProject = (project: Project, name: string) => {
+		runBackgroundTask(
+			"renameProject",
+			redirectOnLogin(tokenProvider, async () => {
+				await apiClient.updateProject(project.id, { name: name });
+				window.location.reload();
+			}),
+		);
 	};
 
 	const handleSearch = (query: string) => {
@@ -109,6 +128,7 @@ export default function ProjectsPage() {
 					projects={filteredProjects}
 					onOpen={handleOpen}
 					onPublish={handlePublish}
+					onRename={renameProject}
 				/>
 			</div>
 		</div>
