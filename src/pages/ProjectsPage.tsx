@@ -55,8 +55,9 @@ export default function ProjectsPage() {
 		"fetchProjects",
 		redirectOnLogin(tokenProvider, async () => {
 			const projects = await getProjects(apiClient);
-			setProjects(projects.projects);
-			setFilteredProjects(projects.projects);
+			const processedProjects = projects.projects || [];
+			setProjects(processedProjects);
+			setFilteredProjects(processedProjects);
 		}),
 	);
 

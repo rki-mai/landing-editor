@@ -38,7 +38,7 @@ const getPublications = async (apiClient: ApiClient) => {
 	console.log("[PublicationPoller] Getting publications ...");
 	const projects = await apiClient.getProjects();
 	const publications: Publication[] = [];
-	for (const project of projects.projects) {
+	for (const project of projects.projects || []) {
 		const publicationIds = await apiClient.getPublicationIds(project.id);
 		for (const publicationId of publicationIds) {
 			const publication = await apiClient.getPublication(

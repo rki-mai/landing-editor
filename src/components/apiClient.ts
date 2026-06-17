@@ -145,7 +145,9 @@ const ProjectSchema = z
 	.strip();
 export type Project = z.infer<typeof ProjectSchema>;
 
-const ProjectsSchema = z.object({ projects: z.array(ProjectSchema) }).strip();
+const ProjectsSchema = z
+	.object({ projects: z.array(ProjectSchema).nullable() })
+	.strip();
 export type Projects = z.infer<typeof ProjectsSchema>;
 
 const PublicationIdsResponseSchema = z
