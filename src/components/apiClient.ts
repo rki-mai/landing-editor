@@ -53,7 +53,20 @@ export interface DeleteOperation {
 	data: DeleteData;
 }
 
-export type Operation = CreateOperation | UpdateOperation | DeleteOperation;
+interface RevertOperationData {
+	count: number;
+}
+
+export interface RevertOperation {
+	operation: "revert";
+	data: RevertOperationData;
+}
+
+export type Operation =
+	| CreateOperation
+	| UpdateOperation
+	| DeleteOperation
+	| RevertOperation;
 
 const ElementStylesSchema = z.record(z.string(), z.string());
 
@@ -360,7 +373,7 @@ export class ApiClient {
 		operation: Operation,
 	): Promise<void> {
 		await this.sendAuthorizedRequest(
-			`api/v1/projects/${projectId}/draft/mutations`,
+			`/api/v1/projects/${projectId}/draft/mutations`,
 			{
 				method: "POST",
 				body: JSON.stringify(operation),

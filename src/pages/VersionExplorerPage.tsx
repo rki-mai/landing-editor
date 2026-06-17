@@ -74,11 +74,40 @@ export const VersionExplorerPage = () => {
 										setSnapshot,
 									)
 								}
+								onCheckout={() =>
+									restoreVersion(
+										tokenProvider,
+										apiClient,
+										projectId,
+										Math.max(...versions),
+										version,
+									)
+								}
 							/>
 						))}
 				</VersionCheckoutWindow>
 			</div>
 		</div>
+	);
+};
+
+const restoreVersion = (
+	tokenProvider: LocalStorageTokenProvider,
+	apiClient: ApiClient,
+	projectId: string,
+	latestVersion: number,
+	currentVersion: number,
+) => {
+	runBackgroundTask(
+		`restoreVersion-${currentVersion}-${crypto.randomUUID()}`,
+		redirectOnFallbackPages(tokenProvider, async () => {
+			const revertsCount = latestVersion - currentVersion;
+			await apiClient.updateDraft(projectId, {
+				operation: "revert",
+				data: { count: revertsCount },
+			});
+			window.location.reload();
+		}),
 	);
 };
 
