@@ -6,6 +6,7 @@ import styles from "./versionCheckout.module.css";
 
 interface VersionCheckoutWindowParams {
 	onClose: () => void;
+	children: React.ReactElement[] | null;
 }
 
 interface VersionItemParams {
@@ -40,20 +41,21 @@ export const VersionItem = ({
 	);
 };
 
-const VersionItemList = ({ children }: { children: React.ReactNode[] }) => {
+const VersionItemList = ({
+	children,
+}: {
+	children: React.ReactNode[] | null;
+}) => {
 	return <div className={styles.versionList}>{children}</div>;
 };
 
 export const VersionCheckoutWindow = ({
 	onClose,
+	children,
 }: VersionCheckoutWindowParams) => {
 	return (
 		<Drawer title="Версии" onClose={onClose}>
-			<VersionItemList>
-				<VersionItem versionNumber={1} active={true} />
-				<VersionItem versionNumber={2} active={false} />
-				<VersionItem versionNumber={3} active={false} />
-			</VersionItemList>
+			<VersionItemList>{children}</VersionItemList>
 		</Drawer>
 	);
 };
