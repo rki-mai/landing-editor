@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import {
 	ApiClient,
 	ProjectNotFound,
@@ -6,16 +7,15 @@ import {
 	Unauthorized,
 } from "../components/apiClient";
 import { runBackgroundTask } from "../components/backgroundTask";
-import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
-import type { LandingPage } from "../components/types";
 import { PreviewContainer } from "../components/edit_area";
-import { PreviewCanvas } from "../components/preview_canvas";
 import { renderElements } from "../components/editor_components_renderer";
+import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
+import { PreviewCanvas } from "../components/preview_canvas";
+import type { LandingPage } from "../components/types";
 import {
 	VersionCheckoutWindow,
 	VersionItem,
 } from "../components/versionCheckout/versionCheckout";
-import { useParams } from "react-router-dom";
 
 export const VersionExplorerPage = () => {
 	const { projectId } = useParams();

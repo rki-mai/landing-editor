@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { HexColorPicker } from "react-colorful";
-import styles from "./element_settings.module.css";
 import { Drawer } from "./drawer";
+import styles from "./element_settings.module.css";
 
 const SettingContainer = ({
 	children,

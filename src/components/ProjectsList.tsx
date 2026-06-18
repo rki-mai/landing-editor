@@ -1,6 +1,6 @@
+import commitIcon from "../assets/commit.svg";
 import paperPlaneIcon from "../assets/paper-plane.svg";
 import pencilIcon from "../assets/pencil.svg";
-import commitIcon from "../assets/commit.svg";
 import type { Project } from "./apiClient";
 import styles from "./ProjectsList.module.css";
 import { SquareButton } from "./squareButton";
