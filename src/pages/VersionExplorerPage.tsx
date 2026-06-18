@@ -50,13 +50,7 @@ export const VersionExplorerPage = () => {
 			<div className="editor-container">
 				<PreviewContainer>
 					<PreviewCanvas>
-						{snapshot &&
-							renderElements(
-								snapshot.elements,
-								() => null,
-								() => null,
-								() => null,
-							)}
+						{snapshot && renderElements(snapshot.elements)}
 					</PreviewCanvas>
 				</PreviewContainer>
 				<VersionCheckoutWindow onClose={() => null}>
