@@ -1,4 +1,3 @@
-import eyeIcon from "../../assets/eye.svg";
 import rotateIcon from "../../assets/rotate-left.svg";
 import { Drawer } from "../drawer";
 import { SquareButton } from "../squareButton";
@@ -22,15 +21,14 @@ export const VersionItem = ({
 	onView,
 	onCheckout,
 }: VersionItemParams) => {
-	let className = styles.versionItem;
-	if (active) {
-		className = `${className} ${styles.versionItemActive}`;
-	}
+	const activeClassName = active
+		? styles.versionItemActive
+		: styles.versionItemInactive;
+	const className = `${styles.versionItem} ${activeClassName}`;
 
 	return (
-		<div className={className}>
+		<div className={className} onClick={active ? undefined : onView}>
 			<div className={styles.versionName}>Версия {versionNumber}</div>
-			<SquareButton icon={eyeIcon} variant="ghost" size={30} onClick={onView} />
 			<SquareButton
 				icon={rotateIcon}
 				variant="ghost"

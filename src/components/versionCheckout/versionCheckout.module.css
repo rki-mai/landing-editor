@@ -18,6 +18,10 @@
     border: 2px solid #6ae2f6;
 }
 
+.versionItemInactive {
+    cursor: pointer;
+}
+
 .versionName {
     flex-grow: 1;
 }
