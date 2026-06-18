@@ -64,7 +64,7 @@ export const TextElementComponent = ({
 	onDelete,
 }: {
 	element: TextElement;
-	onSettingsOpened: OpenSettingsCallback;
+	onSettingsOpened?: OpenSettingsCallback;
 	onMoveUp?: () => void;
 	onMoveDown?: () => void;
 	onDelete?: () => void;
@@ -78,7 +78,9 @@ export const TextElementComponent = ({
 	return (
 		<LandingElementEditContainer
 			key={element.id}
-			onSettingsOpened={() => onSettingsOpened(element)}
+			onSettingsOpened={
+				onSettingsOpened ? () => onSettingsOpened(element) : undefined
+			}
 			onMoveDown={onMoveDown}
 			onMoveUp={onMoveUp}
 			onDelete={onDelete}
@@ -98,7 +100,7 @@ export const LinkElementComponent = ({
 	onDelete,
 }: {
 	element: LinkElement;
-	onSettingsOpened: OpenSettingsCallback;
+	onSettingsOpened?: OpenSettingsCallback;
 	onMoveUp?: () => void;
 	onMoveDown?: () => void;
 	onDelete?: () => void;
@@ -106,7 +108,9 @@ export const LinkElementComponent = ({
 	return (
 		<LandingElementEditContainer
 			key={element.id}
-			onSettingsOpened={() => onSettingsOpened(element)}
+			onSettingsOpened={
+				onSettingsOpened ? () => onSettingsOpened(element) : undefined
+			}
 			onMoveUp={onMoveUp}
 			onMoveDown={onMoveDown}
 			onDelete={onDelete}
@@ -126,7 +130,7 @@ export const ImageElementComponent = ({
 	onDelete,
 }: {
 	element: ImageElement;
-	onSettingsOpened: OpenSettingsCallback;
+	onSettingsOpened?: OpenSettingsCallback;
 	onMoveUp?: () => void;
 	onMoveDown?: () => void;
 	onDelete?: () => void;
@@ -143,7 +147,9 @@ export const ImageElementComponent = ({
 	return (
 		<LandingElementEditContainer
 			key={element.id}
-			onSettingsOpened={() => onSettingsOpened(element)}
+			onSettingsOpened={
+				onSettingsOpened ? () => onSettingsOpened(element) : undefined
+			}
 			onMoveUp={onMoveUp}
 			onMoveDown={onMoveDown}
 			onDelete={onDelete}
@@ -185,7 +191,7 @@ export const ButtonElementComponent = ({
 	onDelete,
 }: {
 	element: ButtonElement;
-	onSettingsOpened: OpenSettingsCallback;
+	onSettingsOpened?: OpenSettingsCallback;
 	onMoveUp?: () => void;
 	onMoveDown?: () => void;
 	onDelete?: () => void;
@@ -193,7 +199,9 @@ export const ButtonElementComponent = ({
 	return (
 		<LandingElementEditContainer
 			key={element.id}
-			onSettingsOpened={() => onSettingsOpened(element)}
+			onSettingsOpened={
+				onSettingsOpened ? () => onSettingsOpened(element) : undefined
+			}
 			onMoveUp={onMoveUp}
 			onMoveDown={onMoveDown}
 			onDelete={onDelete}

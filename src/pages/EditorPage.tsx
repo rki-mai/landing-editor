@@ -95,7 +95,7 @@ function EditorPage({ projectId }: { projectId: string | null }) {
 			<div className="editor-container">
 				<EditArea>
 					<ActionMenu>
-						<ActionListMenuItem name="Create component">
+						<ActionListMenuItem name="Создать">
 							<ActionListItem
 								name="Text"
 								onClick={() => createElement(createTextElement)}

@@ -1,0 +1,27 @@
+.versionList {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.versionItem {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	padding: 5px;
+	gap: 5px;
+}
+
+.versionItemActive {
+	background: #e9fbfe;
+	border-radius: 10px;
+	border: 2px solid #6ae2f6;
+}
+
+.versionItemInactive {
+	cursor: pointer;
+}
+
+.versionName {
+	flex-grow: 1;
+}

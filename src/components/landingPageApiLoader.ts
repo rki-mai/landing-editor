@@ -13,5 +13,8 @@ export const loadPageFromApi = async (
 };
 
 const convertToLandingPage = (draft: Draft): LandingPage => {
-	return { elements: draft.elements.map(convertToLandingElement) };
+	return {
+		elements: draft.elements.map(convertToLandingElement),
+		version: draft.version,
+	};
 };

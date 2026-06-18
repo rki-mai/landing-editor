@@ -55,8 +55,9 @@ export default function ProjectsPage() {
 		"fetchProjects",
 		redirectOnLogin(tokenProvider, async () => {
 			const projects = await getProjects(apiClient);
-			setProjects(projects.projects);
-			setFilteredProjects(projects.projects);
+			const processedProjects = projects.projects || [];
+			setProjects(processedProjects);
+			setFilteredProjects(processedProjects);
 		}),
 	);
 
@@ -117,6 +118,10 @@ export default function ProjectsPage() {
 		window.location.href = `/edit?projectId=${project.id}`;
 	};
 
+	const handleViewVersions = (project: Project) => {
+		window.location.href = `/projects/${project.id}/versions`;
+	};
+
 	return (
 		<div className={styles.container}>
 			<Tabs active="projects" />
@@ -129,6 +134,7 @@ export default function ProjectsPage() {
 					onOpen={handleOpen}
 					onPublish={handlePublish}
 					onRename={renameProject}
+					onViewVersions={handleViewVersions}
 				/>
 			</div>
 		</div>

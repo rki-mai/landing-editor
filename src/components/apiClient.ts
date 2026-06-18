@@ -53,7 +53,20 @@ export interface DeleteOperation {
 	data: DeleteData;
 }
 
-export type Operation = CreateOperation | UpdateOperation | DeleteOperation;
+interface RevertOperationData {
+	count: number;
+}
+
+export interface RevertOperation {
+	operation: "revert";
+	data: RevertOperationData;
+}
+
+export type Operation =
+	| CreateOperation
+	| UpdateOperation
+	| DeleteOperation
+	| RevertOperation;
 
 const ElementStylesSchema = z.record(z.string(), z.string());
 
@@ -105,7 +118,7 @@ const LandingElementSchema = z.discriminatedUnion("element", [
 ]);
 
 const DraftSchema = z
-	.object({ elements: z.array(LandingElementSchema) })
+	.object({ version: z.number(), elements: z.array(LandingElementSchema) })
 	.strip();
 
 export type DraftElement = z.infer<typeof LandingElementSchema>;
@@ -145,7 +158,9 @@ const ProjectSchema = z
 	.strip();
 export type Project = z.infer<typeof ProjectSchema>;
 
-const ProjectsSchema = z.object({ projects: z.array(ProjectSchema) }).strip();
+const ProjectsSchema = z
+	.object({ projects: z.array(ProjectSchema).nullable() })
+	.strip();
 export type Projects = z.infer<typeof ProjectsSchema>;
 
 const PublicationIdsResponseSchema = z
@@ -215,11 +230,20 @@ export class ApiClient {
 		this.tokenProvider = config.tokenProvider || null;
 	}
 
-	public async getDraft(projectId: string): Promise<Draft> {
+	public async getDraft(
+		projectId: string,
+		version: number | null = null,
+	): Promise<Draft> {
+		const url =
+			version === null
+				? `/api/v1/projects/${projectId}/draft`
+				: `/api/v1/projects/${projectId}/draft/versions/${version}`;
+
 		try {
 			const data = await this.sendAuthorizedRequest(
-				`/api/v1/projects/${projectId}/draft`,
+				url,
 				{ method: "GET" },
+				{ retryOn500: true },
 			);
 
 			return await this.parseDraftResponse(data);
@@ -349,7 +373,7 @@ export class ApiClient {
 		operation: Operation,
 	): Promise<void> {
 		await this.sendAuthorizedRequest(
-			`api/v1/projects/${projectId}/draft/mutations`,
+			`/api/v1/projects/${projectId}/draft/mutations`,
 			{
 				method: "POST",
 				body: JSON.stringify(operation),
