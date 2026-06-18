@@ -29,12 +29,14 @@ export const VersionItem = ({
 	return (
 		<div className={className} onClick={active ? undefined : onView}>
 			<div className={styles.versionName}>Версия {versionNumber}</div>
-			<SquareButton
-				icon={rotateIcon}
-				variant="ghost"
-				size={30}
-				onClick={onCheckout}
-			/>
+			{onCheckout && (
+				<SquareButton
+					icon={rotateIcon}
+					variant="ghost"
+					size={30}
+					onClick={onCheckout}
+				/>
+			)}
 		</div>
 	);
 };

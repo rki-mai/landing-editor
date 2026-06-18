@@ -68,14 +68,17 @@ export const VersionExplorerPage = () => {
 										setSnapshot,
 									)
 								}
-								onCheckout={() =>
-									restoreVersion(
-										tokenProvider,
-										apiClient,
-										projectId,
-										Math.max(...versions),
-										version,
-									)
+								onCheckout={
+									version === versions.length - 1
+										? undefined
+										: () =>
+												restoreVersion(
+													tokenProvider,
+													apiClient,
+													projectId,
+													Math.max(...versions),
+													version,
+												)
 								}
 							/>
 						))}
