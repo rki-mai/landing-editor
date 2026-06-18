@@ -1,15 +1,13 @@
 import closeIcon from "../../assets/close-btn.png";
 import styles from "./drawer.module.css";
 
-export const Drawer = ({
-	title,
-	children,
-	onClose,
-}: {
+interface DrawerParams {
 	title: string;
 	children: React.ReactNode | React.ReactNode[];
-	onClose: () => void;
-}) => {
+	onClose?: () => void;
+}
+
+export const Drawer = ({ title, children, onClose }: DrawerParams) => {
 	return (
 		<div className={styles.drawer}>
 			<Header title={title} onClose={onClose} />
@@ -18,11 +16,16 @@ export const Drawer = ({
 	);
 };
 
-const Header = ({ title, onClose }: { title: string; onClose: () => void }) => {
+interface HeaderParams {
+	title: string;
+	onClose?: () => void;
+}
+
+const Header = ({ title, onClose }: HeaderParams) => {
 	return (
 		<div className={styles.header}>
 			<div className={styles.headerTitle}>{title}</div>
-			<CloseButton onClick={onClose} />
+			{onClose && <CloseButton onClick={onClose} />}
 		</div>
 	);
 };

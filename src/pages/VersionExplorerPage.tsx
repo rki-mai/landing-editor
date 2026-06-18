@@ -53,7 +53,7 @@ export const VersionExplorerPage = () => {
 						{snapshot && renderElements(snapshot.elements)}
 					</PreviewCanvas>
 				</PreviewContainer>
-				<VersionCheckoutWindow onClose={() => null}>
+				<VersionCheckoutWindow>
 					{versions &&
 						versions.map((version) => (
 							<VersionItem

@@ -4,7 +4,6 @@ import { SquareButton } from "../squareButton";
 import styles from "./versionCheckout.module.css";
 
 interface VersionCheckoutWindowParams {
-	onClose: () => void;
 	children: React.ReactElement[] | null;
 }
 
@@ -50,11 +49,10 @@ const VersionItemList = ({
 };
 
 export const VersionCheckoutWindow = ({
-	onClose,
 	children,
 }: VersionCheckoutWindowParams) => {
 	return (
-		<Drawer title="Версии" onClose={onClose}>
+		<Drawer title="Версии">
 			<VersionItemList>{children}</VersionItemList>
 		</Drawer>
 	);
