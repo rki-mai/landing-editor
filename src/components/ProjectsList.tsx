@@ -1,5 +1,6 @@
 import paperPlaneIcon from "../assets/paper-plane.svg";
 import pencilIcon from "../assets/pencil.svg";
+import commitIcon from "../assets/commit.svg";
 import type { Project } from "./apiClient";
 import styles from "./ProjectsList.module.css";
 import { SquareButton } from "./squareButton";
@@ -9,6 +10,7 @@ export interface ProjectsListProps {
 	onOpen: (project: Project) => void;
 	onPublish: (project: Project) => void;
 	onRename: (project: Project, name: string) => void;
+	onViewVersions: (project: Project) => void;
 }
 
 const PublishButton = ({ onClick }: { onClick: () => void }) => {
@@ -33,16 +35,29 @@ const RenameButton = ({ onClick }: { onClick: () => void }) => {
 	);
 };
 
+const ViewVersionsButton = ({ onClick }: { onClick: () => void }) => {
+	return (
+		<SquareButton
+			icon={commitIcon}
+			size={30}
+			variant="ghost"
+			onClick={onClick}
+		></SquareButton>
+	);
+};
+
 const ProjectListItem = ({
 	project,
 	onOpen,
 	onPublish,
 	onRename,
+	onViewVersions,
 }: {
 	project: Project;
 	onOpen: (project: Project) => void;
 	onPublish: (project: Project) => void;
 	onRename: (project: Project, name: string) => void;
+	onViewVersions: (project: Project) => void;
 }) => {
 	const handleRenameProject = () => {
 		const inputValue = prompt("Название проекта:");
@@ -65,6 +80,7 @@ const ProjectListItem = ({
 					{project.name}
 				</a>
 				<RenameButton onClick={handleRenameProject} />
+				<ViewVersionsButton onClick={() => onViewVersions(project)} />
 				<PublishButton onClick={() => onPublish(project)} />
 			</div>
 		</li>
@@ -76,6 +92,7 @@ export function ProjectsList({
 	onOpen,
 	onPublish,
 	onRename,
+	onViewVersions,
 }: ProjectsListProps) {
 	return (
 		<section className={styles.list}>
@@ -93,6 +110,7 @@ export function ProjectsList({
 								onOpen={onOpen}
 								onPublish={onPublish}
 								onRename={onRename}
+								onViewVersions={onViewVersions}
 							/>
 						))}
 					</ul>

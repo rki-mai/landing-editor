@@ -118,6 +118,10 @@ export default function ProjectsPage() {
 		window.location.href = `/edit?projectId=${project.id}`;
 	};
 
+	const handleViewVersions = (project: Project) => {
+		window.location.href = `/projects/${project.id}/versions`;
+	};
+
 	return (
 		<div className={styles.container}>
 			<Tabs active="projects" />
@@ -130,6 +134,7 @@ export default function ProjectsPage() {
 					onOpen={handleOpen}
 					onPublish={handlePublish}
 					onRename={renameProject}
+					onViewVersions={handleViewVersions}
 				/>
 			</div>
 		</div>
