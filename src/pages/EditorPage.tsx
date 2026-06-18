@@ -44,6 +44,9 @@ function EditorPage({ projectId }: { projectId: string | null }) {
 	});
 
 	const [landingPage, setLandingPage] = useState<LandingPage | null>(null);
+	const [settingsElementId, setSettingsElementId] = useState<string | null>(
+		null,
+	);
 
 	runBackgroundTask("fetchInitialDraft", async () => {
 		try {
@@ -75,11 +78,12 @@ function EditorPage({ projectId }: { projectId: string | null }) {
 	const updateLandingPage = (updated: LandingPage) => {
 		draftUpdater.updateLandingPage(updated);
 		setLandingPage(updated);
-	};
 
-	const [settingsElementId, setSettingsElementId] = useState<string | null>(
-		null,
-	);
+		const elementIds = updated.elements.map((el) => el.id);
+		if (settingsElementId && !elementIds.includes(settingsElementId)) {
+			setSettingsElementId(null);
+		}
+	};
 
 	const onSettingsOpened = (element: LandingElement) => {
 		setSettingsElementId(element.id);
