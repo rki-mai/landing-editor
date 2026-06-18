@@ -27,7 +27,7 @@ export default function RegisterPage() {
 	const tokenProvider = new LocalStorageTokenProvider(apiClient);
 
 	if (tokenProvider.hasRefreshToken()) {
-		window.location.href = "/edit?projectId=exampleProject";
+		window.location.href = "/projects";
 	}
 
 	const handleRegister = async (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -46,7 +46,7 @@ export default function RegisterPage() {
 			});
 
 			tokenProvider.saveCredentials(result);
-			window.location.href = "/edit?projectId=exampleProject";
+			window.location.href = "/projects";
 		} catch (err) {
 			if (err instanceof UserAlreadyExists) {
 				setError("Пользователь с таким email уже существует");

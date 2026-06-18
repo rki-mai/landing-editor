@@ -12,6 +12,10 @@ export interface ITokenProvider {
 	refreshToken(): Promise<void>;
 }
 
+export interface UpdateProjectData {
+	name: string;
+}
+
 export interface ApiClientConfig {
 	baseUrl: string;
 	tokenProvider?: ITokenProvider;
@@ -49,7 +53,20 @@ export interface DeleteOperation {
 	data: DeleteData;
 }
 
-export type Operation = CreateOperation | UpdateOperation | DeleteOperation;
+interface RevertOperationData {
+	count: number;
+}
+
+export interface RevertOperation {
+	operation: "revert";
+	data: RevertOperationData;
+}
+
+export type Operation =
+	| CreateOperation
+	| UpdateOperation
+	| DeleteOperation
+	| RevertOperation;
 
 const ElementStylesSchema = z.record(z.string(), z.string());
 
@@ -101,7 +118,7 @@ const LandingElementSchema = z.discriminatedUnion("element", [
 ]);
 
 const DraftSchema = z
-	.object({ elements: z.array(LandingElementSchema) })
+	.object({ version: z.number(), elements: z.array(LandingElementSchema) })
 	.strip();
 
 export type DraftElement = z.infer<typeof LandingElementSchema>;
@@ -133,6 +150,42 @@ const CreateProjectResponseSchema = z
 
 export type CreateProjectResponse = z.infer<typeof CreateProjectResponseSchema>;
 
+const ProjectSchema = z
+	.object({
+		id: z.string(),
+		name: z.string(),
+	})
+	.strip();
+export type Project = z.infer<typeof ProjectSchema>;
+
+const ProjectsSchema = z
+	.object({ projects: z.array(ProjectSchema).nullable() })
+	.strip();
+export type Projects = z.infer<typeof ProjectsSchema>;
+
+const PublicationIdsResponseSchema = z
+	.object({ ids: z.array(z.string()) })
+	.strip();
+
+const PublicationStatusSchema = z.enum([
+	"PENDING",
+	"PROCESSING",
+	"FINISHED",
+	"FAILED",
+]);
+export type PublicationStatus = z.infer<typeof PublicationStatusSchema>;
+
+const PublicationSchema = z
+	.object({
+		status: PublicationStatusSchema,
+		created_at: z.string(),
+		public_url: z.string().optional(),
+	})
+	.strip();
+export type Publication = z.infer<typeof PublicationSchema>;
+
+const CreatePublicationResponseSchema = z.object({ id: z.string() }).strip();
+
 export class HttpError extends Error {
 	public path: string;
 	public statusCode: number;
@@ -161,6 +214,13 @@ export class UserAlreadyExists extends Error {
 	}
 }
 
+export class ProjectNotFound extends Error {
+	constructor(message: string = "Project not found") {
+		super(message);
+		this.name = "ProjectNotFound";
+	}
+}
+
 export class ApiClient {
 	private baseUrl: string;
 	private tokenProvider: ITokenProvider | null;
@@ -170,13 +230,98 @@ export class ApiClient {
 		this.tokenProvider = config.tokenProvider || null;
 	}
 
-	public async getDraft(projectId: string): Promise<Draft> {
-		const data = await this.sendAuthorizedRequest(
-			`/api/v1/projects/${projectId}/draft`,
-			{ method: "GET" },
-		);
+	public async getDraft(
+		projectId: string,
+		version: number | null = null,
+	): Promise<Draft> {
+		const url =
+			version === null
+				? `/api/v1/projects/${projectId}/draft`
+				: `/api/v1/projects/${projectId}/draft/versions/${version}`;
 
-		return await this.parseDraftResponse(data);
+		try {
+			const data = await this.sendAuthorizedRequest(
+				url,
+				{ method: "GET" },
+				{ retryOn500: true },
+			);
+
+			return await this.parseDraftResponse(data);
+		} catch (err) {
+			if (err instanceof HttpError && err.statusCode === 404) {
+				throw new ProjectNotFound();
+			}
+			throw err;
+		}
+	}
+
+	public async getPublicationIds(projectId: string): Promise<string[]> {
+		try {
+			const data = await this.sendAuthorizedRequest(
+				`/api/v1/projects/${projectId}/publications`,
+				{ method: "GET" },
+			);
+
+			return await this.parsePublicationIdsResponse(data);
+		} catch (err) {
+			if (err instanceof HttpError && err.statusCode === 404) {
+				throw new ProjectNotFound();
+			}
+			throw err;
+		}
+	}
+
+	public async getPublication(
+		projectId: string,
+		publicationId: string,
+	): Promise<Publication> {
+		try {
+			const response = await this.sendAuthorizedRequest(
+				`/api/v1/projects/${projectId}/publications/${publicationId}`,
+				{ method: "GET" },
+			);
+			const data = await response.json();
+			return await PublicationSchema.parseAsync(data);
+		} catch (err) {
+			if (err instanceof HttpError && err.statusCode === 404) {
+				throw new ProjectNotFound();
+			}
+			throw err;
+		}
+	}
+
+	public async createPublication(projectId: string): Promise<string> {
+		try {
+			const response = await this.sendAuthorizedRequest(
+				`/api/v1/projects/${projectId}/publications`,
+				{ method: "POST" },
+			);
+			const data = await response.json();
+			const parsed = await CreatePublicationResponseSchema.parseAsync(data);
+			return parsed.id;
+		} catch (err) {
+			if (err instanceof HttpError && err.statusCode === 404) {
+				throw new ProjectNotFound();
+			}
+			throw err;
+		}
+	}
+
+	public async deletePublication(
+		projectId: string,
+		publicationId: string,
+	): Promise<void> {
+		try {
+			await this.sendAuthorizedRequest(
+				`/api/v1/projects/${projectId}/publications/${publicationId}`,
+				{ method: "DELETE" },
+			);
+		} catch (err) {
+			if (err instanceof HttpError && err.statusCode === 404) {
+				throw new ProjectNotFound();
+			}
+			throw err;
+		}
 	}
 
 	public async login(credentials: Credentials): Promise<LoginResponse> {
@@ -215,12 +360,12 @@ export class ApiClient {
 		return data;
 	}
 
-	public async createProject(): Promise<CreateProjectResponse> {
+	public async createProject(name: string): Promise<CreateProjectResponse> {
 		const response = await this.sendAuthorizedRequest("/api/v1/projects", {
 			method: "POST",
+			body: JSON.stringify({ name: name }),
 		});
-		const data = await this.parseCreateProjectResponse(response);
-		return data;
+		return await this.parseCreateProjectResponse(response);
 	}
 
 	public async updateDraft(
@@ -228,11 +373,31 @@ export class ApiClient {
 		operation: Operation,
 	): Promise<void> {
 		await this.sendAuthorizedRequest(
-			`api/v1/projects/${projectId}/draft/mutations`,
+			`/api/v1/projects/${projectId}/draft/mutations`,
 			{
 				method: "POST",
 				body: JSON.stringify(operation),
 			},
+		);
+	}
+
+	public async getProjects(): Promise<Projects> {
+		const response = await this.sendAuthorizedRequest(
+			`api/v1/projects`,
+			{ method: "GET" },
+			{ retryOn500: true },
+		);
+		return await this.parseProjectsResponse(response);
+	}
+
+	public async updateProject(
+		projectId: string,
+		data: UpdateProjectData,
+	): Promise<void> {
+		await this.sendAuthorizedRequest(
+			`api/v1/projects/${projectId}`,
+			{ method: "PATCH", body: JSON.stringify(data) },
+			{ retryOn500: true },
 		);
 	}
 
@@ -268,17 +433,26 @@ export class ApiClient {
 	private async sendAuthorizedRequest(
 		endpoint: string,
 		options: RequestInit,
+		params: { retryOn500: boolean } | null = null,
 	): Promise<Response> {
+		const retryOn500 = params ? params.retryOn500 : false;
+
 		try {
 			const extendedOptions = this.extendRequestOptionsWithAuth(options);
 			return await this.sendRequest(endpoint, extendedOptions);
 		} catch (err) {
-			if (err instanceof Unauthorized && this.tokenProvider) {
-				await this.tokenProvider.refreshToken();
+			if (this.tokenProvider) {
+				if (
+					err instanceof Unauthorized ||
+					(retryOn500 && err instanceof HttpError && err.statusCode === 500)
+				) {
+					await this.tokenProvider.refreshToken();
 
-				const extendedOptions = this.extendRequestOptionsWithAuth(options);
-				return await this.sendRequest(endpoint, extendedOptions);
+					const extendedOptions = this.extendRequestOptionsWithAuth(options);
+					return await this.sendRequest(endpoint, extendedOptions);
+				}
 			}
+
 			throw err;
 		}
 	}
@@ -330,5 +504,18 @@ export class ApiClient {
 	): Promise<CreateProjectResponse> {
 		const data = await response.json();
 		return await CreateProjectResponseSchema.parseAsync(data);
+	}
+
+	private async parsePublicationIdsResponse(
+		response: Response,
+	): Promise<string[]> {
+		const data = await response.json();
+		const parsed = await PublicationIdsResponseSchema.parseAsync(data);
+		return parsed.ids;
+	}
+
+	private async parseProjectsResponse(response: Response): Promise<Projects> {
+		const data = await response.json();
+		return await ProjectsSchema.parseAsync(data);
 	}
 }

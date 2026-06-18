@@ -71,6 +71,7 @@ const LandingElementSchema = z.discriminatedUnion("element", [
 
 const LandingPageSchema = z.object({
 	elements: z.array(LandingElementSchema),
+	version: z.number(),
 });
 
 // TODO: if it won't be needed in #25 remove it

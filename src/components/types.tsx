@@ -67,4 +67,5 @@ export type LandingElement =
 
 export type LandingPage = {
 	elements: LandingElement[];
+	version: number;
 };

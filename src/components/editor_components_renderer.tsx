@@ -22,7 +22,7 @@ class ElementNotSupportsChildren extends Error {
 function renderElement(
 	element: LandingElement,
 	children: React.ReactNode[],
-	onSettingsOpened: OpenSettingsCallback,
+	onSettingsOpened?: OpenSettingsCallback,
 	onMoveUp?: () => void,
 	onMoveDown?: () => void,
 	onDelete?: () => void,
@@ -86,9 +86,9 @@ function renderElement(
 
 export function renderElements(
 	elements: LandingElement[],
-	onSettingsOpened: OpenSettingsCallback,
-	onMove: MoveElementCallback,
-	onDelete: (element: LandingElement) => void,
+	onSettingsOpened?: OpenSettingsCallback,
+	onMove?: MoveElementCallback,
+	onDelete?: (element: LandingElement) => void,
 	parentId: string = "root",
 ): React.ReactNode[] {
 	const processedElements = elements
@@ -104,9 +104,9 @@ export function renderElements(
 			el,
 			renderElements(elements, onSettingsOpened, onMove, onDelete, el.id),
 			onSettingsOpened,
-			canMoveUp ? () => onMove(el, "up") : undefined,
-			canMoveDown ? () => onMove(el, "down") : undefined,
-			() => onDelete(el),
+			onMove && canMoveUp ? () => onMove(el, "up") : undefined,
+			onMove && canMoveDown ? () => onMove(el, "down") : undefined,
+			onDelete ? () => onDelete(el) : undefined,
 		);
 	});
 }

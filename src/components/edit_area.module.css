@@ -8,6 +8,7 @@
 .previewContainer {
 	overflow-y: auto;
 	overflow-x: hidden;
+	flex: 1;
 }
 
 .actionMenuItem {
@@ -21,6 +22,7 @@
 .actionMenu {
 	display: flex;
 	padding-bottom: 10px;
+	gap: 5px;
 }
 
 .actionList {
