@@ -11,7 +11,6 @@ import {
 	ActionListItem,
 	ActionListMenuItem,
 	ActionMenu,
-	ActionMenuItem,
 	EditArea,
 	PreviewContainer,
 } from "../components/edit_area";
@@ -33,10 +32,6 @@ import { LocalStorageTokenProvider } from "../components/localStorageTokenProvid
 import { PreviewCanvas } from "../components/preview_canvas";
 import { type LandingElement, type LandingPage } from "../components/types";
 import { findElementById } from "../components/utils";
-import {
-	VersionCheckoutWindow,
-	VersionItem,
-} from "../components/versionCheckout/versionCheckout";
 
 function EditorPage({ projectId }: { projectId: string | null }) {
 	const tokenProvider = new LocalStorageTokenProvider(
@@ -49,7 +44,6 @@ function EditorPage({ projectId }: { projectId: string | null }) {
 	});
 
 	const [landingPage, setLandingPage] = useState<LandingPage | null>(null);
-	const [showVersions, setShowVersions] = useState<boolean>(false);
 
 	runBackgroundTask("fetchInitialDraft", async () => {
 		try {
@@ -89,12 +83,6 @@ function EditorPage({ projectId }: { projectId: string | null }) {
 
 	const onSettingsOpened = (element: LandingElement) => {
 		setSettingsElementId(element.id);
-		setShowVersions(false);
-	};
-
-	const onVersionCheckoutWindowOpened = () => {
-		setSettingsElementId(null);
-		setShowVersions(true);
 	};
 
 	const updater = landingElementUpdater(landingPage, updateLandingPage);
@@ -107,10 +95,6 @@ function EditorPage({ projectId }: { projectId: string | null }) {
 			<div className="editor-container">
 				<EditArea>
 					<ActionMenu>
-						<ActionMenuItem
-							name="Версии"
-							onClick={onVersionCheckoutWindowOpened}
-						/>
 						<ActionListMenuItem name="Создать">
 							<ActionListItem
 								name="Text"
@@ -153,20 +137,9 @@ function EditorPage({ projectId }: { projectId: string | null }) {
 						updater,
 						() => setSettingsElementId(null),
 					)}
-				{landingPage && showVersions && (
-					<VersionCheckoutWindow onClose={() => setShowVersions(false)}>
-						{iterVersionItems(landingPage.version)}
-					</VersionCheckoutWindow>
-				)}
 			</div>
 		</div>
 	);
-}
-
-function* iterVersionItems(latestVersion: number) {
-	for (let version = 0; version < latestVersion; version++) {
-		yield <VersionItem active={false} versionNumber={version + 1} />;
-	}
 }
 
 export default EditorPage;
