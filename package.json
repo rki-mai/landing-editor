@@ -12,6 +12,8 @@
 		"project:name": "node -p \"require('./package.json').name\""
 	},
 	"dependencies": {
+		"@heroui/react": "^3.2.1",
+		"@heroui/styles": "^3.2.1",
 		"@tailwindcss/vite": "^4.3.1",
 		"react": "^19.2.5",
 		"react-colorful": "^5.6.1",
