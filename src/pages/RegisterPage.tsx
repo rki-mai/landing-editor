@@ -81,7 +81,7 @@ export default function RegisterPage() {
 				isInvalid={isInvalid}
 			/>
 			<div>
-				<SubmitButton label="Зарегестрироваться" />
+				<SubmitButton label="Зарегистрироваться" />
 				{error && <ErrorMessage error={error} />}
 			</div>
 			<AuthLink text="Уже есть аккаунт?" linkText="Войти" href="/login" />
