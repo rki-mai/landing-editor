@@ -38,6 +38,7 @@
   --surface-tertiary-foreground: oklch(21.03% 0.0015 301.06);
   --warning: oklch(78.19% 0.1590 78.00);
   --warning-foreground: oklch(21.03% 0.0059 78.00);
+  --link-foreground: rgb(4, 133, 247);
 
   /* Border Radius */
   --radius: 0.25rem;
@@ -46,6 +47,7 @@
   /* Font Family */
   /* Make sure to load Inter font in your app */
   --font-sans: var(--font-inter);
+  --font-weight-medium: 700;
 }
 
 .dark,
@@ -83,4 +85,12 @@
   --surface-tertiary-foreground: oklch(99.11% 0.0015 301.06);
   --warning: oklch(82.03% 0.1392 82.01);
   --warning-foreground: oklch(21.03% 0.0059 82.01);
+}
+
+a {
+  color: var(--link-foreground);
+}
+
+.link:hover {
+  text-decoration-color: var(--link-foreground);
 }

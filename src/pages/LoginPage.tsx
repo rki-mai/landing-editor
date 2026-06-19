@@ -26,7 +26,7 @@ export default function LoginPage() {
 		window.location.href = "/projects";
 	}
 
-	const handleLogin = async (e: React.SubmitEvent<HTMLFormElement>) => {
+	const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setError(null);
 
@@ -49,11 +49,13 @@ export default function LoginPage() {
 
 	return (
 		<FormContainer onSubmit={handleLogin}>
-			<FormHeader title="Login" />
-			<EmailInput value={email} onChange={setEmail} />
-			<PasswordInput value={password} onChange={setPassword} />
-			<SubmitButton label="Login" />
-			{error && <ErrorMessage message={error} />}
+			<FormHeader title="Авторизация" />
+			<EmailInput onChange={setEmail} isInvalid={error !== null} />
+			<PasswordInput onChange={setPassword} isInvalid={error !== null} />
+			<div>
+				<SubmitButton label="Вход" />
+				{error && <ErrorMessage error={error} />}
+			</div>
 			<AuthLink
 				text="Впервые здесь?"
 				linkText="Зарегистрироваться"

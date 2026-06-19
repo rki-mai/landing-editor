@@ -1,4 +1,4 @@
-import styles from "./form.module.css";
+import { Button } from "@heroui/react";
 
 interface SubmitButtonProps {
 	label: string;
@@ -6,8 +6,8 @@ interface SubmitButtonProps {
 
 export const SubmitButton = ({ label }: SubmitButtonProps) => {
 	return (
-		<button type="submit" className={styles.button}>
+		<Button type="submit" className="w-full">
 			{label}
-		</button>
+		</Button>
 	);
 };

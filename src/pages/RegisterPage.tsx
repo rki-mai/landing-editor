@@ -30,7 +30,7 @@ export default function RegisterPage() {
 		window.location.href = "/projects";
 	}
 
-	const handleRegister = async (e: React.SubmitEvent<HTMLFormElement>) => {
+	const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setError(null);
 
@@ -60,11 +60,13 @@ export default function RegisterPage() {
 
 	return (
 		<FormContainer onSubmit={handleRegister}>
-			<FormHeader title="Register" />
-			<EmailInput value={email} onChange={setEmail} />
-			<PasswordInput value={password} onChange={setPassword} />
-			<SubmitButton label="Register" />
-			{error && <ErrorMessage message={error} />}
+			<FormHeader title="Регистрация" />
+			<EmailInput onChange={setEmail} isInvalid={error !== null} />
+			<PasswordInput onChange={setPassword} isInvalid={error !== null} />
+			<div>
+				<SubmitButton label="Зарегестрироваться" />
+				{error && <ErrorMessage error={error} />}
+			</div>
 			<AuthLink text="Уже есть аккаунт?" linkText="Войти" href="/login" />
 		</FormContainer>
 	);
