@@ -19,6 +19,7 @@ export default function RegisterPage() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState<string | null>(null);
+	const [isInvalid, setIsInvalid] = useState<true | undefined>(undefined);
 
 	const apiClient = new ApiClient({
 		baseUrl: "",
@@ -29,6 +30,14 @@ export default function RegisterPage() {
 	if (tokenProvider.hasRefreshToken()) {
 		window.location.href = "/projects";
 	}
+
+	const resetIsInvalidOnChange = (onChange: (value: string) => void) => {
+		return (value: string) => {
+			setIsInvalid(undefined);
+			onChange(value);
+			setError(null);
+		};
+	};
 
 	const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -50,8 +59,10 @@ export default function RegisterPage() {
 		} catch (err) {
 			if (err instanceof UserAlreadyExists) {
 				setError("Пользователь с таким email уже существует");
+				setIsInvalid(true);
 			} else if (err instanceof HttpError && err.statusCode === 400) {
 				setError("Ошибка: неверные данные");
+				setIsInvalid(true);
 			} else {
 				console.error("Unexpected error:", err);
 			}
@@ -61,8 +72,14 @@ export default function RegisterPage() {
 	return (
 		<FormContainer onSubmit={handleRegister}>
 			<FormHeader title="Регистрация" />
-			<EmailInput onChange={setEmail} isInvalid={error !== null} />
-			<PasswordInput onChange={setPassword} isInvalid={error !== null} />
+			<EmailInput
+				onChange={resetIsInvalidOnChange(setEmail)}
+				isInvalid={isInvalid}
+			/>
+			<PasswordInput
+				onChange={resetIsInvalidOnChange(setPassword)}
+				isInvalid={isInvalid}
+			/>
 			<div>
 				<SubmitButton label="Зарегестрироваться" />
 				{error && <ErrorMessage error={error} />}

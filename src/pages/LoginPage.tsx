@@ -15,6 +15,7 @@ export default function LoginPage() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState<string | null>(null);
+	const [isInvalid, setIsInvalid] = useState<true | undefined>(undefined);
 
 	const apiClient = new ApiClient({
 		baseUrl: "",
@@ -25,6 +26,14 @@ export default function LoginPage() {
 	if (tokenProvider.hasRefreshToken()) {
 		window.location.href = "/projects";
 	}
+
+	const resetIsInvalidOnChange = (onChange: (value: string) => void) => {
+		return (value: string) => {
+			setIsInvalid(undefined);
+			onChange(value);
+			setError(null);
+		};
+	};
 
 	const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -41,6 +50,7 @@ export default function LoginPage() {
 		} catch (err) {
 			if (err instanceof Unauthorized) {
 				setError("Неверные данные для входа");
+				setIsInvalid(true);
 			} else {
 				console.error(err);
 			}
@@ -50,8 +60,14 @@ export default function LoginPage() {
 	return (
 		<FormContainer onSubmit={handleLogin}>
 			<FormHeader title="Авторизация" />
-			<EmailInput onChange={setEmail} isInvalid={error !== null} />
-			<PasswordInput onChange={setPassword} isInvalid={error !== null} />
+			<EmailInput
+				onChange={resetIsInvalidOnChange(setEmail)}
+				isInvalid={isInvalid}
+			/>
+			<PasswordInput
+				onChange={resetIsInvalidOnChange(setPassword)}
+				isInvalid={isInvalid}
+			/>
 			<div>
 				<SubmitButton label="Вход" />
 				{error && <ErrorMessage error={error} />}
