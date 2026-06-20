@@ -8,7 +8,7 @@ import {
 	runPublicationPoller,
 } from "../components/PublicationPoller";
 import { SquareButton } from "../components/squareButton";
-import { Tabs } from "../components/Tabs";
+import { Tab, Tabs } from "../components/Tabs";
 import { type Column, Table } from "../components/table";
 import styles from "./PublicationsPage.module.css";
 
@@ -78,7 +78,20 @@ export default function PublicationsPage() {
 
 	return (
 		<div className={styles.container}>
-			<Tabs active="publications" />
+			<Tabs>
+				<Tab
+					title="Проекты"
+					id="projects"
+					href="/projects"
+					isSelected={false}
+				/>
+				<Tab
+					title="Публикации"
+					id="publications"
+					href="/publications"
+					isSelected={true}
+				/>
+			</Tabs>
 			<div className={styles.content}>
 				<h1>Publications</h1>
 				{publications === null ? (

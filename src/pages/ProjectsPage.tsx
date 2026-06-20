@@ -10,7 +10,7 @@ import { runBackgroundTask } from "../components/backgroundTask";
 import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
 import { ProjectsList } from "../components/ProjectsList";
 import { ProjectsMenu } from "../components/ProjectsMenu";
-import { Tabs } from "../components/Tabs";
+import { Tab, Tabs } from "../components/Tabs";
 import styles from "./ProjectsPage.module.css";
 
 const getProjects = async (apiClient: ApiClient): Promise<Projects> => {
@@ -124,7 +124,15 @@ export default function ProjectsPage() {
 
 	return (
 		<div className={styles.container}>
-			<Tabs active="projects" />
+			<Tabs>
+				<Tab title="Проекты" id="projects" href="/projects" isSelected={true} />
+				<Tab
+					title="Публикации"
+					id="publications"
+					href="/publications"
+					isSelected={false}
+				/>
+			</Tabs>
 			<div className={styles.content}>
 				<div className={styles.menu}>
 					<ProjectsMenu onCreate={handleCreate} onSearch={handleSearch} />
