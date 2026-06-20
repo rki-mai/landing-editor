@@ -1,7 +1,7 @@
 import React from "react";
 import { Tabs as HeroTabs } from "@heroui/react";
 
-interface TabProps {
+export interface TabProps {
 	title: string;
 	id: string;
 	isSelected: boolean;

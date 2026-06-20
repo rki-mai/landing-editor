@@ -13,6 +13,7 @@ import { ProjectsMenu } from "../components/ProjectsMenu";
 import { Tab, Tabs } from "../components/Tabs";
 import styles from "./ProjectsPage.module.css";
 import { UserMenu } from "../components/UserMenu";
+import { PageContent, PageHeader, PageLayout } from "../components/PageLayout";
 
 const getProjects = async (apiClient: ApiClient): Promise<Projects> => {
 	return await apiClient.getProjects();
@@ -124,42 +125,28 @@ export default function ProjectsPage() {
 	};
 
 	return (
-		<div className="flex p-4 items-center justify-center w-full">
-			<div className="flex flex-col gap-4 max-w-4xl grow">
-				<div className="flex gap-4">
-					<div className="grow">
-						<Tabs>
-							<Tab
-								title="Проекты"
-								id="projects"
-								href="/projects"
-								isSelected={true}
-							/>
-							<Tab
-								title="Публикации"
-								id="publications"
-								href="/publications"
-								isSelected={false}
-							/>
-						</Tabs>
-					</div>
-					<div className="flex grow-0 items-center">
-						<UserMenu />
-					</div>
+		<PageLayout>
+			<PageHeader>
+				<Tab title="Проекты" id="projects" href="/projects" isSelected={true} />
+				<Tab
+					title="Публикации"
+					id="publications"
+					href="/publications"
+					isSelected={false}
+				/>
+			</PageHeader>
+			<PageContent>
+				<div className={styles.menu}>
+					<ProjectsMenu onCreate={handleCreate} onSearch={handleSearch} />
 				</div>
-				<div className={styles.content}>
-					<div className={styles.menu}>
-						<ProjectsMenu onCreate={handleCreate} onSearch={handleSearch} />
-					</div>
-					<ProjectsList
-						projects={filteredProjects}
-						onOpen={handleOpen}
-						onPublish={handlePublish}
-						onRename={renameProject}
-						onViewVersions={handleViewVersions}
-					/>
-				</div>
-			</div>
-		</div>
+				<ProjectsList
+					projects={filteredProjects}
+					onOpen={handleOpen}
+					onPublish={handlePublish}
+					onRename={renameProject}
+					onViewVersions={handleViewVersions}
+				/>
+			</PageContent>
+		</PageLayout>
 	);
 }
