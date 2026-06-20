@@ -1,7 +1,17 @@
 import { Button, Dropdown, Label } from "@heroui/react";
 import { Person, ArrowRightFromSquare } from "@gravity-ui/icons";
+import type { LocalStorageTokenProvider } from "./localStorageTokenProvider";
 
-export const UserMenu = () => {
+interface UserMenuProps {
+	tokenProvider: LocalStorageTokenProvider;
+}
+
+export const UserMenu = ({ tokenProvider }: UserMenuProps) => {
+	const onClick = () => {
+		tokenProvider.clearCredentials();
+		window.location.pathname = "/login";
+	};
+
 	return (
 		<Dropdown>
 			<Button
@@ -14,7 +24,7 @@ export const UserMenu = () => {
 			</Button>
 
 			<Dropdown.Popover>
-				<Dropdown.Menu>
+				<Dropdown.Menu onAction={() => onClick()}>
 					<Dropdown.Item id="logout" textValue="Выход" variant="danger">
 						<div className="flex w-full items-center justify-between gap-2">
 							<Label>Log Out</Label>

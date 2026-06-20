@@ -144,7 +144,7 @@ export default function ProjectsPage() {
 					</Tabs>
 				</div>
 				<div className="flex grow-0 items-center">
-					<UserMenu />
+					<UserMenu tokenProvider={tokenProvider} />
 				</div>
 			</PageHeader>
 			<PageContent>

@@ -68,7 +68,7 @@ export const VersionExplorerPage = () => {
 						<ProjectName projectName={projectName} />
 					</div>
 					<div className="flex grow-0 items-center">
-						<UserMenu />
+						<UserMenu tokenProvider={tokenProvider} />
 					</div>
 				</PageHeader>
 				<PageContent>

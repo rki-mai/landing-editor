@@ -94,7 +94,7 @@ export default function PublicationsPage() {
 					</Tabs>
 				</div>
 				<div className="flex grow-0 items-center">
-					<UserMenu />
+					<UserMenu tokenProvider={tokenProvider} />
 				</div>
 			</PageHeader>
 			<PageContent>
