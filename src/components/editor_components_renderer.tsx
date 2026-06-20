@@ -3,15 +3,11 @@ import {
 	ContainerElementComponent,
 	ImageElementComponent,
 	LinkElementComponent,
-	type OpenSettingsCallback,
 	TextElementComponent,
 } from "./editor_components";
 import { type LandingElement } from "./types";
 
-type MoveElementCallback = (
-	element: LandingElement,
-	direction: "up" | "down",
-) => void;
+type SelectCallback = (element: LandingElement) => void;
 
 class ElementNotSupportsChildren extends Error {
 	constructor(elementType: string) {
@@ -21,64 +17,32 @@ class ElementNotSupportsChildren extends Error {
 
 function renderElement(
 	element: LandingElement,
+	selectedElementId: string | null,
+	onSelect: SelectCallback | null,
 	children: React.ReactNode[],
-	onSettingsOpened?: OpenSettingsCallback,
-	onMoveUp?: () => void,
-	onMoveDown?: () => void,
-	onDelete?: () => void,
 ): React.ReactNode {
 	if (element.element !== "container" && children.length > 0) {
 		throw new ElementNotSupportsChildren(element.element);
 	}
 
+	console.log("onSelect:", onSelect);
+
+	const props = {
+		onClick: onSelect ? () => onSelect(element) : undefined,
+		isSelected: element.id === selectedElementId,
+	};
+
 	if (element.element === "text")
-		return (
-			<TextElementComponent
-				element={element}
-				onSettingsOpened={onSettingsOpened}
-				onMoveUp={onMoveUp}
-				onMoveDown={onMoveDown}
-				onDelete={onDelete}
-			/>
-		);
+		return <TextElementComponent element={element} {...props} />;
 	else if (element.element === "link")
-		return (
-			<LinkElementComponent
-				element={element}
-				onSettingsOpened={onSettingsOpened}
-				onMoveUp={onMoveUp}
-				onMoveDown={onMoveDown}
-				onDelete={onDelete}
-			/>
-		);
+		return <LinkElementComponent element={element} {...props} />;
 	else if (element.element === "image")
-		return (
-			<ImageElementComponent
-				element={element}
-				onSettingsOpened={onSettingsOpened}
-				onMoveUp={onMoveUp}
-				onMoveDown={onMoveDown}
-				onDelete={onDelete}
-			/>
-		);
+		return <ImageElementComponent element={element} {...props} />;
 	else if (element.element === "button")
-		return (
-			<ButtonElementComponent
-				element={element}
-				onSettingsOpened={onSettingsOpened}
-				onMoveUp={onMoveUp}
-				onMoveDown={onMoveDown}
-				onDelete={onDelete}
-			/>
-		);
+		return <ButtonElementComponent element={element} {...props} />;
 	else if (element.element === "container")
 		return (
-			<ContainerElementComponent
-				element={element}
-				onMoveUp={onMoveUp}
-				onMoveDown={onMoveDown}
-				onDelete={onDelete}
-			>
+			<ContainerElementComponent element={element} {...props}>
 				{children}
 			</ContainerElementComponent>
 		);
@@ -86,27 +50,20 @@ function renderElement(
 
 export function renderElements(
 	elements: LandingElement[],
-	onSettingsOpened?: OpenSettingsCallback,
-	onMove?: MoveElementCallback,
-	onDelete?: (element: LandingElement) => void,
+	selectedElementId: string | null,
+	onSelect: SelectCallback | null = null,
 	parentId: string = "root",
 ): React.ReactNode[] {
 	const processedElements = elements
 		.filter((el) => el.parentId === parentId)
 		.sort((a, b) => a.index - b.index);
 
-	return processedElements.map((el, index) => {
-		const canMoveUp = index !== 0 || parentId !== "root";
-		const canMoveDown =
-			index !== processedElements.length - 1 || parentId !== "root";
-
+	return processedElements.map((el) => {
 		return renderElement(
 			el,
-			renderElements(elements, onSettingsOpened, onMove, onDelete, el.id),
-			onSettingsOpened,
-			onMove && canMoveUp ? () => onMove(el, "up") : undefined,
-			onMove && canMoveDown ? () => onMove(el, "down") : undefined,
-			onDelete ? () => onDelete(el) : undefined,
+			selectedElementId,
+			onSelect,
+			renderElements(elements, selectedElementId, onSelect, el.id),
 		);
 	});
 }

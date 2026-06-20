@@ -8,9 +8,11 @@ import {
 } from "../components/apiClient";
 import { runBackgroundTask } from "../components/backgroundTask";
 import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
+import { PageContent, PageHeader, PageLayout } from "../components/PageLayout";
 import { ProjectsList } from "../components/ProjectsList";
 import { ProjectsMenu } from "../components/ProjectsMenu";
-import { Tabs } from "../components/Tabs";
+import { Tab, Tabs } from "../components/Tabs";
+import { UserMenu } from "../components/UserMenu";
 import styles from "./ProjectsPage.module.css";
 
 const getProjects = async (apiClient: ApiClient): Promise<Projects> => {
@@ -123,9 +125,29 @@ export default function ProjectsPage() {
 	};
 
 	return (
-		<div className={styles.container}>
-			<Tabs active="projects" />
-			<div className={styles.content}>
+		<PageLayout>
+			<PageHeader>
+				<div className="grow">
+					<Tabs>
+						<Tab
+							title="Проекты"
+							id="projects"
+							href="/projects"
+							isSelected={true}
+						/>
+						<Tab
+							title="Публикации"
+							id="publications"
+							href="/publications"
+							isSelected={false}
+						/>
+					</Tabs>
+				</div>
+				<div className="flex grow-0 items-center">
+					<UserMenu tokenProvider={tokenProvider} />
+				</div>
+			</PageHeader>
+			<PageContent>
 				<div className={styles.menu}>
 					<ProjectsMenu onCreate={handleCreate} onSearch={handleSearch} />
 				</div>
@@ -136,7 +158,7 @@ export default function ProjectsPage() {
 					onRename={renameProject}
 					onViewVersions={handleViewVersions}
 				/>
-			</div>
-		</div>
+			</PageContent>
+		</PageLayout>
 	);
 }

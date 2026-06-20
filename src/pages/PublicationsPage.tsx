@@ -1,23 +1,18 @@
+import { CircleCheckFill, Clock, TrashBin, Xmark } from "@gravity-ui/icons";
+import { Chip, Link, Spinner } from "@heroui/react";
 import { useState } from "react";
-import trashIcon from "../assets/trash.svg";
 import { ApiClient, type PublicationStatus } from "../components/apiClient";
 import { runBackgroundTask } from "../components/backgroundTask";
 import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
+import { PageContent, PageHeader, PageLayout } from "../components/PageLayout";
 import {
 	type Publication,
 	runPublicationPoller,
 } from "../components/PublicationPoller";
 import { SquareButton } from "../components/squareButton";
-import { Tabs } from "../components/Tabs";
+import { Tab, Tabs } from "../components/Tabs";
 import { type Column, Table } from "../components/table";
-import styles from "./PublicationsPage.module.css";
-
-const publicationStatusMap: Record<PublicationStatus, string> = {
-	PENDING: "В процессе",
-	PROCESSING: "В процессе",
-	FINISHED: "Опубликовано",
-	FAILED: "Ошибка",
-};
+import { UserMenu } from "../components/UserMenu";
 
 export default function PublicationsPage() {
 	const [publications, setPublications] = useState<Publication[] | null>(null);
@@ -56,37 +51,95 @@ export default function PublicationsPage() {
 		{
 			key: "link",
 			title: "Ссылка",
-			render: (_, pub) => pub.link && <a href={pub.link}>Link</a>,
+			render: (_, pub) =>
+				pub.link && (
+					<Link href={pub.link}>
+						Link
+						<Link.Icon />
+					</Link>
+				),
 		},
 		{
 			key: "__status",
 			title: "Статус",
-			render: (_, pub) => <span>{publicationStatusMap[pub.status]}</span>,
+			render: (_, pub) => <PublicationStatus pubStatus={pub.status} />,
 		},
 		{
 			key: "delete_action",
 			render: (_, pub) => (
-				<SquareButton
-					variant="ghost"
-					icon={trashIcon}
-					size={30}
-					onClick={() => handleDelete(pub)}
-				/>
+				<SquareButton onClick={() => handleDelete(pub)}>
+					<TrashBin />
+				</SquareButton>
 			),
 		},
 	];
 
 	return (
-		<div className={styles.container}>
-			<Tabs active="publications" />
-			<div className={styles.content}>
-				<h1>Publications</h1>
+		<PageLayout>
+			<PageHeader>
+				<div className="grow">
+					<Tabs>
+						<Tab
+							title="Проекты"
+							id="projects"
+							href="/projects"
+							isSelected={false}
+						/>
+						<Tab
+							title="Публикации"
+							id="publications"
+							href="/publications"
+							isSelected={true}
+						/>
+					</Tabs>
+				</div>
+				<div className="flex grow-0 items-center">
+					<UserMenu tokenProvider={tokenProvider} />
+				</div>
+			</PageHeader>
+			<PageContent>
 				{publications === null ? (
-					"Загрузка ..."
+					<div className="flex flex-col items-center gap-2 grow">
+						<Spinner size="xl" />
+						<span className="text-xs text-muted">Загрузка ...</span>
+					</div>
 				) : (
 					<Table columns={columns} data={publications} rowKey="id" />
 				)}
-			</div>
-		</div>
+			</PageContent>
+		</PageLayout>
 	);
 }
+
+const PublicationStatus = ({ pubStatus }: { pubStatus: PublicationStatus }) => {
+	switch (pubStatus) {
+		case "PENDING":
+			return (
+				<Chip>
+					<Clock width={12} />
+					<Chip.Label>В очереди</Chip.Label>
+				</Chip>
+			);
+		case "FAILED":
+			return (
+				<Chip color="danger">
+					<Xmark width={12} />
+					<Chip.Label>Ошибка</Chip.Label>
+				</Chip>
+			);
+		case "PROCESSING":
+			return (
+				<Chip>
+					<Clock width={12} />
+					<Chip.Label>Сборка</Chip.Label>
+				</Chip>
+			);
+		case "FINISHED":
+			return (
+				<Chip color="success">
+					<CircleCheckFill width={12} />
+					<Chip.Label>Опубликовано</Chip.Label>
+				</Chip>
+			);
+	}
+};

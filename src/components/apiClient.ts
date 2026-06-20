@@ -383,7 +383,7 @@ export class ApiClient {
 
 	public async getProjects(): Promise<Projects> {
 		const response = await this.sendAuthorizedRequest(
-			`api/v1/projects`,
+			`/api/v1/projects`,
 			{ method: "GET" },
 			{ retryOn500: true },
 		);

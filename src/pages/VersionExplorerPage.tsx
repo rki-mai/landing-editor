@@ -7,11 +7,15 @@ import {
 	Unauthorized,
 } from "../components/apiClient";
 import { runBackgroundTask } from "../components/backgroundTask";
-import { PreviewContainer } from "../components/edit_area";
+import { EditArea, PreviewContainer } from "../components/edit_area";
 import { renderElements } from "../components/editor_components_renderer";
 import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
+import { MoveBackButton } from "../components/MoveBackButton";
+import { PageContent, PageHeader, PageLayout } from "../components/PageLayout";
+import { getProjectName, ProjectName } from "../components/ProjectName";
 import { PreviewCanvas } from "../components/preview_canvas";
 import type { LandingPage } from "../components/types";
+import { UserMenu } from "../components/UserMenu";
 import {
 	VersionCheckoutWindow,
 	VersionItem,
@@ -23,11 +27,19 @@ export const VersionExplorerPage = () => {
 	const [apiClient, tokenProvider] = createApiClient();
 	const [snapshot, setSnapshot] = useState<LandingPage | null>(null);
 	const [versions, setVersions] = useState<number[] | null>(null);
+	const [projectName, setProjectName] = useState<string | null>(null);
 
 	if (!projectId) {
 		window.location.pathname = "/login";
 		return;
 	}
+
+	runBackgroundTask(
+		"getProjectName",
+		redirectOnFallbackPages(tokenProvider, async () => {
+			setProjectName(await getProjectName(projectId, apiClient));
+		}),
+	);
 
 	runBackgroundTask(
 		"initializePage",
@@ -46,44 +58,59 @@ export const VersionExplorerPage = () => {
 	);
 
 	return (
-		<div className="app-container">
-			<div className="editor-container">
-				<PreviewContainer>
-					<PreviewCanvas>
-						{snapshot && renderElements(snapshot.elements)}
-					</PreviewCanvas>
-				</PreviewContainer>
-				<VersionCheckoutWindow>
-					{versions &&
-						versions.map((version) => (
-							<VersionItem
-								versionNumber={version}
-								active={version === snapshot?.version}
-								onView={() =>
-									loadVersionSnapshot(
-										tokenProvider,
-										apiClient,
-										projectId,
-										version,
-										setSnapshot,
-									)
-								}
-								onCheckout={
-									version === versions.length - 1
-										? undefined
-										: () =>
-												restoreVersion(
-													tokenProvider,
-													apiClient,
-													projectId,
-													Math.max(...versions),
-													version,
-												)
-								}
-							/>
-						))}
-				</VersionCheckoutWindow>
-			</div>
+		<div className="flex h-screen overflow-y-hidden">
+			<PageLayout>
+				<PageHeader>
+					<div className="flex grow-0 items-center">
+						<MoveBackButton />
+					</div>
+					<div className="flex grow items-center justify-center">
+						<ProjectName projectName={projectName} />
+					</div>
+					<div className="flex grow-0 items-center">
+						<UserMenu tokenProvider={tokenProvider} />
+					</div>
+				</PageHeader>
+				<PageContent>
+					<EditArea>
+						<PreviewContainer>
+							<PreviewCanvas>
+								{snapshot && renderElements(snapshot.elements, null)}
+							</PreviewCanvas>
+						</PreviewContainer>
+					</EditArea>
+				</PageContent>
+			</PageLayout>
+			<VersionCheckoutWindow>
+				{versions &&
+					versions.map((version) => (
+						<VersionItem
+							versionNumber={version}
+							active={version === snapshot?.version}
+							onView={() =>
+								loadVersionSnapshot(
+									tokenProvider,
+									apiClient,
+									projectId,
+									version,
+									setSnapshot,
+								)
+							}
+							onCheckout={
+								version === versions.length - 1
+									? undefined
+									: () =>
+											restoreVersion(
+												tokenProvider,
+												apiClient,
+												projectId,
+												Math.max(...versions),
+												version,
+											)
+							}
+						/>
+					))}
+			</VersionCheckoutWindow>
 		</div>
 	);
 };
@@ -141,6 +168,8 @@ function redirectOnFallbackPages<R>(
 				window.location.href = "/projects";
 				return;
 			}
+
+			throw err;
 		}
 	};
 }

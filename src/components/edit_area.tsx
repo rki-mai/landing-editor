@@ -1,20 +1,32 @@
-import React, { useState } from "react";
+import { Button, ButtonGroup } from "@heroui/react";
+import React, { type PropsWithChildren } from "react";
 import styles from "./edit_area.module.css";
 
+interface ActionMenuItemProps extends PropsWithChildren {
+	iconOnly?: boolean;
+	onClick?: () => void;
+	isDisabled?: boolean;
+}
+
+interface ActionMenuItemGroupProps extends PropsWithChildren {
+	isDisabled?: boolean;
+}
+
 export const ActionMenuItem = ({
-	name,
+	iconOnly,
 	onClick,
 	children,
-}: {
-	name: string;
-	onClick: () => void;
-	children?: React.ReactNode | React.ReactNode[];
-}) => {
+	isDisabled,
+}: ActionMenuItemProps) => {
 	return (
-		<div className={styles.actionMenuItem} onClick={onClick}>
-			{name}
+		<Button
+			onClick={onClick}
+			isDisabled={isDisabled}
+			variant="tertiary"
+			isIconOnly={iconOnly}
+		>
 			{children}
-		</div>
+		</Button>
 	);
 };
 
@@ -32,25 +44,11 @@ export const ActionListItem = ({
 	);
 };
 
-const ActionList = ({ children }: { children: React.ReactNode[] }) => {
-	return <div className={styles.actionList}>{children}</div>;
-};
-
-export const ActionListMenuItem = ({
-	name,
+export const ActionMenuItemGroup = ({
+	isDisabled,
 	children,
-}: {
-	name: string;
-	children: React.ReactNode[];
-}) => {
-	const [showList, setShowList] = useState<boolean>(false);
-	const toggleShowList = () => setShowList(!showList);
-
-	return (
-		<ActionMenuItem name={name} onClick={toggleShowList}>
-			{showList && <ActionList>{children}</ActionList>}
-		</ActionMenuItem>
-	);
+}: ActionMenuItemGroupProps) => {
+	return <ButtonGroup isDisabled={isDisabled}>{children}</ButtonGroup>;
 };
 
 export const ActionMenu = ({
@@ -58,7 +56,7 @@ export const ActionMenu = ({
 }: {
 	children: React.ReactNode | React.ReactNode[];
 }) => {
-	return <div className={styles.actionMenu}>{children}</div>;
+	return <div className="flex gap-4">{children}</div>;
 };
 
 export const PreviewContainer = ({
@@ -69,6 +67,6 @@ export const PreviewContainer = ({
 	return <div className={styles.previewContainer}>{children}</div>;
 };
 
-export const EditArea = ({ children }: { children: React.ReactNode[] }) => {
-	return <div className={styles.editArea}>{children}</div>;
+export const EditArea = ({ children }: PropsWithChildren) => {
+	return <div className={`${styles.editArea} gap-4`}>{children}</div>;
 };

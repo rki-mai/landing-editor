@@ -1,3 +1,5 @@
+import { Archive, Box, Link, Picture, Plus, Text } from "@gravity-ui/icons";
+import { Dropdown, type Key, Label } from "@heroui/react";
 import { useState } from "react";
 import {
 	ApiClient,
@@ -8,9 +10,15 @@ import {
 import { runBackgroundTask } from "../components/backgroundTask";
 import * as draftUpdater from "../components/draftUpdater";
 import {
-	ActionListItem,
-	ActionListMenuItem,
+	DeleteElementAction,
+	MoveDownAction,
+	MoveUpAction,
+	OpenSettingsAction,
+} from "../components/EditorActions";
+import {
 	ActionMenu,
+	ActionMenuItem,
+	ActionMenuItemGroup,
 	EditArea,
 	PreviewContainer,
 } from "../components/edit_area";
@@ -29,9 +37,21 @@ import { moveElementHandler } from "../components/handlers/move_element";
 import { landingElementUpdater } from "../components/handlers/update_element";
 import { loadPageFromApi } from "../components/landingPageApiLoader";
 import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
+import { MoveBackButton } from "../components/MoveBackButton";
+import { PageContent, PageHeader, PageLayout } from "../components/PageLayout";
+import { getProjectName, ProjectName } from "../components/ProjectName";
 import { PreviewCanvas } from "../components/preview_canvas";
 import { type LandingElement, type LandingPage } from "../components/types";
+import { UserMenu } from "../components/UserMenu";
 import { findElementById } from "../components/utils";
+
+const CreateElementType = {
+	TEXT: "text",
+	IMAGE: "image",
+	CONTAINER: "container",
+	LINK: "link",
+	BUTTON: "button",
+} as const;
 
 function EditorPage({ projectId }: { projectId: string | null }) {
 	const tokenProvider = new LocalStorageTokenProvider(
@@ -47,6 +67,19 @@ function EditorPage({ projectId }: { projectId: string | null }) {
 	const [settingsElementId, setSettingsElementId] = useState<string | null>(
 		null,
 	);
+	const [selectedElementId, setSelectedElementId] = useState<string | null>(
+		null,
+	);
+	const [projectName, setProjectName] = useState<string | null>(null);
+
+	runBackgroundTask("fetchProject", async () => {
+		if (projectId === null) {
+			window.location.href = "/projects";
+			return;
+		}
+
+		setProjectName(await getProjectName(projectId, apiClient));
+	});
 
 	runBackgroundTask("fetchInitialDraft", async () => {
 		try {
@@ -94,56 +127,139 @@ function EditorPage({ projectId }: { projectId: string | null }) {
 	const createElement = createElementHandler(landingPage, updateLandingPage);
 	const deleteHandler = deleteElementHandler(landingPage, updateLandingPage);
 
+	const selectedElement =
+		landingPage !== null && selectedElementId !== null
+			? findElementById(landingPage, selectedElementId)
+			: null;
+
+	const onSelect = (element: LandingElement) => {
+		setSelectedElementId(element.id);
+		console.log("Element selected: ", element);
+	};
+
+	const onDelete = (element: LandingElement) => {
+		deleteHandler(element);
+		setSelectedElementId(null);
+		setSettingsElementId(null);
+	};
+
 	return (
-		<div className="app-container">
-			<div className="editor-container">
-				<EditArea>
-					<ActionMenu>
-						<ActionListMenuItem name="Создать">
-							<ActionListItem
-								name="Text"
-								onClick={() => createElement(createTextElement)}
-							/>
-							<ActionListItem
-								name="Image"
-								onClick={() => createElement(createImageElement)}
-							/>
-							<ActionListItem
-								name="Link"
-								onClick={() => createElement(createLinkElement)}
-							/>
-							<ActionListItem
-								name="Button"
-								onClick={() => createElement(createButtonElement)}
-							/>
-							<ActionListItem
-								name="Container"
-								onClick={() => createElement(createContainerElement)}
-							/>
-						</ActionListMenuItem>
-					</ActionMenu>
-					<PreviewContainer>
-						<PreviewCanvas>
-							{landingPage &&
-								renderElements(
-									landingPage.elements,
-									onSettingsOpened,
-									moveHandler,
-									deleteHandler,
-								)}
-						</PreviewCanvas>
-					</PreviewContainer>
-				</EditArea>
-				{landingPage &&
-					settingsElementId &&
-					buildSettingsForLandingElement(
-						findElementById(landingPage, settingsElementId),
-						updater,
-						() => setSettingsElementId(null),
-					)}
-			</div>
+		<div className="flex">
+			<PageLayout>
+				<PageHeader>
+					<div className="flex grow-0 items-center">
+						<MoveBackButton />
+					</div>
+					<div className="flex grow items-center justify-center">
+						<ProjectName projectName={projectName} />
+					</div>
+					<div className="flex grow-0 items-center">
+						<UserMenu tokenProvider={tokenProvider} />
+					</div>
+				</PageHeader>
+				<PageContent>
+					<EditArea>
+						<ActionMenu>
+							<Dropdown>
+								<ActionMenuItem>
+									<Plus />
+									Создать
+								</ActionMenuItem>
+								<Dropdown.Popover>
+									<Dropdown.Menu
+										onAction={(key) => createElement(getElementFactory(key))}
+									>
+										<Dropdown.Item id={CreateElementType.TEXT} textValue="Text">
+											<Text />
+											<Label>Текст</Label>
+										</Dropdown.Item>
+										<Dropdown.Item
+											id={CreateElementType.BUTTON}
+											textValue="Button"
+										>
+											<Archive />
+											<Label>Кнопка</Label>
+										</Dropdown.Item>
+										<Dropdown.Item
+											id={CreateElementType.CONTAINER}
+											textValue="Container"
+										>
+											<Box />
+											<Label>Контейнер</Label>
+										</Dropdown.Item>
+										<Dropdown.Item
+											id={CreateElementType.IMAGE}
+											textValue="Container"
+										>
+											<Picture />
+											<Label>Изображение</Label>
+										</Dropdown.Item>
+										<Dropdown.Item id={CreateElementType.LINK} textValue="Link">
+											<Link />
+											<Label>Ссылка</Label>
+										</Dropdown.Item>
+									</Dropdown.Menu>
+								</Dropdown.Popover>
+							</Dropdown>
+
+							<ActionMenuItemGroup>
+								<OpenSettingsAction
+									element={selectedElement}
+									handler={onSettingsOpened}
+								/>
+								<DeleteElementAction
+									element={selectedElement}
+									handler={onDelete}
+								/>
+								<MoveUpAction
+									element={selectedElement}
+									handler={(element) => moveHandler(element, "up")}
+								/>
+								<MoveDownAction
+									element={selectedElement}
+									handler={(element) => moveHandler(element, "down")}
+								/>
+							</ActionMenuItemGroup>
+						</ActionMenu>
+						<PreviewContainer>
+							<PreviewCanvas>
+								{landingPage &&
+									renderElements(
+										landingPage.elements,
+										selectedElementId,
+										onSelect,
+									)}
+							</PreviewCanvas>
+						</PreviewContainer>
+					</EditArea>
+				</PageContent>
+			</PageLayout>
+			{landingPage &&
+				settingsElementId &&
+				buildSettingsForLandingElement(
+					findElementById(landingPage, settingsElementId),
+					updater,
+					() => setSettingsElementId(null),
+				)}
 		</div>
 	);
 }
+
+const getElementFactory = (actionKey: Key) => {
+	switch (actionKey) {
+		case CreateElementType.TEXT:
+			return createTextElement;
+		case CreateElementType.BUTTON:
+			return createButtonElement;
+		case CreateElementType.IMAGE:
+			return createImageElement;
+		case CreateElementType.CONTAINER:
+			return createContainerElement;
+		case CreateElementType.LINK:
+			return createLinkElement;
+		default:
+			throw Error(`Unknown type ${actionKey}`);
+	}
+};
 
 export default EditorPage;
