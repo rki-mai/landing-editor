@@ -1,3 +1,5 @@
+import { Archive, Box, Link, Picture, Plus, Text } from "@gravity-ui/icons";
+import { Dropdown, type Key, Label } from "@heroui/react";
 import { useState } from "react";
 import {
 	ApiClient,
@@ -7,6 +9,12 @@ import {
 } from "../components/apiClient";
 import { runBackgroundTask } from "../components/backgroundTask";
 import * as draftUpdater from "../components/draftUpdater";
+import {
+	DeleteElementAction,
+	MoveDownAction,
+	MoveUpAction,
+	OpenSettingsAction,
+} from "../components/EditorActions";
 import {
 	ActionMenu,
 	ActionMenuItem,
@@ -29,22 +37,13 @@ import { moveElementHandler } from "../components/handlers/move_element";
 import { landingElementUpdater } from "../components/handlers/update_element";
 import { loadPageFromApi } from "../components/landingPageApiLoader";
 import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
+import { MoveBackButton } from "../components/MoveBackButton";
+import { PageContent, PageHeader, PageLayout } from "../components/PageLayout";
+import { getProjectName, ProjectName } from "../components/ProjectName";
 import { PreviewCanvas } from "../components/preview_canvas";
 import { type LandingElement, type LandingPage } from "../components/types";
-import { findElementById } from "../components/utils";
-import { PageContent, PageHeader, PageLayout } from "../components/PageLayout";
-import { Plus } from "@gravity-ui/icons";
 import { UserMenu } from "../components/UserMenu";
-import { Dropdown, Label, type Key } from "@heroui/react";
-import {
-	DeleteElementAction,
-	MoveDownAction,
-	MoveUpAction,
-	OpenSettingsAction,
-} from "../components/EditorActions";
-import { Text, Archive, Box, Picture, Link } from "@gravity-ui/icons";
-import { getProjectName, ProjectName } from "../components/ProjectName";
-import { MoveBackButton } from "../components/MoveBackButton";
+import { findElementById } from "../components/utils";
 
 const CreateElementType = {
 	TEXT: "text",

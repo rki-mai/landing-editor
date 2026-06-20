@@ -1,7 +1,8 @@
+import { ArrowUturnCcwLeft } from "@gravity-ui/icons";
 import { Drawer } from "../drawer";
 import { SquareButton } from "../squareButton";
 import styles from "./versionCheckout.module.css";
-import { ArrowUturnCcwLeft } from "@gravity-ui/icons";
+
 interface VersionCheckoutWindowParams {
 	children: React.ReactElement[] | null;
 }

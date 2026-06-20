@@ -1,5 +1,5 @@
-import React from "react";
 import { Tabs as HeroTabs } from "@heroui/react";
+import React from "react";
 
 export interface TabProps {
 	title: string;

@@ -10,16 +10,16 @@ import { runBackgroundTask } from "../components/backgroundTask";
 import { EditArea, PreviewContainer } from "../components/edit_area";
 import { renderElements } from "../components/editor_components_renderer";
 import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
+import { MoveBackButton } from "../components/MoveBackButton";
+import { PageContent, PageHeader, PageLayout } from "../components/PageLayout";
+import { getProjectName, ProjectName } from "../components/ProjectName";
 import { PreviewCanvas } from "../components/preview_canvas";
 import type { LandingPage } from "../components/types";
+import { UserMenu } from "../components/UserMenu";
 import {
 	VersionCheckoutWindow,
 	VersionItem,
 } from "../components/versionCheckout/versionCheckout";
-import { PageContent, PageHeader, PageLayout } from "../components/PageLayout";
-import { MoveBackButton } from "../components/MoveBackButton";
-import { getProjectName, ProjectName } from "../components/ProjectName";
-import { UserMenu } from "../components/UserMenu";
 
 export const VersionExplorerPage = () => {
 	const { projectId } = useParams();

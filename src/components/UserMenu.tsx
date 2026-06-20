@@ -1,5 +1,5 @@
+import { ArrowRightFromSquare, Person } from "@gravity-ui/icons";
 import { Button, Dropdown, Label } from "@heroui/react";
-import { Person, ArrowRightFromSquare } from "@gravity-ui/icons";
 import type { LocalStorageTokenProvider } from "./localStorageTokenProvider";
 
 interface UserMenuProps {

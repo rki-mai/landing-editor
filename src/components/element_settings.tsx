@@ -1,7 +1,3 @@
-import React, { useState } from "react";
-import { HexColorPicker } from "react-colorful";
-import { Drawer } from "./drawer";
-import styles from "./element_settings.module.css";
 import {
 	ColorArea,
 	ColorField,
@@ -9,14 +5,18 @@ import {
 	ColorSlider,
 	ColorSwatch,
 	Input,
+	type Key,
 	Label,
 	ListBox,
 	NumberField,
 	Select,
 	TextArea,
 	TextField,
-	type Key,
 } from "@heroui/react";
+import React, { useState } from "react";
+import { HexColorPicker } from "react-colorful";
+import { Drawer } from "./drawer";
+import styles from "./element_settings.module.css";
 
 const SettingContainer = ({
 	children,

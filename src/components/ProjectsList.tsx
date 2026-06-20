@@ -1,3 +1,4 @@
+import { CodeCommitHorizontal, PaperPlane, Pencil } from "@gravity-ui/icons";
 import {
 	Button,
 	Input,
@@ -7,11 +8,10 @@ import {
 	Surface,
 	TextField,
 } from "@heroui/react";
+import { useState } from "react";
 import type { Project } from "./apiClient";
 import styles from "./ProjectsList.module.css";
 import { SquareButton } from "./squareButton";
-import { Pencil, CodeCommitHorizontal, PaperPlane } from "@gravity-ui/icons";
-import { useState } from "react";
 
 export interface ProjectsListProps {
 	projects: Project[] | null;

@@ -1,5 +1,5 @@
-import styles from "./form.module.css";
 import { Link } from "@heroui/react";
+import styles from "./form.module.css";
 
 interface AuthLinkProps {
 	text: string;

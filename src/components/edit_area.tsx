@@ -1,7 +1,6 @@
-import React from "react";
-import styles from "./edit_area.module.css";
 import { Button, ButtonGroup } from "@heroui/react";
-import { type PropsWithChildren } from "react";
+import React, { type PropsWithChildren } from "react";
+import styles from "./edit_area.module.css";
 
 interface ActionMenuItemProps extends PropsWithChildren {
 	iconOnly?: boolean;

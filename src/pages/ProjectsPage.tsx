@@ -8,12 +8,12 @@ import {
 } from "../components/apiClient";
 import { runBackgroundTask } from "../components/backgroundTask";
 import { LocalStorageTokenProvider } from "../components/localStorageTokenProvider";
+import { PageContent, PageHeader, PageLayout } from "../components/PageLayout";
 import { ProjectsList } from "../components/ProjectsList";
 import { ProjectsMenu } from "../components/ProjectsMenu";
 import { Tab, Tabs } from "../components/Tabs";
-import styles from "./ProjectsPage.module.css";
 import { UserMenu } from "../components/UserMenu";
-import { PageContent, PageHeader, PageLayout } from "../components/PageLayout";
+import styles from "./ProjectsPage.module.css";
 
 const getProjects = async (apiClient: ApiClient): Promise<Projects> => {
 	return await apiClient.getProjects();
