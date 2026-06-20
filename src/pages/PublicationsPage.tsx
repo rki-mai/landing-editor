@@ -12,12 +12,6 @@ import { type Column, Table } from "../components/table";
 import { CircleCheckFill, Clock, TrashBin, Xmark } from "@gravity-ui/icons";
 import { PageContent, PageHeader, PageLayout } from "../components/PageLayout";
 import { Chip, Link, Spinner } from "@heroui/react";
-const publicationStatusMap: Record<PublicationStatus, string> = {
-	PENDING: "В процессе",
-	PROCESSING: "В процессе",
-	FINISHED: "Опубликовано",
-	FAILED: "Ошибка",
-};
 
 export default function PublicationsPage() {
 	const [publications, setPublications] = useState<Publication[] | null>(null);
