@@ -1,28 +1,19 @@
-import styles from "./SquareButton.module.css";
-
-type SquareButtonVariant = "primary" | "ghost" | "danger" | "success";
+import { Button } from "@heroui/react";
 
 type SquareButtonProps = {
-	icon: string;
-	variant?: SquareButtonVariant;
-	size?: number;
+	children: React.ReactElement;
 	onClick?: () => void;
-	"aria-label"?: string;
 };
 
-export const SquareButton = ({
-	icon,
-	variant = "primary",
-	size = 48,
-	onClick,
-}: SquareButtonProps) => {
+export const SquareButton = ({ children, onClick }: SquareButtonProps) => {
 	return (
-		<button
-			className={`${styles.btn} ${styles[variant]}`}
-			style={{ width: size, height: size }}
+		<Button
+			isIconOnly
+			className="rounded-full"
 			onClick={onClick}
+			variant="tertiary"
 		>
-			<img src={icon} alt="" />
-		</button>
+			{children}
+		</Button>
 	);
 };

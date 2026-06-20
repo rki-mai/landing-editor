@@ -1,9 +1,9 @@
-import styles from "./form.module.css";
+import { ErrorMessage as HeroErrorMessage } from "@heroui/react";
 
-interface ErrorMessageProps {
-	message: string;
-}
-
-export const ErrorMessage = ({ message }: ErrorMessageProps) => {
-	return <div className={styles.error}>{message}</div>;
+export const ErrorMessage = ({ error }: { error: string }) => {
+	return (
+		<div className="text-center">
+			<HeroErrorMessage>{error}</HeroErrorMessage>
+		</div>
+	);
 };

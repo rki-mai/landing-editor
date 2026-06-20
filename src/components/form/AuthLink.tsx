@@ -1,3 +1,4 @@
+import { Link } from "@heroui/react";
 import styles from "./form.module.css";
 
 interface AuthLinkProps {
@@ -10,9 +11,10 @@ export const AuthLink = ({ text, linkText, href }: AuthLinkProps) => {
 	return (
 		<div className={styles.authLink}>
 			{text}{" "}
-			<a href={href} className={styles.link}>
+			<Link href={href}>
 				{linkText}
-			</a>
+				<Link.Icon />
+			</Link>
 		</div>
 	);
 };

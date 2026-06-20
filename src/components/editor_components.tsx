@@ -1,7 +1,4 @@
-import arrowDownIcon from "../assets/arrow-down.png";
-import arrowUpIcon from "../assets/arrow-up.png";
-import settingsIcon from "../assets/settings.png";
-import trashIcon from "../assets/trash.svg";
+import type { PropsWithChildren } from "react";
 import {
 	type ButtonElement,
 	type ContainerElement,
@@ -11,46 +8,32 @@ import {
 	type TextElement,
 } from "./types";
 
-export type OpenSettingsCallback = (element: LandingElement) => void;
+interface LandingElementEditContainerProps extends PropsWithChildren {
+	onClick?: () => void;
+	isSelected?: boolean;
+}
 
-const MenuItem = ({ onClick, src }: { src: string; onClick?: () => void }) => {
-	return (
-		<div className="element-menu-item" onClick={onClick}>
-			<img src={src} />
-		</div>
-	);
-};
-
-const ElementMenu = ({ children }: { children: React.ReactNode[] }) => {
-	return <div className="element-menu">{children}</div>;
-};
+interface LandingElementProps<T extends LandingElement>
+	extends LandingElementEditContainerProps {
+	element: T;
+}
 
 export const LandingElementEditContainer = ({
 	children,
-	onSettingsOpened,
-	onMoveUp,
-	onMoveDown,
-	onDelete,
-}: {
-	children: React.ReactNode;
-	supportsSettings?: boolean;
-	onSettingsOpened?: () => void;
-	onMoveUp?: () => void;
-	onMoveDown?: () => void;
-	onDelete?: () => void;
-}) => {
+	onClick,
+	isSelected,
+}: LandingElementEditContainerProps) => {
+	const baseStyles = "border border-3 transition-colors rounded-2xl p-2";
+	const activeStyles = "border-[var(--accent)]";
+	const notActiveStyles = onClick
+		? "cursor-pointer border-transparent hover:border-[var(--border)]"
+		: "border-transparent";
+
 	return (
-		<div className="element-edit-container">
-			{(onSettingsOpened || onMoveDown || onMoveUp) && (
-				<ElementMenu>
-					{onSettingsOpened && (
-						<MenuItem src={settingsIcon} onClick={onSettingsOpened} />
-					)}
-					{onDelete && <MenuItem src={trashIcon} onClick={onDelete} />}
-					{onMoveUp && <MenuItem src={arrowUpIcon} onClick={onMoveUp} />}
-					{onMoveDown && <MenuItem src={arrowDownIcon} onClick={onMoveDown} />}
-				</ElementMenu>
-			)}
+		<div
+			onClick={onClick}
+			className={`${baseStyles} ${isSelected ? activeStyles : notActiveStyles}`}
+		>
 			{children}
 		</div>
 	);
@@ -58,17 +41,8 @@ export const LandingElementEditContainer = ({
 
 export const TextElementComponent = ({
 	element,
-	onSettingsOpened,
-	onMoveUp,
-	onMoveDown,
-	onDelete,
-}: {
-	element: TextElement;
-	onSettingsOpened?: OpenSettingsCallback;
-	onMoveUp?: () => void;
-	onMoveDown?: () => void;
-	onDelete?: () => void;
-}) => {
+	...props
+}: LandingElementProps<TextElement>) => {
 	const style: React.CSSProperties = {};
 	if (element.styles) {
 		if (element.styles.color) style.color = element.styles.color;
@@ -76,15 +50,7 @@ export const TextElementComponent = ({
 			style.fontSize = `${element.styles.fontSize}px`;
 	}
 	return (
-		<LandingElementEditContainer
-			key={element.id}
-			onSettingsOpened={
-				onSettingsOpened ? () => onSettingsOpened(element) : undefined
-			}
-			onMoveDown={onMoveDown}
-			onMoveUp={onMoveUp}
-			onDelete={onDelete}
-		>
+		<LandingElementEditContainer key={element.id} {...props}>
 			<p className="text-element" style={style}>
 				{element.value}
 			</p>
@@ -94,27 +60,10 @@ export const TextElementComponent = ({
 
 export const LinkElementComponent = ({
 	element,
-	onSettingsOpened,
-	onMoveUp,
-	onMoveDown,
-	onDelete,
-}: {
-	element: LinkElement;
-	onSettingsOpened?: OpenSettingsCallback;
-	onMoveUp?: () => void;
-	onMoveDown?: () => void;
-	onDelete?: () => void;
-}) => {
+	...props
+}: LandingElementProps<LinkElement>) => {
 	return (
-		<LandingElementEditContainer
-			key={element.id}
-			onSettingsOpened={
-				onSettingsOpened ? () => onSettingsOpened(element) : undefined
-			}
-			onMoveUp={onMoveUp}
-			onMoveDown={onMoveDown}
-			onDelete={onDelete}
-		>
+		<LandingElementEditContainer key={element.id} {...props}>
 			<a className="link-element" style={element.styles} href={element.src}>
 				{element.value}
 			</a>
@@ -124,37 +73,20 @@ export const LinkElementComponent = ({
 
 export const ImageElementComponent = ({
 	element,
-	onSettingsOpened,
-	onMoveUp,
-	onMoveDown,
-	onDelete,
-}: {
-	element: ImageElement;
-	onSettingsOpened?: OpenSettingsCallback;
-	onMoveUp?: () => void;
-	onMoveDown?: () => void;
-	onDelete?: () => void;
-}) => {
+	...props
+}: LandingElementProps<ImageElement>) => {
 	const elementStyle: React.CSSProperties = {};
 	const imageStyle: React.CSSProperties = {};
 
 	if (element.styles) {
 		if (element.styles.width) imageStyle.width = `${element.styles.width}%`;
 		if (element.styles.position)
-			elementStyle.textAlign = element.styles.position;
+			elementStyle.justifyContent = element.styles.position;
 	}
 
 	return (
-		<LandingElementEditContainer
-			key={element.id}
-			onSettingsOpened={
-				onSettingsOpened ? () => onSettingsOpened(element) : undefined
-			}
-			onMoveUp={onMoveUp}
-			onMoveDown={onMoveDown}
-			onDelete={onDelete}
-		>
-			<div className="image-element" style={elementStyle}>
+		<LandingElementEditContainer key={element.id} {...props}>
+			<div className="flex image-element" style={elementStyle}>
 				<img
 					className="image"
 					src={element.value}
@@ -185,27 +117,10 @@ const LinkButton = ({
 
 export const ButtonElementComponent = ({
 	element,
-	onSettingsOpened,
-	onMoveUp,
-	onMoveDown,
-	onDelete,
-}: {
-	element: ButtonElement;
-	onSettingsOpened?: OpenSettingsCallback;
-	onMoveUp?: () => void;
-	onMoveDown?: () => void;
-	onDelete?: () => void;
-}) => {
+	...props
+}: LandingElementProps<ButtonElement>) => {
 	return (
-		<LandingElementEditContainer
-			key={element.id}
-			onSettingsOpened={
-				onSettingsOpened ? () => onSettingsOpened(element) : undefined
-			}
-			onMoveUp={onMoveUp}
-			onMoveDown={onMoveDown}
-			onDelete={onDelete}
-		>
+		<LandingElementEditContainer key={element.id} {...props}>
 			<LinkButton
 				text={element.value}
 				style={element.styles}
@@ -218,23 +133,10 @@ export const ButtonElementComponent = ({
 export const ContainerElementComponent = ({
 	element,
 	children,
-	onMoveUp,
-	onMoveDown,
-	onDelete,
-}: {
-	element: ContainerElement;
-	children: React.ReactNode[];
-	onMoveUp?: () => void;
-	onMoveDown?: () => void;
-	onDelete?: () => void;
-}) => {
+	...props
+}: LandingElementProps<ContainerElement> & { children: React.ReactNode[] }) => {
 	return (
-		<LandingElementEditContainer
-			key={element.id}
-			onMoveUp={onMoveUp}
-			onMoveDown={onMoveDown}
-			onDelete={onDelete}
-		>
+		<LandingElementEditContainer key={element.id} {...props}>
 			{children}
 		</LandingElementEditContainer>
 	);

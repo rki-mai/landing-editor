@@ -1,19 +1,22 @@
-import styles from "./form.module.css";
+import { FieldError, Input, Label, TextField } from "@heroui/react";
 
 interface PasswordInputProps {
-	value: string;
 	onChange: (value: string) => void;
+	isInvalid?: boolean;
 }
 
-export const PasswordInput = ({ value, onChange }: PasswordInputProps) => {
+export const PasswordInput = ({ isInvalid, onChange }: PasswordInputProps) => {
 	return (
-		<input
+		<TextField
+			isRequired
+			name="password"
 			type="password"
-			placeholder="Password"
-			value={value}
-			onChange={(e) => onChange(e.target.value)}
-			required
-			className={styles.input}
-		/>
+			onChange={onChange}
+			isInvalid={isInvalid}
+		>
+			<Label>Password</Label>
+			<Input placeholder="Enter your password" variant="secondary" />
+			<FieldError />
+		</TextField>
 	);
 };

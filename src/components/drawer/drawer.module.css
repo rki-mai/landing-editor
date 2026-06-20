@@ -11,7 +11,7 @@
 }
 
 .headerTitle {
-	flex-grow: 1;
+	flex-grow: 0;
 	font-size: 20px;
 	font-weight: bold;
 	line-height: 40px;
@@ -34,6 +34,5 @@
 	flex-direction: column;
 	gap: 10px;
 	overflow-y: auto;
-	overflow-x: hidden;
-	flex-grow: 1;
+	flex: 1;
 }

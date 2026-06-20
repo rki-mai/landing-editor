@@ -1,19 +1,22 @@
-import styles from "./form.module.css";
+import { FieldError, Input, Label, TextField } from "@heroui/react";
 
 interface EmailInputProps {
-	value: string;
 	onChange: (value: string) => void;
+	isInvalid?: boolean;
 }
 
-export const EmailInput = ({ value, onChange }: EmailInputProps) => {
+export const EmailInput = ({ isInvalid, onChange }: EmailInputProps) => {
 	return (
-		<input
+		<TextField
+			isRequired
+			name="email"
 			type="email"
-			placeholder="Email"
-			value={value}
-			onChange={(e) => onChange(e.target.value)}
-			required
-			className={styles.input}
-		/>
+			onChange={onChange}
+			isInvalid={isInvalid}
+		>
+			<Label>Email</Label>
+			<Input placeholder="john@example.com" variant="secondary" />
+			<FieldError />
+		</TextField>
 	);
 };

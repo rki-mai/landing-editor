@@ -1,3 +1,4 @@
+import { Label } from "@heroui/react";
 import styles from "./Table.module.css";
 
 export type Column<T> = {
@@ -15,7 +16,7 @@ type TableProps<T> = {
 
 export function Table<T>({ columns, data, rowKey }: TableProps<T>) {
 	return (
-		<div className={styles.tableWrapper}>
+		<div className="w-full overflow-x-auto border rounded-4xl">
 			<table className={styles.table}>
 				<thead>
 					<tr>
@@ -25,7 +26,7 @@ export function Table<T>({ columns, data, rowKey }: TableProps<T>) {
 								style={{ width: col.width }}
 								className={!col.title ? styles.noTitle : undefined}
 							>
-								{col.title ?? null}
+								<Label>{col.title ?? null}</Label>
 							</th>
 						))}
 					</tr>

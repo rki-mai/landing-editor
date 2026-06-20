@@ -1,3 +1,4 @@
+import { Spinner } from "@heroui/react";
 import React from "react";
 
 export const PreviewCanvas = ({
@@ -6,12 +7,15 @@ export const PreviewCanvas = ({
 	children: React.ReactNode[] | null;
 }) => {
 	return (
-		<div className="preview-pane">
+		<div>
 			{children ? (
-				<div className="preview-content">{children}</div>
+				<div className="flex flex-col gap-4 grow">{children}</div>
 			) : (
 				<div className="empty-state">
-					<p>Loading...</p>
+					<div className="flex flex-col items-center gap-2 grow">
+						<Spinner size="xl" />
+						<span className="text-xs text-muted">Загрузка ...</span>
+					</div>
 				</div>
 			)}
 		</div>

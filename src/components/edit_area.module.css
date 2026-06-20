@@ -7,22 +7,7 @@
 
 .previewContainer {
 	overflow-y: auto;
-	overflow-x: hidden;
 	flex: 1;
-}
-
-.actionMenuItem {
-	position: relative;
-	padding: 4px 8px;
-	background: lightgray;
-	border-radius: 4px;
-	cursor: pointer;
-}
-
-.actionMenu {
-	display: flex;
-	padding-bottom: 10px;
-	gap: 5px;
 }
 
 .actionList {

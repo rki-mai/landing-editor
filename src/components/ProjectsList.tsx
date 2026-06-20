@@ -1,6 +1,14 @@
-import commitIcon from "../assets/commit.svg";
-import paperPlaneIcon from "../assets/paper-plane.svg";
-import pencilIcon from "../assets/pencil.svg";
+import { CodeCommitHorizontal, PaperPlane, Pencil } from "@gravity-ui/icons";
+import {
+	Button,
+	Input,
+	Label,
+	Modal,
+	Spinner,
+	Surface,
+	TextField,
+} from "@heroui/react";
+import { useState } from "react";
 import type { Project } from "./apiClient";
 import styles from "./ProjectsList.module.css";
 import { SquareButton } from "./squareButton";
@@ -15,34 +23,25 @@ export interface ProjectsListProps {
 
 const PublishButton = ({ onClick }: { onClick: () => void }) => {
 	return (
-		<SquareButton
-			icon={paperPlaneIcon}
-			size={30}
-			variant="ghost"
-			onClick={onClick}
-		></SquareButton>
+		<SquareButton onClick={onClick}>
+			<PaperPlane />
+		</SquareButton>
 	);
 };
 
 const RenameButton = ({ onClick }: { onClick: () => void }) => {
 	return (
-		<SquareButton
-			icon={pencilIcon}
-			size={30}
-			variant="ghost"
-			onClick={onClick}
-		></SquareButton>
+		<SquareButton onClick={onClick}>
+			<Pencil />
+		</SquareButton>
 	);
 };
 
 const ViewVersionsButton = ({ onClick }: { onClick: () => void }) => {
 	return (
-		<SquareButton
-			icon={commitIcon}
-			size={30}
-			variant="ghost"
-			onClick={onClick}
-		></SquareButton>
+		<SquareButton onClick={onClick}>
+			<CodeCommitHorizontal />
+		</SquareButton>
 	);
 };
 
@@ -59,31 +58,76 @@ const ProjectListItem = ({
 	onRename: (project: Project, name: string) => void;
 	onViewVersions: (project: Project) => void;
 }) => {
+	const [projectName, setProjectName] = useState<string | null>(null);
+
 	const handleRenameProject = () => {
-		const inputValue = prompt("Название проекта:");
-		if (inputValue !== null) {
-			onRename(project, inputValue);
+		if (projectName === null) {
+			console.warn("Empty project name");
+			return;
 		}
+
+		onRename(project, projectName);
 	};
 
 	return (
-		<li key={project.id} className={styles.item}>
-			<div className={styles.itemContent}>
-				<a
-					href={`/edit?projectId=${project.id}`}
-					className={`${styles.link} ${styles.itemName}`}
-					onClick={(e) => {
-						e.preventDefault();
-						onOpen(project);
-					}}
+		<Surface variant="default" className="rounded-4xl p-4 flex gap-4">
+			<div className="flex items-center grow">
+				<Label
+					className="hover:underline cursor-pointer"
+					onClick={() => onOpen(project)}
 				>
 					{project.name}
-				</a>
-				<RenameButton onClick={handleRenameProject} />
+				</Label>
+			</div>
+			<div className="flex items-center gap-4 grow-0">
+				<Modal>
+					<RenameButton onClick={handleRenameProject} />
+					<Modal.Backdrop>
+						<Modal.Container placement="auto">
+							<Modal.Dialog className="sm:max-w-md">
+								<Modal.CloseTrigger className="rounded-full" />
+								<Modal.Header>
+									<Modal.Heading>Название проекта</Modal.Heading>
+									<p className="mt-1.5 text-sm leading-5 text-muted">
+										Укажите новое название проекта и нажмите кнопку ниже
+									</p>
+								</Modal.Header>
+								<Modal.Body>
+									<Surface variant="default">
+										<form className="flex flex-col gap-4">
+											<TextField
+												aria-label="projectName"
+												className="w-full"
+												name="name"
+												type="text"
+												variant="secondary"
+												onChange={setProjectName}
+											>
+												<Input placeholder="Название проекта..." />
+											</TextField>
+										</form>
+									</Surface>
+								</Modal.Body>
+								<Modal.Footer>
+									<Button
+										slot="close"
+										variant="tertiary"
+										onClick={() => setProjectName(null)}
+									>
+										Отмена
+									</Button>
+									<Button onClick={handleRenameProject} slot="close">
+										Переименовать
+									</Button>
+								</Modal.Footer>
+							</Modal.Dialog>
+						</Modal.Container>
+					</Modal.Backdrop>
+				</Modal>
 				<ViewVersionsButton onClick={() => onViewVersions(project)} />
 				<PublishButton onClick={() => onPublish(project)} />
 			</div>
-		</li>
+		</Surface>
 	);
 };
 
@@ -95,27 +139,28 @@ export function ProjectsList({
 	onViewVersions,
 }: ProjectsListProps) {
 	return (
-		<section className={styles.list}>
+		<div className="flex flex-col grow gap-4">
 			{projects === null ? (
-				<div className={styles.empty}>Загрузка ...</div>
+				<div className="flex flex-col items-center gap-2 grow">
+					<Spinner size="xl" />
+					<span className="text-xs text-muted">Загрузка ...</span>
+				</div>
 			) : projects.length === 0 ? (
 				<div className={styles.empty}>Нет проектов</div>
 			) : (
-				<>
-					<ul className={styles.ul}>
-						{projects.map((project) => (
-							<ProjectListItem
-								key={project.id}
-								project={project}
-								onOpen={onOpen}
-								onPublish={onPublish}
-								onRename={onRename}
-								onViewVersions={onViewVersions}
-							/>
-						))}
-					</ul>
-				</>
+				projects.map((project) => {
+					return (
+						<ProjectListItem
+							key={project.id}
+							project={project}
+							onOpen={onOpen}
+							onPublish={onPublish}
+							onRename={onRename}
+							onViewVersions={onViewVersions}
+						/>
+					);
+				})
 			)}
-		</section>
+		</div>
 	);
 }
