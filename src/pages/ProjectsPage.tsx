@@ -12,6 +12,7 @@ import { ProjectsList } from "../components/ProjectsList";
 import { ProjectsMenu } from "../components/ProjectsMenu";
 import { Tab, Tabs } from "../components/Tabs";
 import styles from "./ProjectsPage.module.css";
+import { UserMenu } from "../components/UserMenu";
 
 const getProjects = async (apiClient: ApiClient): Promise<Projects> => {
 	return await apiClient.getProjects();
@@ -123,27 +124,41 @@ export default function ProjectsPage() {
 	};
 
 	return (
-		<div className={styles.container}>
-			<Tabs>
-				<Tab title="Проекты" id="projects" href="/projects" isSelected={true} />
-				<Tab
-					title="Публикации"
-					id="publications"
-					href="/publications"
-					isSelected={false}
-				/>
-			</Tabs>
-			<div className={styles.content}>
-				<div className={styles.menu}>
-					<ProjectsMenu onCreate={handleCreate} onSearch={handleSearch} />
+		<div className="flex p-4 items-center justify-center w-full">
+			<div className="flex flex-col gap-4 max-w-4xl grow">
+				<div className="flex gap-4">
+					<div className="grow">
+						<Tabs>
+							<Tab
+								title="Проекты"
+								id="projects"
+								href="/projects"
+								isSelected={true}
+							/>
+							<Tab
+								title="Публикации"
+								id="publications"
+								href="/publications"
+								isSelected={false}
+							/>
+						</Tabs>
+					</div>
+					<div className="flex grow-0 items-center">
+						<UserMenu />
+					</div>
 				</div>
-				<ProjectsList
-					projects={filteredProjects}
-					onOpen={handleOpen}
-					onPublish={handlePublish}
-					onRename={renameProject}
-					onViewVersions={handleViewVersions}
-				/>
+				<div className={styles.content}>
+					<div className={styles.menu}>
+						<ProjectsMenu onCreate={handleCreate} onSearch={handleSearch} />
+					</div>
+					<ProjectsList
+						projects={filteredProjects}
+						onOpen={handleOpen}
+						onPublish={handlePublish}
+						onRename={renameProject}
+						onViewVersions={handleViewVersions}
+					/>
+				</div>
 			</div>
 		</div>
 	);
