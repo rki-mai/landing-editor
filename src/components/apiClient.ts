@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { sleep } from "./utils";
 
 export class TokenProviderError extends Error {
 	constructor(message: string) {

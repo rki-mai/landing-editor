@@ -1,6 +1,5 @@
 import { Plus } from "@gravity-ui/icons";
 import { Button, SearchField } from "@heroui/react";
-import styles from "./ProjectsMenu.module.css";
 
 interface ProjectsMenuProps {
 	onCreate: () => void;

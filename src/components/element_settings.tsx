@@ -13,8 +13,7 @@ import {
 	TextArea,
 	TextField,
 } from "@heroui/react";
-import React, { useState } from "react";
-import { HexColorPicker } from "react-colorful";
+import React from "react";
 import { Drawer } from "./drawer";
 import styles from "./element_settings.module.css";
 
