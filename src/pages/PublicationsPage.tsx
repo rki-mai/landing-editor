@@ -7,11 +7,12 @@ import {
 	runPublicationPoller,
 } from "../components/PublicationPoller";
 import { SquareButton } from "../components/squareButton";
-import { Tab } from "../components/Tabs";
+import { Tab, Tabs } from "../components/Tabs";
 import { type Column, Table } from "../components/table";
 import { CircleCheckFill, Clock, TrashBin, Xmark } from "@gravity-ui/icons";
 import { PageContent, PageHeader, PageLayout } from "../components/PageLayout";
 import { Chip, Link, Spinner } from "@heroui/react";
+import { UserMenu } from "../components/UserMenu";
 
 export default function PublicationsPage() {
 	const [publications, setPublications] = useState<Publication[] | null>(null);
@@ -76,18 +77,25 @@ export default function PublicationsPage() {
 	return (
 		<PageLayout>
 			<PageHeader>
-				<Tab
-					title="Проекты"
-					id="projects"
-					href="/projects"
-					isSelected={false}
-				/>
-				<Tab
-					title="Публикации"
-					id="publications"
-					href="/publications"
-					isSelected={true}
-				/>
+				<div className="grow">
+					<Tabs>
+						<Tab
+							title="Проекты"
+							id="projects"
+							href="/projects"
+							isSelected={false}
+						/>
+						<Tab
+							title="Публикации"
+							id="publications"
+							href="/publications"
+							isSelected={true}
+						/>
+					</Tabs>
+				</div>
+				<div className="flex grow-0 items-center">
+					<UserMenu />
+				</div>
 			</PageHeader>
 			<PageContent>
 				{publications === null ? (

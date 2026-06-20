@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { sleep } from "./utils";
 
 export class TokenProviderError extends Error {
 	constructor(message: string) {
@@ -234,6 +235,7 @@ export class ApiClient {
 		projectId: string,
 		version: number | null = null,
 	): Promise<Draft> {
+		await sleep(5.0);
 		const url =
 			version === null
 				? `/api/v1/projects/${projectId}/draft`

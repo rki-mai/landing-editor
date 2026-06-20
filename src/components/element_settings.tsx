@@ -2,6 +2,21 @@ import React, { useState } from "react";
 import { HexColorPicker } from "react-colorful";
 import { Drawer } from "./drawer";
 import styles from "./element_settings.module.css";
+import {
+	ColorArea,
+	ColorField,
+	ColorPicker,
+	ColorSlider,
+	ColorSwatch,
+	Input,
+	Label,
+	ListBox,
+	NumberField,
+	Select,
+	TextArea,
+	TextField,
+	type Key,
+} from "@heroui/react";
 
 const SettingContainer = ({
 	children,
@@ -20,7 +35,11 @@ const SettingContainer = ({
 };
 
 const SettingName = ({ name }: { name: string }) => {
-	return <div className={styles.settingContainerName}>{name}</div>;
+	return (
+		<div className={`flex items-center ${styles.settingContainerName}`}>
+			<Label className="font-normal">{name}</Label>
+		</div>
+	);
 };
 
 const SettingValue = ({
@@ -29,34 +48,6 @@ const SettingValue = ({
 	children: React.ReactNode | React.ReactNode[];
 }) => {
 	return <div className={styles.settingContainerValue}>{children}</div>;
-};
-
-const ColorPicker = ({
-	color,
-	onChange,
-}: {
-	color: string;
-	onChange: (value: string) => void;
-}) => {
-	const [isFocused, setIsFocused] = useState<boolean>(false);
-
-	return (
-		<SettingValue>
-			<div
-				className={styles.colorInputPreview}
-				style={{ backgroundColor: color }}
-				onClick={() => setIsFocused(true)}
-			/>
-			{isFocused && (
-				<div
-					className={styles.colorInputPicker}
-					onBlur={() => setIsFocused(false)}
-				>
-					<HexColorPicker color={color} onChange={onChange} />
-				</div>
-			)}
-		</SettingValue>
-	);
 };
 
 export const IntegerSetting = ({
@@ -76,14 +67,21 @@ export const IntegerSetting = ({
 		<SettingContainer>
 			<SettingName name={name} />
 			<SettingValue>
-				<div className={styles.inputField}>
-					<input
-						type="number"
-						min={min}
-						max={max}
-						onChange={(e) => onChange(parseFloat(e.target.value))}
+				<div>
+					<NumberField
+						name="number-field"
+						onChange={(value) => onChange(value)}
 						value={value}
-					/>
+						variant="secondary"
+						minValue={min}
+						maxValue={max}
+					>
+						<NumberField.Group>
+							<NumberField.DecrementButton />
+							<NumberField.Input />
+							<NumberField.IncrementButton />
+						</NumberField.Group>
+					</NumberField>
 				</div>
 			</SettingValue>
 		</SettingContainer>
@@ -102,7 +100,45 @@ export const ColorSettings = ({
 	return (
 		<SettingContainer>
 			<SettingName name={name} />
-			<ColorPicker color={color} onChange={onChange} />
+			<SettingValue>
+				<ColorPicker
+					value={color}
+					onChange={(value) => onChange(value.toString("hex"))}
+				>
+					<ColorPicker.Trigger>
+						<ColorSwatch size="sm" className="rounded-full" />
+					</ColorPicker.Trigger>
+					<ColorPicker.Popover>
+						<ColorArea
+							aria-label="Color area"
+							className="max-w-full"
+							colorSpace="hsb"
+							xChannel="saturation"
+							yChannel="brightness"
+						>
+							<ColorArea.Thumb />
+						</ColorArea>
+						<ColorSlider
+							aria-label="Hue slider"
+							channel="hue"
+							className="flex-1"
+							colorSpace="hsb"
+						>
+							<ColorSlider.Track>
+								<ColorSlider.Thumb />
+							</ColorSlider.Track>
+						</ColorSlider>
+						<ColorField aria-label="Color field">
+							<ColorField.Group variant="secondary">
+								<ColorField.Prefix>
+									<ColorSwatch className="rounded-full" size="xs" />
+								</ColorField.Prefix>
+								<ColorField.Input />
+							</ColorField.Group>
+						</ColorField>
+					</ColorPicker.Popover>
+				</ColorPicker>
+			</SettingValue>
 		</SettingContainer>
 	);
 };
@@ -120,8 +156,9 @@ export const TextAreaSetting = ({
 		<SettingContainer multiline={true}>
 			<SettingName name={name} />
 			<SettingValue>
-				<textarea
-					className={styles.textArea}
+				<TextArea
+					className="w-full"
+					variant="secondary"
 					value={value}
 					onChange={(e) => onChange(e.target.value)}
 				/>
@@ -144,11 +181,9 @@ export const TextFieldSetting = ({
 			<SettingName name={name} />
 			<SettingValue>
 				<div className={styles.inputField}>
-					<input
-						type="text"
-						value={value}
-						onChange={(e) => onChange(e.target.value)}
-					/>
+					<TextField variant="secondary" value={value} onChange={onChange}>
+						<Input />
+					</TextField>
 				</div>
 			</SettingValue>
 		</SettingContainer>
@@ -166,18 +201,42 @@ export const ChoiceBoxSetting = <T extends string>({
 	options: { label: string; value: T }[];
 	onChange: (value: T) => void;
 }) => {
+	const validateKey = (key: Key | null) => {
+		for (const option of options) {
+			if (key === option.value) {
+				return key as T;
+			}
+		}
+
+		throw new Error(`Unknown key type ${key}`);
+	};
+
 	return (
 		<SettingContainer>
 			<SettingName name={name} />
 			<SettingValue>
 				<div className={styles.inputField}>
-					<select value={value} onChange={(e) => onChange(e.target.value as T)}>
-						{options.map((option) => (
-							<option key={option.value} value={option.value}>
-								{option.label}
-							</option>
-						))}
-					</select>
+					<Select
+						variant="secondary"
+						onChange={(e) => onChange(validateKey(e))}
+						value={value}
+						className="min-w-30"
+					>
+						<Select.Trigger>
+							<Select.Value />
+							<Select.Indicator />
+						</Select.Trigger>
+						<Select.Popover>
+							<ListBox>
+								{options.map((option) => (
+									<ListBox.Item id={option.value} textValue={option.value}>
+										{option.label}
+										<ListBox.ItemIndicator />
+									</ListBox.Item>
+								))}
+							</ListBox>
+						</Select.Popover>
+					</Select>
 				</div>
 			</SettingValue>
 		</SettingContainer>

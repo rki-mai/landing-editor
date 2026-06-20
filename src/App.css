@@ -5,10 +5,6 @@
 	overflow-y: hidden;
 }
 
-.preview-pane {
-	flex: 1;
-}
-
 .editor-container {
 	flex: 1;
 	padding: 20px;

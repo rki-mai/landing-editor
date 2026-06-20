@@ -16,3 +16,9 @@ export const findElementById = (page: LandingPage, id: string) => {
 	}
 	return maybeElement;
 };
+
+export const sleep = async (seconds: number): Promise<void> => {
+	return new Promise((resolve) => {
+		setTimeout(resolve, seconds * 1000);
+	});
+};

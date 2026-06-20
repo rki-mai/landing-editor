@@ -127,13 +127,25 @@ export default function ProjectsPage() {
 	return (
 		<PageLayout>
 			<PageHeader>
-				<Tab title="Проекты" id="projects" href="/projects" isSelected={true} />
-				<Tab
-					title="Публикации"
-					id="publications"
-					href="/publications"
-					isSelected={false}
-				/>
+				<div className="grow">
+					<Tabs>
+						<Tab
+							title="Проекты"
+							id="projects"
+							href="/projects"
+							isSelected={true}
+						/>
+						<Tab
+							title="Публикации"
+							id="publications"
+							href="/publications"
+							isSelected={false}
+						/>
+					</Tabs>
+				</div>
+				<div className="flex grow-0 items-center">
+					<UserMenu />
+				</div>
 			</PageHeader>
 			<PageContent>
 				<div className={styles.menu}>

@@ -1,32 +1,14 @@
-import { Tabs, type TabProps } from "./Tabs";
-import { UserMenu } from "./UserMenu";
+import type { PropsWithChildren } from "react";
 
-interface PageLayoutProps {
+interface PageHeaderProps {
 	children: React.ReactElement[];
 }
 
-interface PageContentProps {
-	children: React.ReactElement | React.ReactElement[];
-}
-
-interface PageHeaderProps {
-	children: React.ReactElement<TabProps>[];
-}
-
 export const PageHeader = ({ children }: PageHeaderProps) => {
-	return (
-		<div className="flex gap-4">
-			<div className="grow">
-				<Tabs>{children}</Tabs>
-			</div>
-			<div className="flex grow-0 items-center">
-				<UserMenu />
-			</div>
-		</div>
-	);
+	return <div className="flex gap-4">{children}</div>;
 };
 
-export const PageLayout = ({ children }: PageLayoutProps) => {
+export const PageLayout = ({ children }: PropsWithChildren) => {
 	return (
 		<div className="flex p-4 items-center justify-center w-full">
 			<div className="flex flex-col gap-4 max-w-4xl grow">{children}</div>
@@ -34,6 +16,6 @@ export const PageLayout = ({ children }: PageLayoutProps) => {
 	);
 };
 
-export const PageContent = ({ children }: PageContentProps) => {
+export const PageContent = ({ children }: PropsWithChildren) => {
 	return <div className="flex flex-col gap-4 grow">{children}</div>;
 };
