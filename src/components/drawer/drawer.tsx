@@ -9,8 +9,11 @@ interface DrawerParams {
 
 export const Drawer = ({ title, children, onClose }: DrawerParams) => {
 	return (
-		<div className="min-w-xl p-4">
-			<Surface className="rounded-4xl p-4" variant="default">
+		<div className="min-w-xl p-4 max-h-full">
+			<Surface
+				className="flex flex-col flex-1 rounded-4xl p-4 max-h-full"
+				variant="default"
+			>
 				<Header title={title} onClose={onClose} />
 				<Body>{children}</Body>
 			</Surface>

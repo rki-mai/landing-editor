@@ -33,10 +33,9 @@ import { PreviewCanvas } from "../components/preview_canvas";
 import { type LandingElement, type LandingPage } from "../components/types";
 import { findElementById } from "../components/utils";
 import { PageContent, PageHeader, PageLayout } from "../components/PageLayout";
-import { SquareButton } from "../components/squareButton";
-import { ArrowLeft, Plus } from "@gravity-ui/icons";
+import { Plus } from "@gravity-ui/icons";
 import { UserMenu } from "../components/UserMenu";
-import { Dropdown, Label, Spinner, type Key } from "@heroui/react";
+import { Dropdown, Label, type Key } from "@heroui/react";
 import {
 	DeleteElementAction,
 	MoveDownAction,
@@ -44,6 +43,8 @@ import {
 	OpenSettingsAction,
 } from "../components/EditorActions";
 import { Text, Archive, Box, Picture, Link } from "@gravity-ui/icons";
+import { getProjectName, ProjectName } from "../components/ProjectName";
+import { MoveBackButton } from "../components/MoveBackButton";
 
 const CreateElementType = {
 	TEXT: "text",
@@ -260,39 +261,6 @@ const getElementFactory = (actionKey: Key) => {
 		default:
 			throw Error(`Unknown type ${actionKey}`);
 	}
-};
-
-const MoveBackButton = () => {
-	const onClick = () => {
-		window.location.pathname = "/projects";
-		return;
-	};
-
-	return (
-		<SquareButton onClick={onClick}>
-			<ArrowLeft />
-		</SquareButton>
-	);
-};
-
-const getProjectName = async (projectId: string, apiClient: ApiClient) => {
-	const projects = await apiClient.getProjects();
-
-	for (const project of projects.projects || []) {
-		if (project.id === projectId) {
-			return project.name;
-		}
-	}
-
-	throw new Error("Unable to find project");
-};
-
-const ProjectName = ({ projectName }: { projectName: string | null }) => {
-	if (projectName === null) {
-		return <Spinner size="sm" />;
-	}
-
-	return <span className="font-bold">{projectName}</span>;
 };
 
 export default EditorPage;

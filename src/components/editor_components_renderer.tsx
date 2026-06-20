@@ -18,15 +18,17 @@ class ElementNotSupportsChildren extends Error {
 function renderElement(
 	element: LandingElement,
 	selectedElementId: string | null,
-	onSelect: SelectCallback,
+	onSelect: SelectCallback | null,
 	children: React.ReactNode[],
 ): React.ReactNode {
 	if (element.element !== "container" && children.length > 0) {
 		throw new ElementNotSupportsChildren(element.element);
 	}
 
+	console.log("onSelect:", onSelect);
+
 	const props = {
-		onClick: () => onSelect(element),
+		onClick: onSelect ? () => onSelect(element) : undefined,
 		isSelected: element.id === selectedElementId,
 	};
 
@@ -49,7 +51,7 @@ function renderElement(
 export function renderElements(
 	elements: LandingElement[],
 	selectedElementId: string | null,
-	onSelect: SelectCallback,
+	onSelect: SelectCallback | null = null,
 	parentId: string = "root",
 ): React.ReactNode[] {
 	const processedElements = elements

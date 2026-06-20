@@ -1,8 +1,7 @@
-import rotateIcon from "../../assets/rotate-left.svg";
 import { Drawer } from "../drawer";
 import { SquareButton } from "../squareButton";
 import styles from "./versionCheckout.module.css";
-
+import { ArrowUturnCcwLeft } from "@gravity-ui/icons";
 interface VersionCheckoutWindowParams {
 	children: React.ReactElement[] | null;
 }
@@ -20,22 +19,21 @@ export const VersionItem = ({
 	onView,
 	onCheckout,
 }: VersionItemParams) => {
-	const activeClassName = active
-		? styles.versionItemActive
-		: styles.versionItemInactive;
-	const className = `${styles.versionItem} ${activeClassName}`;
+	const baseStyles = "flex p-2 gap-2 border border-2 rounded-4xl";
+	const activeStyles = "bg-[rgba(225,213,240,1)] border-[var(--accent)]";
+	const notActiveStyles = "border-transparent";
+	const itemStyles = `${baseStyles} ${active ? activeStyles : notActiveStyles}`;
 
 	return (
-		<div className={className} onClick={active ? undefined : onView}>
-			<div className={styles.versionName}>Версия {versionNumber}</div>
-			{onCheckout && (
-				<SquareButton
-					icon={rotateIcon}
-					variant="ghost"
-					size={30}
-					onClick={onCheckout}
-				/>
-			)}
+		<div className={itemStyles} onClick={active ? undefined : onView}>
+			<div className="flex items-center grow">Версия {versionNumber}</div>
+			<div className="flex items-center justify-center grow-0">
+				{onCheckout && (
+					<SquareButton onClick={onCheckout}>
+						<ArrowUturnCcwLeft />
+					</SquareButton>
+				)}
+			</div>
 		</div>
 	);
 };
@@ -45,7 +43,11 @@ const VersionItemList = ({
 }: {
 	children: React.ReactNode[] | null;
 }) => {
-	return <div className={styles.versionList}>{children}</div>;
+	return (
+		<div className={`flex-1 overflow-y-auto ${styles.versionList}`}>
+			{children}
+		</div>
+	);
 };
 
 export const VersionCheckoutWindow = ({

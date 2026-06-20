@@ -25,8 +25,9 @@ export const LandingElementEditContainer = ({
 }: LandingElementEditContainerProps) => {
 	const baseStyles = "border border-3 transition-colors rounded-2xl p-2";
 	const activeStyles = "border-[var(--accent)]";
-	const notActiveStyles =
-		"cursor-pointer border-transparent hover:border-[var(--border)]";
+	const notActiveStyles = onClick
+		? "cursor-pointer border-transparent hover:border-[var(--border)]"
+		: "border-transparent";
 
 	return (
 		<div

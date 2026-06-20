@@ -68,6 +68,6 @@ export const PreviewContainer = ({
 	return <div className={styles.previewContainer}>{children}</div>;
 };
 
-export const EditArea = ({ children }: { children: React.ReactNode[] }) => {
+export const EditArea = ({ children }: PropsWithChildren) => {
 	return <div className={`${styles.editArea} gap-4`}>{children}</div>;
 };

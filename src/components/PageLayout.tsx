@@ -10,7 +10,7 @@ export const PageHeader = ({ children }: PageHeaderProps) => {
 
 export const PageLayout = ({ children }: PropsWithChildren) => {
 	return (
-		<div className="flex p-4 items-center justify-center w-full">
+		<div className="flex p-4 justify-center w-full">
 			<div className="flex flex-col gap-4 max-w-4xl grow">{children}</div>
 		</div>
 	);

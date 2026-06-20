@@ -235,7 +235,6 @@ export class ApiClient {
 		projectId: string,
 		version: number | null = null,
 	): Promise<Draft> {
-		await sleep(5.0);
 		const url =
 			version === null
 				? `/api/v1/projects/${projectId}/draft`
@@ -385,7 +384,7 @@ export class ApiClient {
 
 	public async getProjects(): Promise<Projects> {
 		const response = await this.sendAuthorizedRequest(
-			`api/v1/projects`,
+			`/api/v1/projects`,
 			{ method: "GET" },
 			{ retryOn500: true },
 		);
