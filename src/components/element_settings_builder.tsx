@@ -6,6 +6,7 @@ import {
 	TextAlignRight,
 	Underline,
 } from "@gravity-ui/icons";
+import { ToggleButton } from "@heroui/react";
 import {
 	ChoiceBoxSetting,
 	ColorSettings,
@@ -24,7 +25,6 @@ import {
 	type LinkElement,
 	type TextElement,
 } from "./types";
-import { ToggleButton } from "@heroui/react";
 
 type UpdateCallback = (updated: LandingElement) => void;
 type CloseCallback = () => void;
