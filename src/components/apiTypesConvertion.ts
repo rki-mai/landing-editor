@@ -81,7 +81,10 @@ export const convertToDraftOperation = (action: Action): Operation => {
 						? {
 								...action.fields,
 								styles: convertToDraftStyles(
-									action.fields.styles as Record<string, string | number>,
+									action.fields.styles as Record<
+										string,
+										string | number | boolean
+									>,
 								),
 							}
 						: action.fields,
