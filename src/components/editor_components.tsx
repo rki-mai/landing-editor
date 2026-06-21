@@ -51,6 +51,7 @@ export const TextElementComponent = ({
 		if (element.styles.bold) style.fontWeight = "bold";
 		if (element.styles.italic) style.fontStyle = "italic";
 		if (element.styles.underline) style.textDecoration = "underline";
+		if (element.styles.textAlign) style.textAlign = element.styles.textAlign;
 	}
 	return (
 		<LandingElementEditContainer key={element.id} {...props}>

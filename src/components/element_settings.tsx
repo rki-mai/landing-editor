@@ -25,6 +25,13 @@ interface FlagButtonSettingsProps extends PropsWithChildren {
 	onChange: (value: boolean) => void;
 }
 
+interface RadioButtonSettingProps<T extends string> extends PropsWithChildren {
+	name: string;
+	value: T;
+	values: T[];
+	onChange: (value: T) => void;
+}
+
 const SettingContainer = ({
 	children,
 	multiline,
@@ -216,6 +223,47 @@ export const FlagButtonSettingsGroup = ({
 					selectedKeys={selectedKeys}
 					onSelectionChange={handle}
 					selectionMode="multiple"
+				>
+					{children}
+				</ToggleButtonGroup>
+			</SettingValue>
+		</SettingContainer>
+	);
+};
+
+export const RadioButtonSetting = <T extends string>({
+	name,
+	value,
+	values,
+	onChange,
+	children,
+}: RadioButtonSettingProps<T>) => {
+	const onSelectionChange = (keys: Set<Key>) => {
+		if (keys.size !== 1) {
+			console.error("[RadioButtonSetting] Size of keys is more than one", keys);
+			return;
+		}
+
+		for (const key of keys) {
+			for (const el of values) {
+				if (key === el) {
+					onChange(el);
+					return;
+				}
+			}
+
+			console.error(`[RadioButtonSetting] Unknown key '${key}'`);
+		}
+	};
+
+	return (
+		<SettingContainer>
+			<SettingName name={name} />
+			<SettingValue>
+				<ToggleButtonGroup
+					selectedKeys={[value]}
+					onSelectionChange={onSelectionChange}
+					selectionMode="single"
 				>
 					{children}
 				</ToggleButtonGroup>

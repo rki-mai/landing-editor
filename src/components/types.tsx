@@ -15,6 +15,7 @@ export type TextElementStyles = {
 	bold?: boolean;
 	italic?: boolean;
 	underline?: boolean;
+	textAlign?: "left" | "center" | "right";
 };
 
 export type TextElement = BaseElement & {

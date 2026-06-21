@@ -1,4 +1,11 @@
-import { Bold, Italic, Underline } from "@gravity-ui/icons";
+import {
+	Bold,
+	Italic,
+	TextAlignCenter,
+	TextAlignLeft,
+	TextAlignRight,
+	Underline,
+} from "@gravity-ui/icons";
 import {
 	ChoiceBoxSetting,
 	ColorSettings,
@@ -6,6 +13,7 @@ import {
 	FlagButtonSetting,
 	FlagButtonSettingsGroup,
 	IntegerSetting,
+	RadioButtonSetting,
 	TextAreaSetting,
 	TextFieldSetting,
 } from "./element_settings";
@@ -16,6 +24,7 @@ import {
 	type LinkElement,
 	type TextElement,
 } from "./types";
+import { ToggleButton } from "@heroui/react";
 
 type UpdateCallback = (updated: LandingElement) => void;
 type CloseCallback = () => void;
@@ -84,6 +93,27 @@ const buildSettingsForTextElement = (
 					<Underline />
 				</FlagButtonSetting>
 			</FlagButtonSettingsGroup>
+			<RadioButtonSetting
+				name="Text Align"
+				value={element.styles?.textAlign || "left"}
+				values={["left", "center", "right"]}
+				onChange={(value) =>
+					onUpdate({
+						...element,
+						styles: { ...element.styles, textAlign: value },
+					})
+				}
+			>
+				<ToggleButton isIconOnly aria-label="left" id="left">
+					<TextAlignLeft />
+				</ToggleButton>
+				<ToggleButton isIconOnly aria-label="center" id="center">
+					<TextAlignCenter />
+				</ToggleButton>
+				<ToggleButton isIconOnly aria-label="right" id="right">
+					<TextAlignRight />
+				</ToggleButton>
+			</RadioButtonSetting>
 			<TextAreaSetting
 				name="Content"
 				value={element.value}
