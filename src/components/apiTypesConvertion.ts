@@ -103,6 +103,14 @@ const convertToTextStyles = (styles: DraftStyles): TextElementStyles => {
 	if (styles.italic) textStyles.italic = convertToBoolean(styles.italic);
 	if (styles.underline)
 		textStyles.underline = convertToBoolean(styles.underline);
+	if (styles.textAlign) {
+		const processed = convertToLiteral(styles.textAlign, [
+			"left",
+			"center",
+			"right",
+		]);
+		textStyles.textAlign = processed;
+	}
 	return textStyles;
 };
 
@@ -150,4 +158,14 @@ const convertToBoolean = (value: string) => {
 		default:
 			throw new Error(`Can't parse value '${value}' to boolean`);
 	}
+};
+
+const convertToLiteral = <T extends string>(value: string, literals: T[]) => {
+	for (const literal of literals) {
+		if (value === literal) {
+			return literal;
+		}
+	}
+
+	throw new Error(`Unexpected value '${value}'. Expected one of ${literals}`);
 };
