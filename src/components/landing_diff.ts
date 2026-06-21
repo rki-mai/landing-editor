@@ -2,7 +2,7 @@ import type { LandingElement, LandingPage } from "./types";
 import { getElementById } from "./utils";
 
 interface UpdateObject extends Record<string, UpdateValue> {}
-type UpdateValue = string | number | UpdateObject;
+type UpdateValue = string | number | boolean | UpdateObject;
 
 type CreateElementAction = {
 	type: "create";

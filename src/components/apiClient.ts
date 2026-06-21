@@ -22,7 +22,7 @@ export interface ApiClientConfig {
 }
 
 interface UpdateObject extends Record<string, UpdateValue> {}
-type UpdateValue = string | number | UpdateObject;
+type UpdateValue = string | number | boolean | UpdateObject;
 
 export interface Credentials {
 	email: string;
