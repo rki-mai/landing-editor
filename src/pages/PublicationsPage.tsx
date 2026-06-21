@@ -88,7 +88,7 @@ export default function PublicationsPage() {
 						<Tab
 							title="Публикации"
 							id="publications"
-							href="/publications"
+							href="/project-publications"
 							isSelected={true}
 						/>
 					</Tabs>
