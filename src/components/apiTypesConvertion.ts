@@ -81,7 +81,10 @@ export const convertToDraftOperation = (action: Action): Operation => {
 						? {
 								...action.fields,
 								styles: convertToDraftStyles(
-									action.fields.styles as Record<string, string | number>,
+									action.fields.styles as Record<
+										string,
+										string | number | boolean
+									>,
 								),
 							}
 						: action.fields,
@@ -99,6 +102,18 @@ const convertToTextStyles = (styles: DraftStyles): TextElementStyles => {
 	const textStyles: TextElementStyles = {};
 	if (styles.color) textStyles.color = styles.color;
 	if (styles.fontSize) textStyles.fontSize = parseInt(styles.fontSize, 10);
+	if (styles.bold) textStyles.bold = convertToBoolean(styles.bold);
+	if (styles.italic) textStyles.italic = convertToBoolean(styles.italic);
+	if (styles.underline)
+		textStyles.underline = convertToBoolean(styles.underline);
+	if (styles.textAlign) {
+		const processed = convertToLiteral(styles.textAlign, [
+			"left",
+			"center",
+			"right",
+		]);
+		textStyles.textAlign = processed;
+	}
 	return textStyles;
 };
 
@@ -128,11 +143,32 @@ const convertToButtonStyles = (styles: DraftStyles): ButtonElementStyles => {
 };
 
 const convertToDraftStyles = (
-	styles: Record<string, string | number>,
+	styles: Record<string, string | number | boolean>,
 ): DraftStyles => {
 	const draftStyles: DraftStyles = {};
 	for (const [key, value] of Object.entries(styles)) {
 		draftStyles[key] = value.toString();
 	}
 	return draftStyles;
+};
+
+const convertToBoolean = (value: string) => {
+	switch (value) {
+		case "true":
+			return true;
+		case "false":
+			return false;
+		default:
+			throw new Error(`Can't parse value '${value}' to boolean`);
+	}
+};
+
+const convertToLiteral = <T extends string>(value: string, literals: T[]) => {
+	for (const literal of literals) {
+		if (value === literal) {
+			return literal;
+		}
+	}
+
+	throw new Error(`Unexpected value '${value}'. Expected one of ${literals}`);
 };

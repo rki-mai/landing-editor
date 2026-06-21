@@ -1,8 +1,20 @@
 import {
+	Bold,
+	Italic,
+	TextAlignCenter,
+	TextAlignLeft,
+	TextAlignRight,
+	Underline,
+} from "@gravity-ui/icons";
+import { ToggleButton } from "@heroui/react";
+import {
 	ChoiceBoxSetting,
 	ColorSettings,
 	ElementSettings,
+	FlagButtonSetting,
+	FlagButtonSettingsGroup,
 	IntegerSetting,
+	RadioButtonSetting,
 	TextAreaSetting,
 	TextFieldSetting,
 } from "./element_settings";
@@ -45,8 +57,65 @@ const buildSettingsForTextElement = (
 					onUpdate({ ...element, styles: { ...element.styles, color: value } })
 				}
 			/>
+			<FlagButtonSettingsGroup name="Style">
+				<FlagButtonSetting
+					id="bold"
+					onChange={(value) =>
+						onUpdate({ ...element, styles: { ...element.styles, bold: value } })
+					}
+					value={element.styles?.bold || false}
+				>
+					<Bold />
+				</FlagButtonSetting>
+				<FlagButtonSetting
+					id="italic"
+					onChange={(value) =>
+						onUpdate({
+							...element,
+							styles: { ...element.styles, italic: value },
+						})
+					}
+					value={element.styles?.italic || false}
+				>
+					<Italic />
+				</FlagButtonSetting>
+				<FlagButtonSetting
+					id="underline"
+					onChange={(value) => {
+						console.log("Updated value: ", value);
+						onUpdate({
+							...element,
+							styles: { ...element.styles, underline: value },
+						});
+					}}
+					value={element.styles?.underline || false}
+				>
+					<Underline />
+				</FlagButtonSetting>
+			</FlagButtonSettingsGroup>
+			<RadioButtonSetting
+				name="Text Align"
+				value={element.styles?.textAlign || "left"}
+				values={["left", "center", "right"]}
+				onChange={(value) =>
+					onUpdate({
+						...element,
+						styles: { ...element.styles, textAlign: value },
+					})
+				}
+			>
+				<ToggleButton isIconOnly aria-label="left" id="left">
+					<TextAlignLeft />
+				</ToggleButton>
+				<ToggleButton isIconOnly aria-label="center" id="center">
+					<TextAlignCenter />
+				</ToggleButton>
+				<ToggleButton isIconOnly aria-label="right" id="right">
+					<TextAlignRight />
+				</ToggleButton>
+			</RadioButtonSetting>
 			<TextAreaSetting
-				name="Conent"
+				name="Content"
 				value={element.value}
 				onChange={(value) => onUpdate({ ...element, value: value })}
 			/>
