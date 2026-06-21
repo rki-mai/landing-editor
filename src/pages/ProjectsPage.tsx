@@ -100,7 +100,7 @@ export default function ProjectsPage() {
 			async () => {
 				try {
 					await apiClient.createPublication(project.id);
-					window.location.href = "/publications";
+					window.location.href = "/project-publications";
 				} catch (err) {
 					if (
 						err instanceof TokenProviderError ||
@@ -138,7 +138,7 @@ export default function ProjectsPage() {
 						<Tab
 							title="Публикации"
 							id="publications"
-							href="/publications"
+							href="/project-publications"
 							isSelected={false}
 						/>
 					</Tabs>
