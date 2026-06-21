@@ -30,7 +30,11 @@ const Header = ({ title, onClose }: HeaderParams) => {
 	return (
 		<div className={styles.header}>
 			<div className={styles.headerTitle}>{title}</div>
-			{onClose && <CloseButton className="rounded-full" onClick={onClose} />}
+			{onClose && (
+				<div className={styles.closeButton}>
+					<CloseButton className="rounded-full" onClick={onClose} />
+				</div>
+			)}
 		</div>
 	);
 };
