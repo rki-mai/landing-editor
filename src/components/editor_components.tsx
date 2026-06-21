@@ -48,6 +48,9 @@ export const TextElementComponent = ({
 		if (element.styles.color) style.color = element.styles.color;
 		if (element.styles.fontSize)
 			style.fontSize = `${element.styles.fontSize}px`;
+		if (element.styles.bold) style.fontWeight = "bold";
+		if (element.styles.italic) style.fontStyle = "italic";
+		if (element.styles.underline) style.textDecoration = "underline";
 	}
 	return (
 		<LandingElementEditContainer key={element.id} {...props}>

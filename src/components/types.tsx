@@ -11,6 +11,10 @@ export type BaseElement = {
 export type TextElementStyles = {
 	color?: Color;
 	fontSize?: number;
+	format?: "h1" | "h2" | "h3" | "paragraph";
+	bold?: boolean;
+	italic?: boolean;
+	underline?: boolean;
 };
 
 export type TextElement = BaseElement & {

@@ -12,10 +12,18 @@ import {
 	Select,
 	TextArea,
 	TextField,
+	ToggleButton,
+	ToggleButtonGroup,
 } from "@heroui/react";
-import React from "react";
+import React, { type PropsWithChildren } from "react";
 import { Drawer } from "./drawer";
 import styles from "./element_settings.module.css";
+
+interface FlagButtonSettingsProps extends PropsWithChildren {
+	id: string;
+	value: boolean;
+	onChange: (value: boolean) => void;
+}
 
 const SettingContainer = ({
 	children,
@@ -161,6 +169,56 @@ export const TextAreaSetting = ({
 					value={value}
 					onChange={(e) => onChange(e.target.value)}
 				/>
+			</SettingValue>
+		</SettingContainer>
+	);
+};
+
+export const FlagButtonSetting = ({
+	id,
+	value,
+	children,
+}: FlagButtonSettingsProps) => {
+	return (
+		<ToggleButton isSelected={value} isIconOnly aria-label={id} id={id}>
+			{children}
+		</ToggleButton>
+	);
+};
+
+export const FlagButtonSettingsGroup = ({
+	name,
+	children,
+}: {
+	name: string;
+	children: React.ReactElement<FlagButtonSettingsProps>[];
+}) => {
+	const selectedKeys = children
+		.filter((child) => child.props.value)
+		.map((child) => child.props.id);
+
+	const handle = (keys: Set<Key>) => {
+		for (const child of children) {
+			const wasSelected = selectedKeys.includes(child.props.id);
+			const isSelected = keys.has(child.props.id);
+
+			if (wasSelected !== isSelected) {
+				child.props.onChange(isSelected);
+			}
+		}
+	};
+
+	return (
+		<SettingContainer>
+			<SettingName name={name} />
+			<SettingValue>
+				<ToggleButtonGroup
+					selectedKeys={selectedKeys}
+					onSelectionChange={handle}
+					selectionMode="multiple"
+				>
+					{children}
+				</ToggleButtonGroup>
 			</SettingValue>
 		</SettingContainer>
 	);
